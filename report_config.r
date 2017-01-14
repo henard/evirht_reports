@@ -1,23 +1,11 @@
+# Report Configuration file
+
+# Global filter applied to all results
 global_filters <- list(
     start_time="2015-09-01",
     end_time="2016-09-01"
 )
-global_filters
-
-# main headings should use Museo Slab, and subheadings should use ITC Franklin Gothic. body copy should always be in ITC Franklin Gothic.
-style_guide <- list(
-    font_main_headings="Museo Slab",
-    font="ITC Franklin Gothic"
-)
-
-colour_palette = list(
-    "purple"="#BD457B",
-    "blue"="#3369A5",
-    "green"="#8BB63A",
-    "yellow"="#F1CA00",
-    "orange"="#D57B16",
-    "red"="#C33415"
-)
+# global_filters
 
 # Plot 1: These are the bar charts in the pdf labelled ‘Sample 1’. For the Headstart set of schools these include a bar
 #         chart for all schools and then each individual Headstart school. Some account holders may not include a large
@@ -47,4 +35,4 @@ report1 = list(
                 yaxis="pptchange",
                 colourby="devstage")
 )
-report1["chart2"]
+# report1["chart2"]
