@@ -1,8 +1,8 @@
 # Style guide
 style_guide <- list(
     "fonts" = list(
-        font_main_headings="Museo Slab",
-        font="ITC Franklin Gothic"
+        "font_main_headings"="Museo Slab",
+        "font"="ITC Franklin Gothic"
     ),
     "colour_palette" = list(
         "purple"="#BD457B",
