@@ -1,4 +1,4 @@
-LOAD DATA LOCAL INFILE '/media/sf_nas_share/Documents/Select/Thrive/In/TOL Individual Profile Data Sample for SSS.csv' INTO TABLE comb_data
+LOAD DATA LOCAL INFILE '/media/sf_share/Documents/Select/Thrive/In/TOL Individual Profile Data Sample for SSS2.csv' INTO TABLE comb_data
   FIELDS TERMINATED BY ','
   LINES TERMINATED BY '\r\n'
   IGNORE 1 LINES
