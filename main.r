@@ -1,9 +1,8 @@
 # main
 
-working_dir = "/home/henard/dev/r/evirht"
+working_dir = "/home/henard/dev/r/evirht_reports"
 setwd(working_dir)
 # getwd()
-
 
 # Load report_config which creates the following objects:
 #   data_source
@@ -27,15 +26,64 @@ print(devstrand_categories)
 
 # Load global_config which creates the following objects:
 #   db_credentials
-source("../../db_credentials.r")
-credentials <- db_credentials[[data_source]]
-
+source("../db_credentials.r")
 source("get_data.r")
 
-d$c <- 1
+# d$c <- 1
 # xtabs(c ~ chip_version + map_grade, data=d)
+# summary(d)
 
-summary(d)
+library(data.table)
+library(plyr)
+
+# library(ggplot2)
+# data(diamonds)
+
+# Helper function
+parseify_list <- function(list_of_colnames)
+    return(as.quoted(paste("list(", paste(list_of_colnames, collapse=", "),")"))[[1]])
+
+# Convert to data.table
+DT <- data.table(d)
+DT[, c:=1]
 
 
+# Start function here
 
+# function inputs
+by_cols <- list("Child_ID", "Dev_Stage")
+
+
+# prep function inputs and wire-in
+by_cols_parse <- parseify_list(by_cols)
+
+# rank within groups
+DT[, Assessment_n := rank(Completed_Date, ties.method="first"), by=by_cols_parse]
+DT[, .("N" = sum(c)), by=.(Assessment_n)]
+
+# Max rank within groups
+DT[, N_assessments := max(Assessment_n), by=by_cols_parse]
+DT[, .("N" = sum(c)), by=.(N_assessments)]
+
+# rank within groups reverse
+DT[, Assessment_n_rev := -1*(N_assessments-Assessment_n)-1]
+DT[, .("N" = sum(c)), by=.(Assessment_n_rev)]
+
+
+t1 <- DT[Assessment_n==1 | Assessment_n_rev ==-1, ppt_change := max(Overall_Score)-min(Overall_Score), by=by_cols_parse][Assessment_n==1]
+
+head(t1)
+
+# data.table reference stuff
+# DT[, Child_ID]
+# setkey(DT, assess_n, assess_n_rev)
+# nrow(DT)
+# t1 <- DT[assess_n==1 | assess_n_rev ==-1, ppt_change := max(Overall_Score)-min(Overall_Score), by=Child_ID][order(Child_ID)]
+
+# data.table melt/ cast syntax
+# ans <- dcast(DT, ID + Month ~ Category, fun=sum)
+
+# data.table merge syntax
+# x[,list(x,y)]
+
+getwd()
