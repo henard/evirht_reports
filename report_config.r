@@ -2,11 +2,13 @@
 
 # data_source
 data_source = "local_file"
+data_source = "thrive"
+data_source = "local"
 
 # Global filter applied when querying data
 global_filters <- list(
     "time_filter"=list(
-        "column"="Completed_Data",
+        "column"="Completed_Date",
         "start_time"="2015-09-01",
         "end_time"="2016-09-01"
     ),
@@ -20,7 +22,7 @@ create_where_clause <- function(global_filters) {
     where_clauses <- list()
     for(i in names(global_filters)) {
         if(i %in% c("time_filter")) {
-            where_clause_i <- sprintf("%s > '%s' and %s <= '%s'",
+            where_clause_i <- sprintf("%s > '%s' AND %s <= '%s'",
                                     global_filters[[i]]["column"],
                                     global_filters[[i]]["start_time"],
                                     global_filters[[i]]["column"],
@@ -29,7 +31,7 @@ create_where_clause <- function(global_filters) {
         }
         if(i %in% c("school_year_filter")) {
             school_year_values <- paste(unlist(global_filters[[i]]["values"]), collapse=', ')
-            where_clause_i <- sprintf("%s in (%s)",
+            where_clause_i <- sprintf("%s IN (%s)",
                                     global_filters[[i]]["column"],
                                     school_year_values)
             where_clauses <- c(where_clauses, where_clause_i)

@@ -1,5 +1,5 @@
 # install.packages("RMySQL")
-# library(RMySQL)
+library(RMySQL)
 
 if(data_source=="local_file") {
     folder_file_name <- paste(credentials$folder, credentials$filename, sep="/")
@@ -20,11 +20,16 @@ if(data_source=="local_file") {
     #     }
     # }
 } else {
-    credentials[["func"]] <- "MySQL()"
-    credentials
-    
-    mydb = do.call(dbConnect, credentials)
-    q = dbSendQuery(mydb, "select chip_version, map_grade, flowcell_session_datetime from vw_production where flowcell_session_datetime>='2016-01-01'")
+    credentials <- db_credentials[[data_source]]
+    db = dbConnect(MySQL(), user=unlist(credentials["username"]),
+                            password=unlist(credentials["password"]),
+                            dbname=unlist(credentials["database"]),
+                            host=unlist(credentials["host"]))
+    # db = dbConnect(MySQL(), user="burrondh", password="TGqbsLqwBv!Q2%^k!AA", dbname="thrive_online", host="dw.thriveftc.com")
+    # db = dbConnect(MySQL(), user="root", password="Edwardb1", dbname="evirht", host="127.0.0.1")
+    # db = do.call(dbConnect, credentials)
+
+    q = dbSendQuery(db, paste("select * from comb_data", where_clause, sep=" "))
     d = fetch(q, n=-1)
 }
 
