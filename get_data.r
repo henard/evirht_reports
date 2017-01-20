@@ -20,15 +20,16 @@ if(data_source=="local_file") {
     #     }
     # }
 } else {
+    MySQL. <- MySQL() 
     credentials <- db_credentials[[data_source]]
-    db = dbConnect(MySQL(), user=unlist(credentials["username"]),
+    db = dbConnect(MySQL., user=unlist(credentials["username"]),
                             password=unlist(credentials["password"]),
                             dbname=unlist(credentials["database"]),
                             host=unlist(credentials["host"]))
-    # db = dbConnect(MySQL(), user="burrondh", password="TGqbsLqwBv!Q2%^k!AA", dbname="thrive_online", host="dw.thriveftc.com")
-    # db = dbConnect(MySQL(), user="root", password="Edwardb1", dbname="evirht", host="127.0.0.1")
+    db = dbConnect(MySQL., user="burrondh", password="Y5bAbX7NOkqrXafjBWh8", dbname="thrive_online", host="dw.thriveftc.com")
+    db = dbConnect(MySQL., user="root", password="Edwardb1", dbname="evirht", host="127.0.0.1")
     # db = do.call(dbConnect, credentials)
-
+sessionInfo()
     q = dbSendQuery(db, paste("select * from comb_data", where_clause, sep=" "))
     d = fetch(q, n=-1)
 }

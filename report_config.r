@@ -2,8 +2,8 @@
 
 # data_source
 data_source = "local_file"
-data_source = "thrive"
 data_source = "local"
+data_source = "thrive"
 
 # Global filter applied when querying data
 global_filters <- list(
