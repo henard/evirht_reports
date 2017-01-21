@@ -4,7 +4,7 @@ if(data_source=="local_file") {
     folder_file_name <- paste(credentials$folder, credentials$filename, sep="/")
     print(folder_file_name)
     d <- read.csv(folder_file_name)
-    d <- filter_csv(d, report_filters)
+    d <- filter_df(d, report_filters)
 } else {
     drv <- dbDriver("MySQL")
     db <- dbConnect(drv, default.file = login_credentials_location, group = data_source, user = NULL, password = NULL)
@@ -14,23 +14,40 @@ if(data_source=="local_file") {
     d = fetch(q, n=-1)
 }
 
-filter_csv <- function(df, filters) {
-    for(i in names(filters)) {
-        if(i %in% c("time_filter")) {
-            filt <- df[filters[[i]]["column"]] > filters[[i]]["start_time"] &
-                    df[filters[[i]]["column"]] <= filters[[i]]["end_time"]
-            df <- df[filt]
-        }
-        if(i %in% c("school_year_filter")) {
-            school_year_values <- paste(unlist(filters[[i]]["values"]), collapse=', ')
-            filt <- d[filters[[i]]["column"]] %in% school_year_values
-            df <- df[filt]
-        }
-    }
-    return(df)
+disconnect_all_mysql_conns <- function() {
+    all_cons <- dbListConnections(MySQL())
+    for(con in all_cons)
+        dbDisconnect(con)
 }
 
-# dbClearResult(dbListResults(conn)[[1]])
+# disconnect_all_mysql_conns()
+
+filter_df <- function(df, filters) {
+    for(i in filters) {
+        if(i[["filter_type"]] %in% c("range")) {
+            filt <- df[i[["column"]]] > i[["lower"]] &
+                    df[i[["column"]]] <= i[["end_time"]]
+        }
+        if(i[["filter_type"]] %in% c("in")) {
+            filt <- d[i[["column"]]] %in% i[["values"]]
+        }
+    }
+    return(df[filt])
+}
+
+filter_dt <- function(DT, filters) {
+    for(i in filters) {
+        if(i[["filter_type"]] %in% c("range")) {
+            DT <- DT[get(i[["column"]])>=unlist(i[["lower"]]) & get(i[["column"]])<unlist(i[["upper"]])]
+        }
+        if(i[["filter_type"]] %in% c("in")) {
+            DT <- DT[get(i[["column"]]) %in% unlist(i[["values"]])]
+        }
+    }
+    return(DT)
+}
+
+# dbClearResult(dbListResults(db)[[1]])
 
 
 

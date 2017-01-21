@@ -4,31 +4,31 @@
 report_filters <- list(
     "time_filter"=list(
         "column"="Completed_Date",
-        "start_time"="2015-09-01",
-        "end_time"="2016-09-01"
+        "lower"="2015-09-01",
+        "upper"="2016-09-01",
+        "filter_type"="range"
     ),
     "school_year_filter"=list(
         "column"="School_Year",
-        "values"=list(1, 2, 3, 4, 5, 6, 7, 8, 9)
+        "values"=list(1, 2, 3, 4, 5, 6, 7, 8, 9),
+        "filter_type"="in"
     )
 )
 
 create_where_clause <- function(report_filters) {
     where_clauses <- list()
-    for(i in names(report_filters)) {
-        if(i %in% c("time_filter")) {
+    for(i in report_filters) {
+        if(i[["filter_type"]] %in% c("range")) {
             where_clause_i <- sprintf("%s > '%s' AND %s <= '%s'",
-                                    report_filters[[i]]["column"],
-                                    report_filters[[i]]["start_time"],
-                                    report_filters[[i]]["column"],
-                                    report_filters[[i]]["end_time"])
+                                    i["column"],
+                                    i["lower"],
+                                    i["column"],
+                                    i["upper"])
             where_clauses <- c(where_clauses, where_clause_i)
         }
-        if(i %in% c("school_year_filter")) {
-            school_year_values <- paste(unlist(report_filters[[i]]["values"]), collapse=', ')
-            where_clause_i <- sprintf("%s IN (%s)",
-                                    report_filters[[i]]["column"],
-                                    school_year_values)
+        if(i[["filter_type"]] %in% c("in")) {
+            in_values <- paste(unlist(i["values"]), collapse=', ')
+            where_clause_i <- sprintf("%s IN (%s)", i["column"], in_values)
             where_clauses <- c(where_clauses, where_clause_i)
         }
     }
@@ -47,24 +47,51 @@ where_clause <- create_where_clause(report_filters)
 # Plot 4: This is the TOL activity given in the spreadsheet called ‘Headstart Data – 11 05 16 for RHead.xlsx’).
 #         (This plot should be prioritised over plot 3 if there are time constraints).
 
-report = list()
 report1 = list(
-    "title"="Headstart Schools - Academic Year 2014/15",
-    "chart1"=list("type"="barstacked",
-                "filter"=NA,
-                "xaxis"="schoolyear",
-                "yaxis"="pptchange",
-                "colourby"="devstage"),
-    "chart2"=list("type"="barstacked",
-                "filter"=list("column"="locality", "values"=list(1)),
-                "xaxis"="schoolyear",
-                "yaxis"="pptchange",
-                "colourby"="devstage"),
-    "chart3"=list("type"="barstacked",
-                "filter"=list("column"="locality", "values"=list(6)),
-                "xaxis"="schoolyear",
-                "yaxis"="pptchange",
-                "colourby"="devstage")
+    "title"=list("type"="text",
+                 "text"="Headstart Schools - Academic Year 2014/15"),
+    "chart1"=list("type"="bar_stacked",
+                  "title"="ALL HEADSTART SCHOOLS\nAverage change in percentage points between first and last assessment\nduring academic year",
+                  "measure"="score_change",
+                  "xaxis"="School_Year",
+                  "colour_by"="Dev_Stage",
+                  "filter"=list("all"=list("column"=NA, "values"=NA, "filter_type"="all"))),
+    "chart2"=list("type"="bar_stacked",
+                  "title"="ALL HEADSTART SCHOOLS\nAverage change in percentage points between first and last assessment\nduring academic year in Locality 1",
+                  "measure"="score_change",
+                  "xaxis"="School_Year",
+                  "colour_by"="Dev_Stage",
+                  "filter"=list("locality1"=list("column"="locality", "values"=list(1), "filter_type"="in"))),
+    "chart3"=list("type"="bar_stacked",
+                  "title"="ALL HEADSTART SCHOOLS\nAverage change in percentage points between first and last assessment\nduring academic yearr in Locality 6",
+                  "measure"="score_change",
+                  "xaxis"="School_Year",
+                  "colour_by"="Dev_Stage",
+                  "filter"=list("locality6"=list("column"="locality", "values"=list(6), "filter_type"="in")))
 )
 
-report = c(report, report1)
+report2 = list(
+    "title"=list("type"="text",
+                 "text"="Headstart Schools - Academic Year 2014/15"),
+    "chart1"=list("type"="bar_stacked",
+                  "title"="ALL HEADSTART SCHOOLS\nAverage change in percentage points between first and last assessment\nduring academic year",
+                  "measure"="score_change",
+                  "xaxis"="School_Year",
+                  "colour_by"="Dev_Stage",
+                  "filter"=list("all"=list("column"=NA, "values"=NA, "filter_type"="all"))),
+    "chart2"=list("type"="bar_stacked",
+                  "title"="ALL HEADSTART SCHOOLS\nAverage change in percentage points between first and last assessment\nduring academic year",
+                  "measure"="score_change",
+                  "xaxis"="School_Year",
+                  "colour_by"="Dev_Stage",
+                  "filter"=list("locality7"=list("column"="locality", "values"=list(7), "filter_type"="in"))),
+    "chart3"=list("type"="bar_stacked",
+                  "title"="ALL HEADSTART SCHOOLS\nAverage change in percentage points between first and last assessment\nduring academic year",
+                  "measure"="score_change",
+                  "xaxis"="School_Year",
+                  "colour_by"="Dev_Stage",
+                  "filter"=list("locality8"=list("column"="locality", "values"=list(8), "filter_type"="in")))
+)
+
+reports = list("report1"=report1,
+               "report2"=report2)
