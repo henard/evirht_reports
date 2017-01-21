@@ -1,6 +1,8 @@
 # Set working directory
-working_dir = "/home/henard/dev/r/evirht_reports"
+# working_dir = "/home/henard/dev/r/evirht_reports"
+working_dir = file.path("/", "home", "henard", "dev", "r", "evirht_reports")
 setwd(working_dir)
+plots_dir = file.path("/", "home", "henard", "dev", "r", "evirht_reports", "plots")
 # getwd()
 
 # data_source
@@ -26,7 +28,7 @@ style_guide <- list(
         "red"="#C33415"
     ),
     "devstrand_colours" = list(
-        "Power and Identity "="green",
+        "Power & Identity"="green",
         "Thinking"="yellow",
         "Doing"="orange",
         "Being"="red"
