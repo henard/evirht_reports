@@ -1,3 +1,16 @@
+# Set working directory
+working_dir = "/home/henard/dev/r/evirht_reports"
+setwd(working_dir)
+# getwd()
+
+# data_source
+data_sources = list("thrive", "local", "local_file")
+data_source = unlist(data_sources[[2]])
+
+# db logn credentials file path
+login_credentials_location = "~/.my.cnf"
+csv_file_location = "/media/sf_nas_share/Documents/Select/Thrive/In/TOL Individual Profile Data Sample for SSS2.csv"
+
 # Style guide
 style_guide <- list(
     "fonts" = list(
