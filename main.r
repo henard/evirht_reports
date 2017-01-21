@@ -1,21 +1,8 @@
 # main
 
-working_dir = "/home/henard/dev/r/evirht_reports"
-setwd(working_dir)
-# getwd()
-
-# Load report_config which creates the following objects:
+# Load global_config which sets working directory and creates the following objects:
 #   data_source
 #   global_filters
-#   report
-source("report_config.r")
-
-print(data_source)
-print(global_filters)
-print(report)
-print(where_clause)
-
-# Load global_config which creates the following objects:
 #   style_guide
 #   devstrand_colour_palette
 #   devstrand_categories
@@ -24,15 +11,25 @@ print(style_guide)
 print(devstrand_colour_palette)
 print(devstrand_categories)
 
-# Load global_config which creates the following objects:
+# Load report_config which creates the following objects:
+#   report
+source("report_config.r")
+print(data_source)
+print(report_filters)
+print(report)
+print(where_clause)
+
+# Load db_credentials which creates the following objects:
 #   db_credentials
-source("../db_credentials.r")
+# No longer needed now we have ~/.my
+# source("../db_credentials.r")
+
+# Get data. (data will be grabbed from source defined in data_source in global_config.r)
 source("get_data.r")
 
 # d$c <- 1
 # xtabs(c ~ chip_version + map_grade, data=d)
 # summary(d)
-
 library(data.table)
 library(plyr)
 
