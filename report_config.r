@@ -4,8 +4,8 @@
 report_filters <- list(
     "time_filter"=list(
         "column"="Completed_Date",
-        "lower"="2015-09-01",
-        "upper"="2016-09-01",
+        "lower"="2014-09-01",
+        "upper"="2015-09-01",
         "filter_type"="range"
     ),
     "school_year_filter"=list(
@@ -14,28 +14,6 @@ report_filters <- list(
         "filter_type"="in"
     )
 )
-
-create_where_clause <- function(report_filters) {
-    where_clauses <- list()
-    for(i in report_filters) {
-        if(i[["filter_type"]] %in% c("range")) {
-            where_clause_i <- sprintf("%s > '%s' AND %s <= '%s'",
-                                    i["column"],
-                                    i["lower"],
-                                    i["column"],
-                                    i["upper"])
-            where_clauses <- c(where_clauses, where_clause_i)
-        }
-        if(i[["filter_type"]] %in% c("in")) {
-            in_values <- paste(unlist(i["values"]), collapse=', ')
-            where_clause_i <- sprintf("%s IN (%s)", i["column"], in_values)
-            where_clauses <- c(where_clauses, where_clause_i)
-        }
-    }
-    return(paste("WHERE",paste(unlist(where_clauses), collapse=' AND ')))
-}
-
-where_clause <- create_where_clause(report_filters)
 
 # Plot 1: These are the bar charts in the pdf labelled ‘Sample 1’. For the Headstart set of schools these include a bar
 #         chart for all schools and then each individual Headstart school. Some account holders may not include a large
@@ -51,19 +29,19 @@ report1 = list(
     "title"=list("type"="text",
                  "text"="Headstart Schools - Academic Year 2014/15"),
     "chart1"=list("type"="bar_stacked",
-                  "title"="ALL HEADSTART SCHOOLS\nAverage change in percentage points between first and last assessment\nduring academic year",
+                  "title"="ALL HEADSTART SCHOOLS\nAverage change in percentage points between first and last assessment\nduring academic year 2014/15",
                   "measure"="score_change",
                   "xaxis"="School_Year",
                   "colour_by"="Dev_Stage",
                   "filter"=list("all"=list("column"=NA, "values"=NA, "filter_type"="all"))),
     "chart2"=list("type"="bar_stacked",
-                  "title"="ALL HEADSTART SCHOOLS\nAverage change in percentage points between first and last assessment\nduring academic year in Locality 1",
+                  "title"="ALL HEADSTART SCHOOLS\nAverage change in percentage points between first and last assessment\nduring academic year 2014/15 in Locality 1",
                   "measure"="score_change",
                   "xaxis"="School_Year",
                   "colour_by"="Dev_Stage",
                   "filter"=list("locality1"=list("column"="locality", "values"=list(1), "filter_type"="in"))),
     "chart3"=list("type"="bar_stacked",
-                  "title"="ALL HEADSTART SCHOOLS\nAverage change in percentage points between first and last assessment\nduring academic yearr in Locality 6",
+                  "title"="ALL HEADSTART SCHOOLS\nAverage change in percentage points between first and last assessment\nduring academic year 2014/15 in Locality 6",
                   "measure"="score_change",
                   "xaxis"="School_Year",
                   "colour_by"="Dev_Stage",
@@ -74,19 +52,19 @@ report2 = list(
     "title"=list("type"="text",
                  "text"="Headstart Schools - Academic Year 2014/15"),
     "chart1"=list("type"="bar_stacked",
-                  "title"="ALL HEADSTART SCHOOLS\nAverage change in percentage points between first and last assessment\nduring academic year",
+                  "title"="ALL HEADSTART SCHOOLS\nAverage change in percentage points between first and last assessment\nduring academic year 2014/15",
                   "measure"="score_change",
                   "xaxis"="School_Year",
                   "colour_by"="Dev_Stage",
                   "filter"=list("all"=list("column"=NA, "values"=NA, "filter_type"="all"))),
     "chart2"=list("type"="bar_stacked",
-                  "title"="ALL HEADSTART SCHOOLS\nAverage change in percentage points between first and last assessment\nduring academic year",
+                  "title"="ALL HEADSTART SCHOOLS\nAverage change in percentage points between first and last assessment\nduring academic year 2014/15 in Locality 7",
                   "measure"="score_change",
                   "xaxis"="School_Year",
                   "colour_by"="Dev_Stage",
                   "filter"=list("locality7"=list("column"="locality", "values"=list(7), "filter_type"="in"))),
     "chart3"=list("type"="bar_stacked",
-                  "title"="ALL HEADSTART SCHOOLS\nAverage change in percentage points between first and last assessment\nduring academic year",
+                  "title"="ALL HEADSTART SCHOOLS\nAverage change in percentage points between first and last assessment\nduring academic year 2014/15  in Locality 8",
                   "measure"="score_change",
                   "xaxis"="School_Year",
                   "colour_by"="Dev_Stage",
@@ -95,3 +73,28 @@ report2 = list(
 
 reports = list("report1"=report1,
                "report2"=report2)
+
+# DO NOT EDIT BELOW.
+# Function to extract info from report filters to create a WHERE clause to use
+# in the querying of thrive_online. Ensures only data required the report is
+# grabbed
+create_where_clause <- function(report_filters) {
+    where_clauses <- list()
+    for(i in report_filters) {
+        if(i[["filter_type"]] %in% c("range")) {
+            where_clause_i <- sprintf("%s > '%s' AND %s <= '%s'",
+                                      i["column"],
+                                      i["lower"],
+                                      i["column"],
+                                      i["upper"])
+            where_clauses <- c(where_clauses, where_clause_i)
+        }
+        if(i[["filter_type"]] %in% c("in")) {
+            in_values <- paste(unlist(i["values"]), collapse=', ')
+            where_clause_i <- sprintf("%s IN (%s)", i["column"], in_values)
+            where_clauses <- c(where_clauses, where_clause_i)
+        }
+    }
+    return(paste("WHERE",paste(unlist(where_clauses), collapse=' AND ')))
+}
+

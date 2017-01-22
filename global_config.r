@@ -2,8 +2,7 @@
 # working_dir = "/home/henard/dev/r/evirht_reports"
 working_dir = file.path("/", "home", "henard", "dev", "r", "evirht_reports")
 setwd(working_dir)
-plots_dir = file.path("/", "home", "henard", "dev", "r", "evirht_reports", "plots")
-# getwd()
+plots_dir = file.path(working_dir, "plots")
 
 # data_source
 data_sources = list("thrive", "local", "local_file")
@@ -35,16 +34,12 @@ style_guide <- list(
     )
 )
 
+# DO NOT EDIT BELOW.
+# Functions to extract info out of the style guide config.
 get_devstrand_colour_palette <- function(style_guide) {
     return(lapply(style_guide[["devstrand_colours"]], function(x) style_guide[["colour_palette"]][[x]]))
 }
 
-devstrand_colour_palette <- get_devstrand_colour_palette(style_guide)
-devstrand_colour_palette
-
 get_devstrand_categories <- function(style_guide) {
     return(list(names(style_guide[["devstrand_colours"]])))
 }
-
-devstrand_categories <- get_devstrand_categories(style_guide)
-devstrand_categories
