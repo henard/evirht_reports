@@ -9,8 +9,6 @@ rm(list=ls())
 #   devstrand_categories
 source("global_config.r")
 print(style_guide)
-print(devstrand_colour_palette)
-print(devstrand_categories)
 
 # Load report_config which creates the following objects:
 #   report
@@ -18,7 +16,6 @@ source("report_config.r")
 print(data_source)
 print(report_filters)
 print(reports)
-print(where_clause)
 
 # Load db_credentials which creates the following objects:
 #   db_credentials
@@ -39,7 +36,7 @@ score_change_groups <- list("Child_ID", "Dev_Stage")
 # Create a data.table of percentage point change data
 score_change_dt <- score_change_data(d, score_change_groups)
 
-head(score_change_dt)
+# head(score_change_dt)
 source("plot_functions.r")
 
 for(i in reports) {
