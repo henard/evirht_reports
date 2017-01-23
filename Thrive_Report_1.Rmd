@@ -13,8 +13,8 @@ output: pdf_document
 geometry: margin=1cm
 fontsize: 11pt
 ---
-# Headstart Schools - Academic Year 2014/15
 
+# Headstart Schools - Academic Year 2014/15
 
 ![](plots/bar_stacked_score_change_School_Year_Dev_Stage_all.png)\
 
