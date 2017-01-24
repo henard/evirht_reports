@@ -10,7 +10,7 @@ report_filters <- list(
     ),
     "school_year_filter"=list(
         "column"="School_Year",
-        "values"=list(1, 2, 3, 4, 5, 6, 7, 8, 9),
+        "values"=list("1", "2", "3", "4", "5", "6", "7", "8", "9"),
         "filter_type"="in"
     )
 )

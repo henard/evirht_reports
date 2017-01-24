@@ -1,47 +1,11 @@
 library(RMySQL)
 
-# Define storage types of csv data
-c_classes = c(
-    "character",
-    "numeric",
-    "numeric",
-    "character",
-    "character",
-    "character",
-    "numeric",
-    "character",
-    "numeric",
-    "character",
-    "character",
-    "character",
-    "numeric",
-    "numeric",
-    "numeric",
-    "numeric",
-    "numeric",
-    "numeric",
-    "numeric",
-    "numeric",
-    "numeric",
-    "numeric",
-    "numeric",
-    "numeric",
-    "numeric",
-    "numeric",
-    "numeric",
-    "numeric",
-    "numeric",
-    "numeric",
-    "numeric",
-    "numeric"
-)
-
 # Import data and format.
 read_data <- function(data_src) {
     if(data_src=="local_file") {
         d <- read.csv(csv_file_location, colClasses=c_classes)
-        # d <- filter_df(d, report_filters)
         d <- format_csv_df(d)
+        d <- filter_df(d, report_filters)
     } else {
         where_clause <- create_where_clause(report_filters)
         drv <- dbDriver("MySQL")
@@ -69,26 +33,40 @@ disconnect_all_mysql_conns <- function() {
 # clause applied.
 filter_df <- function(df, filters) {
     for(i in filters) {
+        colname <- i[["column"]]
         if(i[["filter_type"]] %in% c("range")) {
-            filt <- df[i[["column"]]] > i[["lower"]] &
-                    df[i[["column"]]] <= i[["end_time"]]
+            lower <- i[["lower"]]
+            upper <- i[["upper"]]
+            if(inherits(df[[colname]], "Date")) {
+                lower <- as.Date(lower, "%Y-%m-%d")
+                upper <- as.Date(upper, "%Y-%m-%d")
+            }
+            df <- df[df[[colname]] > lower & df[[colname]] <= upper, ]
         }
         if(i[["filter_type"]] %in% c("in")) {
-            filt <- d[i[["column"]]] %in% i[["values"]]
+            df <- df[df[[colname]] %in% i[["values"]], ]
         }
     }
-    return(df[filt])
+    return(df)
 }
 
 # Apply filter in report_config to data in data.table form.
 # Used to apply filters in chart config part of report_config to data
 filter_dt <- function(DT, filters) {
     for(i in filters) {
+        colname <- i[["column"]]
         if(i[["filter_type"]] %in% c("range")) {
-            DT <- DT[get(i[["column"]])>=unlist(i[["lower"]]) & get(i[["column"]])<unlist(i[["upper"]])]
+            lower <- i[["lower"]]
+            upper <- i[["upper"]]
+            if(inherits(df[[colname]], "Date")) {
+                lower <- as.Date(lower, "%Y-%m-%d")
+                upper <- as.Date(upper, "%Y-%m-%d")
+            }
+            DT <- DT[get(colname)>=lower & get(colname)<upper]
+            # DT <- DT[get(i[["column"]])>=unlist("lower"]]) & get(i[["column"]])<unlist(i[["upper"]])]
         }
         if(i[["filter_type"]] %in% c("in")) {
-            DT <- DT[get(i[["column"]]) %in% unlist(i[["values"]])]
+            DT <- DT[get(colname) %in% unlist(i[["values"]])]
         }
     }
     return(DT)

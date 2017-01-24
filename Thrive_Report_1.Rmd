@@ -14,7 +14,8 @@ geometry: margin=1cm
 fontsize: 11pt
 ---
 
-# Headstart Schools - Academic Year 2014/15
+# Headstart Schools - Academic Year 2014/15\
+\newline
 
 ![](plots/bar_stacked_score_change_School_Year_Dev_Stage_all.png)\
 
@@ -22,7 +23,6 @@ fontsize: 11pt
 
 ![](plots/bar_stacked_score_change_School_Year_Dev_Stage_locality_6.png)\
 
-\newpage
 ![](plots/bar_stacked_score_change_School_Year_Dev_Stage_locality_7.png)\
 
 ![](plots/bar_stacked_score_change_School_Year_Dev_Stage_locality_8.png)\
