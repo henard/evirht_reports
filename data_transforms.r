@@ -16,8 +16,8 @@ format_csv_df <- function(df) {
     
     df$Dev_Stage <- factor(df$Dev_Stage, unlist(devstrand_categories))
     df$locality <- df$Profile_ID-10*floor(df$Profile_ID/10)
-    df$Child_DOB <- as.Date(df$Child_DOB, "%d/%M/%Y")
-    df$Completed_Date <- as.Date(df$Completed_Date, "%d/%M/%Y")
+    df$Child_DOB <- as.Date(df$Child_DOB, "%d/%m/%Y")
+    df$Completed_Date <- as.Date(df$Completed_Date, "%d/%m/%Y")
     return(df)
 }
 

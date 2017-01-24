@@ -1,5 +1,5 @@
 # Set working directory
-# working_dir = "/home/henard/dev/r/evirht_reports"
+setwd("/home/henard/dev/r/evirht_reports")
 working_dir = file.path("/", "home", "henard", "dev", "r", "evirht_reports")
 setwd(working_dir)
 plots_dir = file.path(working_dir, "plots")
@@ -11,6 +11,14 @@ data_source = unlist(data_sources[[3]])
 # db logn credentials file path
 login_credentials_location = "~/.my.cnf"
 csv_file_location = "/media/sf_share/Documents/Select/Thrive/In/TOL Individual Profile Data Sample for SSS5.csv"
+
+# Define storage types of csv data
+c_classes = c("character", "numeric", "numeric", "character", "character",
+              "character", "numeric", "character", "numeric", "character",
+              "character", "character", "numeric", "numeric", "numeric",
+              "numeric", "numeric", "numeric", "numeric", "numeric", "numeric",
+              "numeric", "numeric", "numeric", "numeric", "numeric", "numeric",
+              "numeric", "numeric", "numeric", "numeric", "numeric")
 
 # Style guide
 style_guide <- list(

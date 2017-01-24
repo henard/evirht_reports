@@ -7,16 +7,11 @@ rm(list=ls())
 #   style_guide
 #   devstrand_colour_palette
 #   devstrand_categories
-# source("evirht_reports/global_config.r")
 source("global_config.r")
-print(style_guide)
 
 # Load report_config which creates the following objects:
 #   report
 source("report_config.r")
-print(data_source)
-print(report_filters)
-print(reports)
 
 # Load db_credentials which creates the following objects:
 #   db_credentials
