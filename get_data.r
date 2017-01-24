@@ -1,16 +1,56 @@
 library(RMySQL)
 
-# Import data.
-if(data_source=="local_file") {
-    folder_file_name <- paste(credentials$folder, credentials$filename, sep="/")
-    d <- read.csv(folder_file_name)
-    d <- filter_df(d, report_filters)
-} else {
-    where_clause <- create_where_clause(report_filters)
-    drv <- dbDriver("MySQL")
-    db <- dbConnect(drv, default.file = login_credentials_location, group = data_source, user = NULL, password = NULL)
-    q = dbSendQuery(db, paste("select * from comb_data", where_clause, sep=" "))
-    d = fetch(q, n=-1)
+# Define storage types of csv data
+c_classes = c(
+    "character",
+    "numeric",
+    "numeric",
+    "character",
+    "character",
+    "character",
+    "numeric",
+    "character",
+    "numeric",
+    "character",
+    "character",
+    "character",
+    "numeric",
+    "numeric",
+    "numeric",
+    "numeric",
+    "numeric",
+    "numeric",
+    "numeric",
+    "numeric",
+    "numeric",
+    "numeric",
+    "numeric",
+    "numeric",
+    "numeric",
+    "numeric",
+    "numeric",
+    "numeric",
+    "numeric",
+    "numeric",
+    "numeric",
+    "numeric"
+)
+
+# Import data and format.
+read_data <- function(data_src) {
+    if(data_src=="local_file") {
+        d <- read.csv(csv_file_location, colClasses=c_classes)
+        # d <- filter_df(d, report_filters)
+        d <- format_csv_df(d)
+    } else {
+        where_clause <- create_where_clause(report_filters)
+        drv <- dbDriver("MySQL")
+        db <- dbConnect(drv, default.file = login_credentials_location, group = data_source, user = NULL, password = NULL)
+        q = dbSendQuery(db, paste("select * from comb_data", where_clause, sep=" "))
+        d = fetch(q, n=-1)
+        d <- format_dataframe(d)
+    }
+    return(d)
 }
 
 # dbClearResult(dbListResults(db)[[1]])

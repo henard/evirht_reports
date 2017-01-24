@@ -10,6 +10,17 @@ format_dataframe <- function(df) {
     return(df)
 }
 
+# Apply changes to format of data and derive analysis variables
+format_csv_df <- function(df) {
+    devstrand_categories <- get_devstrand_categories(style_guide)
+    
+    df$Dev_Stage <- factor(df$Dev_Stage, unlist(devstrand_categories))
+    df$locality <- df$Profile_ID-10*floor(df$Profile_ID/10)
+    df$Child_DOB <- as.Date(df$Child_DOB, "%d/%M/%Y")
+    df$Completed_Date <- as.Date(df$Completed_Date, "%d/%M/%Y")
+    return(df)
+}
+
 # Helper function to parse a list of parameters to data.table
 parseify_list <- function(list_of_colnames)
     return(as.quoted(paste("list(", paste(list_of_colnames, collapse=", "),")"))[[1]])

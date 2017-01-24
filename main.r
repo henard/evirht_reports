@@ -7,6 +7,7 @@ rm(list=ls())
 #   style_guide
 #   devstrand_colour_palette
 #   devstrand_categories
+# source("evirht_reports/global_config.r")
 source("global_config.r")
 print(style_guide)
 
@@ -22,13 +23,14 @@ print(reports)
 # No longer needed now we have ~/.my
 # source("../db_credentials.r")
 
-# Get data: a dataframe called d. (data will be grabbed from source defined in data_source in global_config.r)
+# Load functions to get data
 source("get_data.r")
 
 # Load in data transform functions
 source("data_transforms.r")
 
-d <- format_dataframe(d)
+# Read in data from source defined in data_source in global_config.r
+d <- read_data(data_source)
 
 # Define groups within which percentage point change in assessment scores is to be calculated
 score_change_groups <- list("Child_ID", "Dev_Stage")
