@@ -1,4 +1,5 @@
 library(ggplot2)
+library(scales)
 
 bar_stacked <- function(type, title, measure, xaxis, colour_by, filter, data_set_name) {
 
@@ -34,7 +35,7 @@ bar_stacked <- function(type, title, measure, xaxis, colour_by, filter, data_set
         theme(plot.title = element_text(lineheight=.8, face="bold", size=default_font_size)) +
         scale_fill_manual(values=unlist(devstrand_colour_palette)) + 
         scale_x_discrete(limits=as.character(report_filters[["school_year_filter"]][["values"]])) +
-        # scale_y_continuous(labels=percent) +
+        scale_y_continuous(labels=percent) +
         theme(panel.background = element_rect(fill = "white")) +
         theme(axis.line.x = element_line(color = "black"), axis.line.y = element_line(color = "black")) +
         guides(fill = guide_legend(title = "Development stage", title.position = "top")) +
