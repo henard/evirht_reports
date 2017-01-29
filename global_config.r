@@ -1,7 +1,5 @@
 # Set working directory
-setwd("/home/henard/dev/r/evirht_reports")
-working_dir = file.path("/", "home", "henard", "dev", "r", "evirht_reports")
-setwd(working_dir)
+working_dir = getwd()
 plots_dir = file.path(working_dir, "plots")
 
 # data_source
@@ -42,6 +40,27 @@ style_guide <- list(
     )
 )
 
+chart_col_labels = list(
+    "Organisation"="Organisation", 
+    "Account_ID"="Account ID",
+    "Child_ID"="Pupil ID",
+    "Status"="Status",
+    "Child_DOB"="Date of birth",
+    "School_Year"="School Year",
+    "Age"="Age",
+    "Gender"="Gender",
+    "Profile_ID"="Profile ID",
+    "Completed_Date"="Date of assessment",
+    "Profile_Type"="Profile type",
+    "Dev_Stage"="Development stage",
+    "Overall_Score"="Score",
+    "locality"="Locality",
+    "score_change"="Average change in score",
+    "School_Year_Child_ID"="School Year-Pupil ID",
+    "Child_ID_School_year"="Pupil ID-School Year",
+    "Completed_Date_yy_mm_dd"="Date of assessment"
+)
+
 # DO NOT EDIT BELOW.
 # Functions to extract info out of the style guide config.
 get_devstrand_colour_palette <- function(style_guide) {
@@ -50,4 +69,9 @@ get_devstrand_colour_palette <- function(style_guide) {
 
 get_devstrand_categories <- function(style_guide) {
     return(list(names(style_guide[["devstrand_colours"]])))
+}
+
+get_column_labels <- function(col_labels, cols) {
+    aa <- sapply(cols, function(x) col_labels[[x]])
+    return(paste(aa, collapse=" / "))
 }
