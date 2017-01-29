@@ -5,6 +5,7 @@ read_data <- function(data_src) {
     if(data_src=="local_file") {
         d <- read.csv(csv_file_location, colClasses=c_classes)
         d <- format_csv_df(d)
+        d <- format_dataframe(d)
         d <- filter_df(d, report_filters)
     } else {
         where_clause <- create_where_clause(report_filters)
@@ -37,7 +38,7 @@ filter_df <- function(df, filters) {
         if(i[["filter_type"]] %in% c("range")) {
             lower <- i[["lower"]]
             upper <- i[["upper"]]
-            if(inherits(df[[colname]], "Date")) {
+            if(inherits(df[colname], "Date")) {
                 lower <- as.Date(lower, "%Y-%m-%d")
                 upper <- as.Date(upper, "%Y-%m-%d")
             }
@@ -45,6 +46,9 @@ filter_df <- function(df, filters) {
         }
         if(i[["filter_type"]] %in% c("in")) {
             df <- df[df[[colname]] %in% i[["values"]], ]
+        }
+        if(i[["filter_type"]] %in% c("contains")) {
+            df <- df[grepl(i[["value"]], df[[colname]]), ]
         }
     }
     return(df)
@@ -58,7 +62,7 @@ filter_dt <- function(DT, filters) {
         if(i[["filter_type"]] %in% c("range")) {
             lower <- i[["lower"]]
             upper <- i[["upper"]]
-            if(inherits(df[[colname]], "Date")) {
+            if(inherits(DT[, get(colname)], "Date")) {
                 lower <- as.Date(lower, "%Y-%m-%d")
                 upper <- as.Date(upper, "%Y-%m-%d")
             }
@@ -67,6 +71,9 @@ filter_dt <- function(DT, filters) {
         }
         if(i[["filter_type"]] %in% c("in")) {
             DT <- DT[get(colname) %in% unlist(i[["values"]])]
+        }
+        if(i[["filter_type"]] %in% c("contains")) {
+            DT <- DT[get(colname) %like% i[["value"]]]
         }
     }
     return(DT)
