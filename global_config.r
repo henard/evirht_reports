@@ -1,15 +1,23 @@
-working_dir = getwd()
-plots_dir = file.path(working_dir, "plots")
-
-todays_date = format(Sys.Date(), "%Y%m%y")
-rdata_filename = "_TOL_Individual_Profile_Data.Rdata"
+working_dir <- getwd()
+plots_dir <- file.path(working_dir, "plots")
+sql_dir <- file.path(working_dir, "sql")
+ifelse(!dir.exists(plots_dir), dir.create(plots_dir), FALSE)
 
 # data_source
 data_sources = list(
     "thrive"="ThriveServer",
-    "rdata"=paste(todays_date, rdata_filename),
-    "csv"="TOL Individual Profile Data Sample for SSS5.csv"
+    "csv"=file.path("\\", "LS-WVL7F6", "share", "Documents", "Select", "Thrive", "In", "TOL Individual Profile Data Sample for SSS5.csv")
 )
+
+# data_source determines whether data is to be retrived from:
+# thrive_online - the live database
+# csv - a local copy of the sample csv data
+data_source = "thrive"
+
+# which was created the last time data was retrived from thrive_online
+# rdata 
+if_recent_days <- 2
+try_use_rdata_if_recent = TRUE
 
 # Define storage types of csv data
 c_classes = c("character", "numeric", "numeric", "character", "character",
@@ -62,6 +70,15 @@ chart_col_labels = list(
     "Completed_Date_yy_mm_dd"="Date of assessment"
 )
 
+# Update data_source if recent Rdata has been requested
+if(try_use_rdata_if_recent) {
+    updated_sources <- update_data_source_if_recent(data_source, data_sources)
+    data_source <- updated_sources$data_source
+    data_sources <- updated_sources$data_sources
+}
+
+sprintf("Using data source: %s", data_source)
+
 # DO NOT EDIT BELOW.
 # Functions to extract info out of the style guide config.
 get_devstrand_colour_palette <- function(style_guide) {
@@ -76,12 +93,3 @@ get_column_labels <- function(col_labels, cols) {
     aa <- sapply(cols, function(x) col_labels[[x]])
     return(paste(aa, collapse=" / "))
 }
-
-todays_date = "zip"
-rdata_filename = "Report"
-
-up_to_date_rdata_exists <- function() {
-    rdata_filenames = dir(pattern=rdata_filename)
-    return(grepl(todays_date, rdata_filenames))
-}
-up_to_date_rdata_exists()

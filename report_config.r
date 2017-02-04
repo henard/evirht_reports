@@ -89,18 +89,31 @@ create_where_clause <- function(report_filters) {
     for(i in report_filters) {
         if(i[["filter_type"]] %in% c("range")) {
             where_clause_i <- sprintf("%s > '%s' AND %s <= '%s'",
-                                      i["column"],
+                                      sql_fieldname_lookup[[i[["column"]]]],
                                       i["lower"],
-                                      i["column"],
+                                      sql_fieldname_lookup[[i[["column"]]]],
                                       i["upper"])
             where_clauses <- c(where_clauses, where_clause_i)
         }
         if(i[["filter_type"]] %in% c("in")) {
             in_values <- paste(unlist(i["values"]), collapse=', ')
-            where_clause_i <- sprintf("%s IN (%s)", i["column"], in_values)
+            where_clause_i <- sprintf("%s IN (%s)", sql_fieldname_lookup[[i[["column"]]]], in_values)
             where_clauses <- c(where_clauses, where_clause_i)
         }
     }
     return(paste("WHERE",paste(unlist(where_clauses), collapse=' AND ')))
 }
 
+sql_fieldname_lookup <- list("AccountID"="o.accountId",
+                             "Child_ID"="ip.childId",
+                             "Status"="cs.status",
+                             "Child_DOB"="c2.dob",
+                             "School_Year"="ip.schoolYear",
+                             "Age"="ip.age",
+                             "Gender"="g.name",
+                             "individualProfileId"="ip.individualProfileId",
+                             "Profiled_ID"="c.childId",
+                             "Completed_Date"="p.completedDate",
+                             "Dev_Stage"="p.developmentalStageId")
+
+sql_fieldname_lookup[["AccountID"]]

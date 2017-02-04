@@ -2,6 +2,14 @@
 rm(list=ls())
 setwd(file.path("C:", "Users", "Henard", "dev", "r", "evirht_reports"))
 
+required_packages = c("RODBC", "data.table", "plyr", "ggplot2", "scales")
+for(package in required_packages) {
+    if(!(package %in% installed.packages()[,"Package"])) install.packages(package)  
+}
+
+# Load functions to manage local Rdata copies of data
+source("rdata_utils.r")
+
 # Load global_config which sets working directory and creates the following objects:
 #   data_source
 #   global_filters
@@ -14,11 +22,6 @@ source("global_config.r")
 #   report
 source("report_config.r")
 
-# Load db_credentials which creates the following objects:
-#   db_credentials
-# No longer needed now we have ~/.my
-# source("../db_credentials.r")
-
 # Load functions to get data
 source("get_data.r")
 
@@ -26,6 +29,7 @@ source("get_data.r")
 source("data_transforms.r")
 
 # Read in data from source defined in data_source in global_config.r
+# apply formating to variables and calculate analysis variables
 d <- read_data(data_source)
 
 # Define groups within which percentage point change in assessment scores is to be calculated
@@ -49,26 +53,5 @@ for(i in reports) {
     }
 }
 
-# j <- reports[[1]][[2]]
-# j
-# do.call(get(j[["type"]]), c(j, "data_set_name"="score_change_dt"))    
-# 
-j <- list("type"="bar_side_by_side",
-              "title"="TEST TEST",
-              "measure"="Overall_Score",
-              "xaxis"="Assessment_n",
-              "xgroup"="School_Year_Child_ID",
-              "colour_by"="Dev_Stage",
-              "filter"=list("Organisation_Nine"=list("column"="Organisation", "value"="Nine", "filter_type"="contains"),
-                            "Assessment_n_2+"=list("column"="N_assessments", "lower"=2, "upper"=3, "filter_type"="range")))
-
-do.call(get("bar_chart"), c(j, "data_set_name"="score_dt"))
-
-j <- list("type"="pie",
-          "title"="PIE TEST",
-          "measure"="c",
-          "xgroup"="",
-          "colour_by"="Dev_Stage",
-          "filter"=list("Assessment_n_2+"=list("column"="N_assessments", "lower"=2, "upper"=3, "filter_type"="range")))
-
-do.call(get("pie_chart"), c(j, "data_set_name"="score_dt"))
+# j <- reports[["report1"]][["chart1"]]
+# do.call(get("bar_chart"), c(j, "data_set_name"="score_change_dt"))
