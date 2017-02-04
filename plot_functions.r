@@ -39,10 +39,9 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, da
     formula_str <- paste(measure, "~", paste(c(xlab, colour_by), collapse=" + "), sep=" ")
     dp <- aggregate(formula(formula_str), data_set, mean)
 
-    xgroup_levels <- sort(unique(as.character(dp[, xgroup])))
-    dp[, xgroup] <- factor(dp[, xgroup], levels=xgroup_levels)
-    xaxis_labels <- sort(unique(as.character(dp[, xaxis])))
-    print(xgroup_levels)
+    # Make x-axis variables factors with levels limited to those still present in the data after filtering
+    {if(grouped) dp[, xgroup] <- factor(dp[, xgroup], levels=levels_present(dp[, xgroup]))}
+    dp[, xaxis] <- factor(dp[, xaxis], levels=levels_present(dp[, xaxis]))
 
     # Plot setings
     default_font_size = 10
@@ -55,12 +54,12 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, da
         ylab(get_column_labels(chart_col_labels, measure)) +
         {if(grouped) facet_grid(~get(xgroup), switch = "x", scales = "free_x", space = "free_x")} +
         {if(grouped) theme(panel.spacing = unit(0, "lines"), strip.background = element_blank(), strip.placement = "outside")} +
-        ggtitle(title)  +
+        ggtitle(title) +
         theme(plot.title = element_text(lineheight=.8, face="bold", size=default_font_size)) +
         theme(panel.grid.major.y = element_line(colour = "grey", linetype = "solid", size=0.2), panel.grid.minor.x = element_blank(), panel.grid.major.x = element_blank()) + 
         scale_fill_manual(values=unlist(devstrand_colour_palette)) + 
-        # scale_colour_manual(values=c("black", "black", "black", "black")) +
-        scale_x_discrete(limits=xaxis_labels) +
+        scale_colour_discrete(drop = FALSE) +
+        scale_x_discrete(drop = FALSE) +
         scale_y_continuous(labels=percent) +
         theme(panel.background = element_rect(fill = "white")) +
         theme(axis.line.x = element_line(color = "black"), axis.line.y = element_line(color = "black")) +
@@ -107,10 +106,9 @@ pie_chart <- function(type, title, measure, xgroup, colour_by, filter, data_set_
     dp[, "y_pos"] <- 1-(cumsum(dp[, measure]) - dp[, measure]/2)
     print(dp)
 
-    # xgroup_levels <- sort(unique(as.character(dp[, xgroup])))
-    # dp[, xgroup] <- factor(dp[, xgroup], levels=xgroup_levels)
-    # xaxis_labels <- sort(unique(as.character(dp[, xaxis])))
-    # print(xgroup_levels)
+    # Make x-axis variables factors with levels limited to those still present in the data after filtering
+    {if(grouped) dp[, xgroup] <- factor(dp[, xgroup], levels=levels_present(dp[, xgroup]))}
+    dp[, xaxis] <- factor(dp[, xaxis], levels=levels_present(dp[, xaxis]))
     
     # Plot setings
     default_font_size = 10
@@ -195,57 +193,3 @@ pie_chart <- function(type, title, measure, xgroup, colour_by, filter, data_set_
 #     ggsave(folder_filename, plot = p, width = 20, height = 8, units = "cm")
 # }
 
-bar_chart_old <- function(type, title, measure, xaxis, colour_by, filter, data_set_name) {
-    
-    # Determine stacked or side-by-side bar chart
-    postn = "stack"
-    if(grepl("side", type)) {
-        postn = "dodge"
-    }
-    
-    data_set <-  get(data_set_name)
-    
-    x_lab <- get_column_labels(chart_col_labels, xaxis)
-    # Filter data as per config for chart
-    if(unlist(names(filter))=="all") {
-        filter_text <- "all"
-    } else {
-        filter_text <- paste(filter[[1]][["column"]], paste(filter[[1]][["values"]], collapse=""), sep="_")
-        data_set <- filter_dt(data_set, filter)
-    }
-    
-    # Use config to create a unique filename for chart
-    filename <- paste(type, measure, xaxis, colour_by, filter_text, sep="_")
-    filename <- paste(filename, "png", sep=".")
-    folder_filename <- file.path(plots_dir, filename)
-    sprintf("Saving plot: %s", folder_filename)
-    
-    # Create model formular from config for aggregate function
-    formula_str <- paste(measure, "~", xaxis, "+", colour_by, sep=" ")
-    dp <- aggregate(formula(formula_str), data_set, mean)
-    
-    # Plot setings
-    default_font_size = 10
-    devstrand_colour_palette <- get_devstrand_colour_palette(style_guide)
-    
-    # Plot and save
-    ggplot(data=dp, aes(x=get(xaxis), y=get(measure), fill=get(colour_by))) +
-        geom_bar(stat = "identity", position=postn, colour="black") +
-        xlab(get_column_labels(chart_col_labels, xaxis)) +
-        ylab(get_column_labels(chart_col_labels, measure)) +
-        ggtitle(title)  +
-        theme(plot.title = element_text(lineheight=.8, face="bold", size=default_font_size)) +
-        theme(panel.grid.major.y = element_line(colour = "grey", linetype = "solid", size=0.2), panel.grid.minor.x = element_blank(), panel.grid.major.x = element_blank()) + 
-        scale_fill_manual(values=unlist(devstrand_colour_palette)) + 
-        scale_colour_manual(values=c("black", "black", "black", "black")) +
-        scale_x_discrete(limits=as.character(report_filters[["school_year_filter"]][["values"]])) +
-        scale_y_continuous(labels=percent) +
-        theme(panel.background = element_rect(fill = "white")) +
-        theme(axis.line.x = element_line(color = "black"), axis.line.y = element_line(color = "black")) +
-        guides(fill = guide_legend(title = get_column_labels(chart_col_labels, colour_by), title.position = "top")) +
-        theme(axis.title = element_text(size=default_font_size)) +
-        theme(axis.text.x = element_text(angle = 0, vjust=0.5, hjust=0.5, size=default_font_size)) +
-        theme(axis.text.y = element_text(angle = 0, vjust=0.5, hjust=0.5, size=default_font_size)) +
-        theme(legend.title = element_text(colour="black", size=default_font_size, face="bold"), legend.position = "right", legend.text = element_text(colour="black", size=default_font_size))
-    ggsave(folder_filename, width = 20, height = 8, units = "cm")
-}

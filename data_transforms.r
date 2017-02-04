@@ -5,9 +5,11 @@ library(plyr)
 format_dataframe <- function(df) {
     devstrand_categories <- get_devstrand_categories(style_guide)
     df$Overall_Score <- df$Overall_Score/100
+    
     df$Dev_Stage <- factor(df$Dev_Stage, unlist(devstrand_categories))
     df$locality <- df$Profile_ID-10*floor(df$Profile_ID/10)
 
+    df$Status <- factor(df$Status, c("active", "inactive", "historical", "transferred"), c("Active", "Inactive", "Historical", "Transferred"))
     df$School_Year <- factor(df$School_Year, c("AY", "EY", "Nursery", "Reception", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"),
                              c("-3", "-2", "-1", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"))
     df$School_Year_Child_ID <- interaction(df$School_Year, df$Child_ID, sep="-")
@@ -16,23 +18,34 @@ format_dataframe <- function(df) {
     return(df)
 }
 
+format_sql_df <- function(df) {
+    df$Dev_Stage <- factor(df$Dev_Stage, 6:1, c("Interdependence", "Skill & Structure", "Power & Identity", "Thinking", "Doing", "Being"))
+    return(df)
+}
+
 # Apply changes to format of data and derive analysis variables
 format_csv_df <- function(df) {
-    devstrand_categories <- get_devstrand_categories(style_guide)
-    
-    df$Dev_Stage <- factor(df$Dev_Stage, unlist(devstrand_categories))
-    df$locality <- df$Profile_ID-10*floor(df$Profile_ID/10)
+    df <- df[, -(13:31)]
     df$Child_DOB <- as.Date(df$Child_DOB, "%d/%m/%Y")
     df$Completed_Date <- as.Date(df$Completed_Date, "%d/%m/%Y")
     return(df)
+}
+
+# Function to identify levels present in factor variables.
+# Used on columns in filtered data where some levels may heve been excluded or lost.
+levels_present <- function(column) {
+    levels_present <- sort(unique(as.character(column)))
+    if(inherits(column, "factor")) {
+        levels_present <- levels(column)[levels(column) %in% levels_present]
+    }
+    return(levels_present)
 }
 
 # Helper function to parse a list of parameters to data.table
 parseify_list <- function(list_of_colnames)
     return(as.quoted(paste("list(", paste(list_of_colnames, collapse=", "),")"))[[1]])
 
-# Take dataframe df, convert to data.table of 
-# assessment scores
+# Take dataframe df, convert to data.table of assessment scores
 score_data <- function(df, groups) {
     # Convert to data.table
     DT <- data.table(df)
@@ -41,9 +54,7 @@ score_data <- function(df, groups) {
     DT[, c:=1]
     
     # Slim down dataset (optional)
-    cols_to_remove = names(DT)[13:31]
-    # print(cols_to_remove)
-    DT[, (cols_to_remove):=NULL]
+    # DT[, (cols_to_remove):=NULL]
 
     # Convert by_cols to a form that can be parsed in.
     by_cols_parse <- parseify_list(groups)
