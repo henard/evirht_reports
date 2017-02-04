@@ -1,6 +1,6 @@
 # main
 rm(list=ls())
-setwd(file.path("/", "home", "henard", "dev", "r", "evirht_reports"))
+setwd(file.path("C:", "Users", "Henard", "dev", "r", "evirht_reports"))
 
 # Load global_config which sets working directory and creates the following objects:
 #   data_source

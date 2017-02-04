@@ -1,5 +1,26 @@
 library(RMySQL)
 
+library(RODBC)
+
+conn=odbcConnect("ThriveServer")
+
+query = "SELECT
+n.needId AS Need_ID,
+n.name AS Need,
+n.developmentalStageId AS Developmental_Stage_ID
+FROM need AS n
+INNER JOIN profileScore AS ps ON ps.needId = n.needId
+INNER JOIN profile AS p ON p.profileId = ps.profileId
+WHERE p.completed = '1'
+GROUP BY n.needId
+;
+"
+query
+
+d = sqlQuery(conn, query)
+
+d
+
 # Import data and format.
 read_data <- function(data_src) {
     if(data_src=="local_file") {
