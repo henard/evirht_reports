@@ -1,14 +1,15 @@
-# Set working directory
 working_dir = getwd()
 plots_dir = file.path(working_dir, "plots")
 
-# data_source
-data_sources = list("thrive", "local", "local_file")
-data_source = unlist(data_sources[[3]])
+todays_date = format(Sys.Date(), "%Y%m%y")
+rdata_filename = "_TOL_Individual_Profile_Data.Rdata"
 
-# db logn credentials file path
-login_credentials_location = "~/.my.cnf"
-csv_file_location = "/media/sf_share/Documents/Select/Thrive/In/TOL Individual Profile Data Sample for SSS5.csv"
+# data_source
+data_sources = list(
+    "thrive"="ThriveServer",
+    "rdata"=paste(todays_date, rdata_filename),
+    "csv"="TOL Individual Profile Data Sample for SSS5.csv"
+)
 
 # Define storage types of csv data
 c_classes = c("character", "numeric", "numeric", "character", "character",
@@ -75,3 +76,12 @@ get_column_labels <- function(col_labels, cols) {
     aa <- sapply(cols, function(x) col_labels[[x]])
     return(paste(aa, collapse=" / "))
 }
+
+todays_date = "zip"
+rdata_filename = "Report"
+
+up_to_date_rdata_exists <- function() {
+    rdata_filenames = dir(pattern=rdata_filename)
+    return(grepl(todays_date, rdata_filenames))
+}
+up_to_date_rdata_exists()
