@@ -1,9 +1,26 @@
 library(RODBC)
 
-# Import data and format.
+# Import organsiation_ID to location lookup data.
+read_locality_data <- function(data_src) {
+    if(data_src=="thrive") {
+        lines <- readLines(file.path(sql_dir, "locality.sql"))
+        query <- paste(lines, collapse=" ")
+        conn <- odbcConnect(paste(data_sources[[data_src]], "_tabs", sep=""))
+        d <- sqlQuery(conn, query)
+        save(d, file=rdata_locality_folderfilename)
+    } else {
+        load(rdata_locality_folderfilename)
+    }
+    return(d)
+}
+
+data_src = "thrive"
+# Import assessment scores data and format.
 read_data <- function(data_src) {
+    locality_lookup <- read_locality_data(data_sources[[data_src]])
     if(data_src=="csv") {
         d <- read.csv(data_sources[[data_src]], colClasses=c_classes)
+        d <- merge(d, locality_lookup, all.x=TRUE)
         d <- format_csv_df(d)
         d <- format_dataframe(d)
         d <- filter_df(d, report_filters)
@@ -15,6 +32,7 @@ read_data <- function(data_src) {
         query <- paste(add_where_clause(lines, filter_where_clause), collapse=" ")
         conn <- odbcConnect(data_sources[[data_src]])
         d <- sqlQuery(conn, query)
+        d <- merge(d, locality_lookup, all.x=TRUE)
         d <- format_sql_df(d)
         d <- format_dataframe(d)
         save(d, file=new_rdata_folderfilename())
@@ -26,6 +44,8 @@ read_data <- function(data_src) {
     return(d)
 }
 
+# locality_lookup <- read_locality_data("thrive")
+# d <- read_data("thrive")
 add_where_clause <- function(query_lines, filter_where_clause) {
     if(any(grepl("WHERE", query_lines))) {
         existing_where_clause_position <- (1:length(query_lines))[grepl("WHERE", query_lines)]
