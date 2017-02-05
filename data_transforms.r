@@ -6,8 +6,6 @@ format_dataframe <- function(df) {
     devstrand_categories <- get_devstrand_categories(style_guide)
     df$Overall_Score <- df$Overall_Score/100
     
-    # df$locality <- df$Profile_ID-10*floor(df$Profile_ID/10)
-
     df$Status <- factor(df$Status, c("active", "inactive", "historical", "transferred"), c("Active", "Inactive", "Historical", "Transferred"))
     df$School_Year <- factor(df$School_Year, c("AY", "EY", "Nursery", "Reception", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"),
                              c("-3", "-2", "-1", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"))
@@ -15,7 +13,7 @@ format_dataframe <- function(df) {
     df$Child_ID_School_Year <- interaction(df$Child_ID, df$School_Year, sep="-")
     df$Completed_Date_yy_mm_dd <- strftime(df$Completed_Date, "%y-%m-%d")
     
-    # Apply cleaning described in dissclaimer text in Sample reports
+    # Apply cleaning described in dissclaimer text in the Sample reports
     df <- df[df$Dev_Stage %in% unlist(devstrand_categories), ]
     df$Dev_Stage <- factor(df$Dev_Stage, unlist(devstrand_categories))
     df <- df[!grepl("Trainers - ", df$Organisation), ]
@@ -49,6 +47,20 @@ levels_present <- function(column) {
         levels_present <- levels(column)[levels(column) %in% levels_present]
     }
     return(levels_present)
+}
+
+# When data is aggregated for ploting, factor levels can be lost.
+# This expands the dataframe row-wise so all combinations of factors exist as a 
+# row
+expand_dataframe <- function(df, measure_colname) {
+    ll <- list()
+    factors <- setdiff(names(df), measure_colname)
+    for(column in factors) {
+        ll[[column]] <- levels(factor(df[, column]))
+    }
+    df <- merge(expand.grid(ll), df, all.x=TRUE)
+    df[is.na(df[, measure_colname]), measure_colname] <- 0.00001
+    return(df)
 }
 
 # Helper function to parse a list of parameters to data.table

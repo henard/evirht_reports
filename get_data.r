@@ -14,7 +14,6 @@ read_locality_data <- function(data_src) {
     return(d)
 }
 
-data_src = "thrive"
 # Import assessment scores data and format.
 read_data <- function(data_src) {
     locality_lookup <- read_locality_data(data_sources[[data_src]])
@@ -44,8 +43,7 @@ read_data <- function(data_src) {
     return(d)
 }
 
-# locality_lookup <- read_locality_data("thrive")
-# d <- read_data("thrive")
+# Combine the filter_where_clause with the where_clasue already in the query
 add_where_clause <- function(query_lines, filter_where_clause) {
     if(any(grepl("WHERE", query_lines))) {
         existing_where_clause_position <- (1:length(query_lines))[grepl("WHERE", query_lines)]
@@ -96,7 +94,6 @@ filter_dt <- function(DT, filters) {
                 upper <- as.Date(upper, "%Y-%m-%d")
             }
             DT <- DT[get(colname)>=lower & get(colname)<upper]
-            # DT <- DT[get(i[["column"]])>=unlist("lower"]]) & get(i[["column"]])<unlist(i[["upper"]])]
         }
         if(i[["filter_type"]] %in% c("in")) {
             DT <- DT[get(colname) %in% unlist(i[["values"]])]

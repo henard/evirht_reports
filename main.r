@@ -1,16 +1,11 @@
 # main
 rm(list=ls())
-# setwd(file.path("C:", "Users", "Henard", "dev", "r", "evirht_reports"))
 
-required_packages = c("RODBC", "data.table", "plyr", "ggplot2", "scales")
-for(package in required_packages) {
-    if(!(package %in% installed.packages()[,"Package"])) install.packages(package)  
-}
-
-# Load functions to manage local Rdata copies of data
+# Load functions to manage local Rdata copies of data if available
+# Also installs required packages if necesary
 source("rdata_utils.r")
 
-# Load global_config which sets working directory and creates the following objects:
+# Load global_config which creates the following objects:
 #   data_source
 #   global_filters
 #   style_guide
@@ -35,13 +30,17 @@ d <- read_data(data_source)
 # Define groups within which percentage point change in assessment scores is to be calculated
 score_change_groups <- list("Child_ID", "Dev_Stage")
 
+score_change_groups2 <- list("Child_ID")
 # Create a data.table of scores
 score_dt <- score_data(d, score_change_groups)
+
+score_change_groups2 <- list("Child_ID")
+score_dt2 <- score_data(d, score_change_groups2)
 
 # Create a data.table of percentage point change data
 score_change_dt <- score_change_data(score_dt, score_change_groups)
 
-# head(score_change_dt)
+# Load in bar chart and pie chart plotting functions
 source("plot_functions.r")
 
 # Create png files of all charts of type "bar_stacked"
@@ -51,9 +50,8 @@ for(i in reports) {
     for(j in i){
         if(grepl("bar", j[["type"]])) {
             do.call(get("bar_chart"), c(j, "data_set_name"="score_change_dt"))
+        } else if(grepl("pie", j[["type"]])) {
+            do.call(get("pie_chart"), c(j, "data_set_name"="score_dt2"))
         }
     }
 }
-
-# j <- reports[["report1"]][["chart1"]]
-# do.call(get("bar_chart"), c(j, "data_set_name"="score_change_dt"))
