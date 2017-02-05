@@ -1,6 +1,6 @@
 # main
 rm(list=ls())
-setwd(file.path("C:", "Users", "Henard", "dev", "r", "evirht_reports"))
+# setwd(file.path("C:", "Users", "Henard", "dev", "r", "evirht_reports"))
 
 required_packages = c("RODBC", "data.table", "plyr", "ggplot2", "scales")
 for(package in required_packages) {
@@ -45,6 +45,8 @@ score_change_dt <- score_change_data(score_dt, score_change_groups)
 source("plot_functions.r")
 
 # Create png files of all charts of type "bar_stacked"
+delete_existing_plots()
+
 for(i in reports) {
     for(j in i){
         if(grepl("bar", j[["type"]])) {

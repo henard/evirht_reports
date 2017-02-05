@@ -1,13 +1,12 @@
 library(data.table)
 library(plyr)
 
-# Apply changes to format of data and derive analysis variables
+# Apply changes to format of data and derive analysis variables (irrespective of data_source)
 format_dataframe <- function(df) {
     devstrand_categories <- get_devstrand_categories(style_guide)
     df$Overall_Score <- df$Overall_Score/100
     
-    df$Dev_Stage <- factor(df$Dev_Stage, unlist(devstrand_categories))
-    df$locality <- df$Profile_ID-10*floor(df$Profile_ID/10)
+    # df$locality <- df$Profile_ID-10*floor(df$Profile_ID/10)
 
     df$Status <- factor(df$Status, c("active", "inactive", "historical", "transferred"), c("Active", "Inactive", "Historical", "Transferred"))
     df$School_Year <- factor(df$School_Year, c("AY", "EY", "Nursery", "Reception", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"),
@@ -15,19 +14,30 @@ format_dataframe <- function(df) {
     df$School_Year_Child_ID <- interaction(df$School_Year, df$Child_ID, sep="-")
     df$Child_ID_School_Year <- interaction(df$Child_ID, df$School_Year, sep="-")
     df$Completed_Date_yy_mm_dd <- strftime(df$Completed_Date, "%y-%m-%d")
+    
+    # Apply cleaning described in dissclaimer text in Sample reports
+    df <- df[df$Dev_Stage %in% unlist(devstrand_categories), ]
+    df$Dev_Stage <- factor(df$Dev_Stage, unlist(devstrand_categories))
+    df <- df[!grepl("Trainers - ", df$Organisation), ]
+    df <- df[df$Age>=0 & df$Age<=100, ]
+    dedup_colnames <- c("Child_ID", "Overall_Score", "Completed_Date", "Dev_Stage")
+    df <- df[!duplicated(df[, dedup_colnames]), ]
     return(df)
 }
 
+# Apply changes to format of data specific to data imported from SQL
 format_sql_df <- function(df) {
     df$Dev_Stage <- factor(df$Dev_Stage, 6:1, c("Interdependence", "Skill & Structure", "Power & Identity", "Thinking", "Doing", "Being"))
     return(df)
 }
 
-# Apply changes to format of data and derive analysis variables
+# Apply changes to format of data specific to data imported from csv
 format_csv_df <- function(df) {
     df <- df[, -(13:31)]
     df$Child_DOB <- as.Date(df$Child_DOB, "%d/%m/%Y")
     df$Completed_Date <- as.Date(df$Completed_Date, "%d/%m/%Y")
+    df$Dev_Stage <- factor(df$Dev_Stage, c("Interdependence", "Skill & Structure", "Power & Identity", "Thinking", "Doing", "Being"),
+                           c("Interdependence", "Skill & Structure", "Power & Identity", "Thinking", "Doing", "Being"))
     return(df)
 }
 

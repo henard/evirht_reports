@@ -142,6 +142,15 @@ pie_chart <- function(type, title, measure, xgroup, colour_by, filter, data_set_
     ggsave(folder_filename, plot = p, width = 10, height = 8, units = "cm")
 }
 
+delete_existing_plots <- function() {
+    # Identify all plots in plot directory
+    plot_filenames <- dir(path=plots_dir, pattern="*.png")
+    if(length(plot_filenames)>0) {
+        lapply(plot_filenames, function(x) file.remove(file.path(plots_dir, x)))
+    }
+    return()
+}
+
 # pie_chart2 <- function(title, measure, xgroup, colour_by, filter, data_set_name) {
 # pie_chart2 <- function(xgroup, colour_by, data_set_name) {
 # pie_chart2 <- function(df, main, labels = NULL, condition = NULL) {

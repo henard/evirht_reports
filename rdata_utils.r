@@ -1,6 +1,7 @@
 todays_date <- format(Sys.Date(), "%Y%m%d")
 rdata_filename <- "TOL_Individual_Profile_Data.Rdata"
 rdata_folder <- file.path("..")
+rdata_locality_folderfilename <- file.path("..", "orgid_locality_lookup.Rdata")
 
 get_most_recent_rdata_filename <- function() {
     rdata_filenames <- sort(dir(path=rdata_folder, pattern=rdata_filename))
