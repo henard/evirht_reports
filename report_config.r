@@ -150,7 +150,35 @@ report2 = list(
                   "xgroup"="",
                   "colour_by"="Dev_Stage",
                   "filter"=list("N_assessment_2+"=list("column"="N_assessments", "lower"=2, "upper"=10, "filter_type"="range"),
-                                "Assessment_n_1"=list("column"="Assessment_n_rev", "values"=list(-1), "filter_type"="in")))
+                                "Assessment_n_1"=list("column"="Assessment_n_rev", "values"=list(-1), "filter_type"="in"))),
+    "data1"=list("type"="data",
+                 "title"="ALL HEADSTART SCHOOLS\nChange in share of pupils in each Development Stage between\nfirst &last assessment in 2014/15",
+                 "measure"="c",
+                 "by"="Dev_Stage",
+                 "filter"=list("all"=list("column"=NA, "values"=NA, "filter_type"="all"))),
+    "chart3"=list("type"="pie",
+                  "title"="HEADSTART LOCALITY 1\nShare of pupils in each Development Stage at\nfirst assessment in 2014/15",
+                  "measure"="c",
+                  "xaxis"="",
+                  "xgroup"="",
+                  "colour_by"="Dev_Stage",
+                  "filter"=list("N_assessment_2+"=list("column"="N_assessments", "lower"=2, "upper"=10, "filter_type"="range"),
+                                "Assessment_n_1"=list("column"="Assessment_n", "values"=list(1), "filter_type"="in"),
+                                "locality1"=list("column"="Locality", "values"=list(1), "filter_type"="in"))),
+    "chart4"=list("type"="pie",
+                  "title"="HEADSTART LOCALITY 1\nShare of pupils in each Development Stage at\nlast assessment in 2014/15",
+                  "measure"="c",
+                  "xaxis"="",
+                  "xgroup"="",
+                  "colour_by"="Dev_Stage",
+                  "filter"=list("N_assessment_2+"=list("column"="N_assessments", "lower"=2, "upper"=10, "filter_type"="range"),
+                                "Assessment_n_1"=list("column"="Assessment_n_rev", "values"=list(-1), "filter_type"="in"),
+                                "locality1"=list("column"="Locality", "values"=list(1), "filter_type"="in"))),
+    "data2"=list("type"="data",
+                 "title"="HEADSTART LOCALITY 1\nChange in share of pupils in each Development Stage between\nfirst &last assessment in 2014/15",
+                 "measure"="c",
+                 "by"="Dev_Stage",
+                 "filter"=list("locality1"=list("column"="Locality", "values"=list(1), "filter_type"="in")))
 )
 
 reports = list("report1"=report1,
@@ -158,17 +186,18 @@ reports = list("report1"=report1,
                "report2"=report2)
 
 # Determine filename from report config
-plot_filename <- function(chart_config) {
+plot_filename <- function(chart_config, file_extention) {
     filename <- paste(lapply(setdiff(names(chart_config), c("title", "filter")), function(x) chart_config[[x]]), collapse="_")
-    return(paste(filename, "_", names(chart_config[["filter"]]), ".png", sep=""))
+    return(paste(filename, "_", names(chart_config[["filter"]]), file_extention, sep=""))
 }
 
 # Add automated filename to config
 for(i in names(reports)) {
     for(j in names(reports[[i]])) {
         if(reports[[i]][[j]]$type!="text") {
-            reports[[i]][[j]]$long_filename <- paste(paste(i, j, sep="_"), plot_filename(reports[[i]][[j]]), sep="_")
-            reports[[i]][[j]]$filename <- paste(paste(i, j, sep="_"), "png", sep=".")
+            if(reports[[i]][[j]]$type=="data") file_extention <- "Rdata" else file_extention <- "png"
+            reports[[i]][[j]]$long_filename <- paste(paste(i, j, sep="_"), plot_filename(reports[[i]][[j]], file_extention), sep="_")
+            reports[[i]][[j]]$filename <- paste(paste(i, j, sep="_"), file_extention, sep=".")
         }
     }
 }
