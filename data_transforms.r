@@ -115,3 +115,30 @@ score_change_data <- function(DT, groups) {
 
     return(DT[Assessment_n_rev==-1])
 }
+
+pupil_shares_data <- function(type, title, measure, by, filter, filename, long_filename, data_set_name, devstrand_categories) {
+    
+    df <-  get(data_set_name)
+    # Create model formular from config for aggregate function
+    formula_str <- paste(measure, "~", by, sep=" ")
+    
+    # Filter data as per config for chart
+    if(!("all" %in% unlist(names(filter)))) df <- filter_dt(df, filter)
+    
+    first <- aggregate(formula(formula_str), data=df[df$N_assessments>=2 & df$Assessment_n==1], FUN=sum)
+    first$pct <- first$c/sum(first$c)
+    names(first) <- c("Dev_Stage", "first_n","first_pct")
+    last <- aggregate(c ~ Dev_Stage, data=df[df$N_assessments>=2 & df$Assessment_n_rev==-1], FUN=sum)
+    last$pct <- last$c/sum(last$c)
+    names(last) <- c("Dev_Stage", "last_n","last_pct")
+    first_last <- merge(first, last)
+    first_last$Dev_Stage <- factor(first_last$Dev_Stage, devstrand_categories)
+    first_last <- first_last[rev(order(first_last$Dev_Stage)), ]
+    first_last$pct_change <- paste(round(100*(abs(first_last$last_pct-first_last$first_pct)), 0), "%", sep="")
+    first_last[first_last$pct_change=="0%", "pct_change"] <- ""
+    first_last$dir_change <- as.character(factor(first_last$last_pct>first_last$first_pct, c(TRUE, FALSE), c("increase","reduction")))
+    first_last[first_last$pct_change=="", "dir_change"] <- "unchanged"
+    first_last$change_text <- paste(first_last$pct_change, first_last$dir_change, sep=" ")
+    print(file.path("rdata", filename))
+    save(first_last, file=file.path("rdata", filename))
+}

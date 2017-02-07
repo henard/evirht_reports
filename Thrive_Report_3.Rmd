@@ -1,0 +1,24 @@
+---
+header-includes: 
+   \AtBeginDocument{\let\maketitle\relax}
+   \usepackage{graphicx}
+   \usepackage{fancyhdr}
+   \pagestyle{fancy}
+   \setlength\headheight{24pt}
+   \fancyhead[R]{\includegraphics[width=5cm]{../Thrive_Logo_CMYK_square.png}}
+   \renewcommand{\headrulewidth}{0pt}
+output: pdf_document
+geometry: margin=1cm
+fontsize: 11pt
+---
+
+# Headstart Schools - Academic Year 2014/15\
+
+![](plots/report1_chart1.png){ width=100% }\
+![](plots/report1_chart2.png){ width=100% }\
+![](plots/report1_chart3.png){ width=100% }\
+![](plots/report1_chart4.png){ width=100% }\
+![](plots/report1_chart5.png){ width=100% }\
+![](plots/report1_chart6.png){ width=100% }\
+![](plots/report1_chart7.png){ width=100% }\
+Note: This preliminary analysis of data is provided in good faith as a means of determining which graphs and charts are informative for organisations and clusters and which are not. The data for this exercise has been cleaned as follows: incomplete entries, entries labelled as ‘test’ or ‘training’, child ID profiles with spurious age data (>100years, <0 years) and replicated results (same child ID, result and exact time) have been removed. Where multiple entries existed for an individual child within the same Strand on the same day, only a single entry has been retained. This was the latest entry or, when the assessments had the same completion time, the lowest score was kept. If the number of assessment results given for a single child at the same time exceeded 5, all entries have been removed as the data set was deemed to be unreliable user test data. In cases where a child had been assessed only once within a Strand, the unique data entry has been discounted in all ‘progress’ charts where a minimum of two assessment results are needed. Fronting the Challenge Projects Ltd (Thrive) accept no liability arising from the use of these charts and graphs since it cannot take part in the decision as to when to profile individual children and at what developmental stage.
