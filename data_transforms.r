@@ -12,6 +12,7 @@ format_dataframe <- function(df) {
     df$School_Year_Child_ID <- interaction(df$School_Year, df$Child_ID, sep="-")
     df$Child_ID_School_Year <- interaction(df$Child_ID, df$School_Year, sep="-")
     df$Completed_Date_yy_mm_dd <- strftime(df$Completed_Date, "%y-%m-%d")
+    df$Child_ID_Completed_date <- interaction(df$Completed_Date_yy_mm_dd, df$Child_ID, sep="-")
     
     # Apply cleaning described in dissclaimer text in the Sample reports
     df <- df[df$Dev_Stage %in% unlist(devstrand_categories), ]
@@ -139,6 +140,5 @@ pupil_shares_data <- function(type, title, measure, by, filter, filename, long_f
     first_last$dir_change <- as.character(factor(first_last$last_pct>first_last$first_pct, c(TRUE, FALSE), c("increase","reduction")))
     first_last[first_last$pct_change=="", "dir_change"] <- "unchanged"
     first_last$change_text <- paste(first_last$pct_change, first_last$dir_change, sep=" ")
-    print(file.path("rdata", filename))
     save(first_last, file=file.path("rdata", filename))
 }

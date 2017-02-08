@@ -10,6 +10,7 @@ header-includes:
 output: pdf_document
 geometry: margin=1cm
 fontsize: 11pt
+classoption: a4paper
 ---
 
 # Headstart Schools - Academic Year 2014/15\
