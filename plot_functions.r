@@ -5,7 +5,8 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
     
     # Determine if plotting child_ids - handled differently
     plotting_child_ids <- any(grepl("Child_ID", c(xaxis, xgroup)))
-
+    plotting_organisations <- any(grepl("Organisation", c(xaxis, xgroup)))
+    
     # Determine stacked or side-by-side bar chart
     if(grepl("side", type)) postn <- "dodge" else postn <- "stack"
 
@@ -34,16 +35,31 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
         dp <- aggregate(formula(formula_str), data_set, mean)
     }
     
+    # Configure x-axis label settings for different  x-axis variables 
     if(plotting_child_ids) {
         # limit number of Child_IDs, convert to character, rotate axis labels
         dp <- dp[dp$Child_ID %in% unique(dp$Child_ID)[1:min(20,length(unique(dp$Child_ID)))], ]
         dp$Child_ID <- as.character(dp$Child_ID)
-        xaxis_text_angle = 90
+        xaxis_text_angle = -90
+        x_vjust = 0.5
+        x_hjust = 0
+        plot_height = 8
+    } else if(plotting_organisations) {
+        # limit number of Child_IDs, convert to character, rotate axis labels
+        dp <- dp[dp$Organisation %in% unique(dp$Organisation)[1:min(40,length(unique(dp$Organisation)))], ]
+        dp$Organisation <- as.character(dp$Organisation)
+        xaxis_text_angle = -45
+        x_vjust = 1
+        x_hjust = 0
+        plot_height = 12
     } else {
         dp[, xaxis] <- factor(dp[, xaxis], levels=levels_present(dp[, xaxis]))
         # Ensure the width of bars is consistent when plot type="side_by_side"
         dp <- expand_dataframe(dp, measure)
         xaxis_text_angle = 0
+        x_vjust = 0.5
+        x_hjust = 0.5
+        plot_height = 8
     }
     
     # Make x-axis variables factors with levels limited to those still present in the data after filtering
@@ -76,11 +92,11 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
         theme(axis.line.x = element_line(color = "black"), axis.line.y = element_line(color = "black")) +
         guides(fill = guide_legend(title = get_column_labels(chart_col_labels, colour_by), title.position = "top")) +
         theme(axis.title = element_text(size=default_font_size)) +
-        theme(axis.text.x = element_text(angle = xaxis_text_angle, vjust=0.5, hjust=0.5, size=default_font_size)) +
+        theme(axis.text.x = element_text(angle = xaxis_text_angle, vjust=x_vjust, hjust=x_hjust, size=default_font_size)) +
         theme(axis.text.y = element_text(angle = 0, vjust=0.5, hjust=0.5, size=default_font_size)) +
         theme(legend.title = element_text(colour="black", size=default_font_size, face="bold"), legend.position = "right", legend.text = element_text(colour="black", size=default_font_size))
 
-    ggsave(file.path(plots_dir, filename), plot = p, width = 20, height = 8, units = "cm")
+    ggsave(file.path(plots_dir, filename), plot = p, width = 20, height = plot_height, units = "cm")
     sprintf("Saving plot: %s", file.path(plots_dir, filename))
 }
 

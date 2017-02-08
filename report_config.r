@@ -40,7 +40,7 @@ report1 = list(
                   "title"="HEADSTART LOCALITY 1\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
                   "measure"="score_change",
                   "xaxis"="School_Year",
-                  "xgroup"="Status",
+                  "xgroup"="",
                   "colour_by"="Dev_Stage",
                   "filter"=list("locality1"=list("column"="Locality", "values"=list(1), "filter_type"="in"))),
     "chart3"=list("type"="bar_stacked",
@@ -178,12 +178,60 @@ report2 = list(
                  "title"="HEADSTART LOCALITY 1\nChange in share of pupils in each Development Stage between\nfirst &last assessment in 2014/15",
                  "measure"="c",
                  "by"="Dev_Stage",
-                 "filter"=list("locality1"=list("column"="Locality", "values"=list(1), "filter_type"="in")))
+                 "filter"=list("locality1"=list("column"="Locality", "values"=list(1), "filter_type"="in"))),
+    "chart5"=list("type"="bar_stacked",
+                  "title"="HEADSTART SCHOOLS\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
+                  "measure"="score_change",
+                  "xaxis"="Organisation",
+                  "xgroup"="",
+                  "colour_by"="Dev_Stage",
+                  "filter"=list("org_selection1"=list("column"="Organisation", "values"=list("Acorn Academy Cornwall",
+                                                                                            "Antony C of E",
+                                                                                            "Bodriggy Academy",
+                                                                                            "Braddock CE Primary",
+                                                                                            "Brunel Primary and Nursery Academy",
+                                                                                            "Burraton Primary School",
+                                                                                            "Callington Community College",
+                                                                                            "Calstock Primary School",
+                                                                                            "Dobwalls Community Primary School",
+                                                                                            "Duloe School",
+                                                                                            "Liskeard Hillfort Primary School",
+                                                                                            "Looe Primary School",
+                                                                                            "Millbrook C of E Primary",
+                                                                                            "Nancledra School",
+                                                                                            "Newlyn School",
+                                                                                            "Nine Maidens APA - Primary",
+                                                                                            "Nine Maidens APA - Secondary",
+                                                                                            "Pelynt School",
+                                                                                            "Pendeen School",
+                                                                                            "Pensans Primary School",
+                                                                                            "Pensilva Primary School",
+                                                                                            "Sir Robert Gefferys",
+                                                                                            "St Cleer Primary School",
+                                                                                            "St Hilary School",
+                                                                                            "St Levan School",
+                                                                                            "St Martins C of E VA Primary School",
+                                                                                            "St Marys C of E Primary School Penzance",
+                                                                                            "St Stephens Primary Saltash",
+                                                                                            "Stoke Climsland School",
+                                                                                            "Trenode C of E Primary School"), "filter_type"="in")))
 )
 
+report3 = list(
+    "chart1"=list("type"="bar_stacked",
+                  "title"="HEADSTART SCHOOL - Acorn Academy - Nine Maidens\nIndividual pupil journeys during academic year 2014/15",
+                  "measure"="score_change",
+                  "xaxis"="Child_ID_Completed_date",
+                  "xgroup"="School_Year",
+                  "colour_by"="Dev_Stage",
+                  "filter"=list("org_brunell"=list("column"="Organisation", "value"="Brunel Primary", "filter_type"="contains")))
+)
 reports = list("report1"=report1,
                "report1a"=report1a,
-               "report2"=report2)
+               "report2"=report2,
+               "report3"=report3)
+
+reports = list("report3"=report3)
 
 # Determine filename from report config
 plot_filename <- function(chart_config, file_extention) {
