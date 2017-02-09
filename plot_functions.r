@@ -10,7 +10,7 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
     # Determine stacked or side-by-side bar chart
     if(grepl("side", type)) postn <- "dodge" else postn <- "stack"
 
-    data_set <-  get(data_set_name)
+    data_set <- get(data_set_name)
 
     # Determine whether x-axis categories are to be grouped by a second variable
     grouped <- (xgroup %in% names(data_set))
@@ -26,8 +26,10 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
     # Filter data as per config for chart
     if(!("all" %in% unlist(names(filter)))) data_set <- filter_dt(data_set, filter)
 
+    {if(grouped) levs_present <- levels_present(data_set[, get(xgroup)])}
+
     # Check if sample size <10 , if so use empty plot dataframe
-    if(plotting_child_ids) min_sample_size <- 3 else min_sample_size <- 10
+    if(plotting_child_ids | plotting_organisations) min_sample_size <- 1 else min_sample_size <- 10
     sample_size_too_small <- nrow(data_set)<min_sample_size
     if(sample_size_too_small) {
         dp <- dp_empty
@@ -35,19 +37,24 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
         dp <- aggregate(formula(formula_str), data_set, mean)
     }
     
+    # Make x-axis variables factors with levels limited to those still present in the data after filtering
+    {if(grouped) dp[, xgroup] <- factor(dp[, xgroup], levels=levs_present)}
+    
+    # Check if sample size <10 , if so use empty plot dataframe
+    if(plotting_child_ids | plotting_organisations) max_no_categories <- 100 else max_no_categories <- 100
+    too_many_categories <- nrow(dp)>max_no_categories
+
     # Configure x-axis label settings for different  x-axis variables 
     if(plotting_child_ids) {
         # limit number of Child_IDs, convert to character, rotate axis labels
-        dp <- dp[dp$Child_ID %in% unique(dp$Child_ID)[1:min(20,length(unique(dp$Child_ID)))], ]
-        dp$Child_ID <- as.character(dp$Child_ID)
+        if(too_many_categories) dp <- dp[dp$Child_ID %in% unique(dp$Child_ID)[1:min(20,length(unique(dp$Child_ID)))], ]
         xaxis_text_angle = -90
         x_vjust = 0.5
         x_hjust = 0
-        plot_height = 8
+        plot_height = 10
     } else if(plotting_organisations) {
         # limit number of Child_IDs, convert to character, rotate axis labels
-        dp <- dp[dp$Organisation %in% unique(dp$Organisation)[1:min(40,length(unique(dp$Organisation)))], ]
-        dp$Organisation <- as.character(dp$Organisation)
+        if(too_many_categories) dp <- dp[dp$Organisation %in% unique(dp$Organisation)[1:min(40,length(unique(dp$Organisation)))], ]
         xaxis_text_angle = -45
         x_vjust = 1
         x_hjust = 0
@@ -62,9 +69,6 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
         plot_height = 8
     }
     
-    # Make x-axis variables factors with levels limited to those still present in the data after filtering
-    {if(grouped) dp[, xgroup] <- factor(dp[, xgroup], levels=levels_present(dp[, xgroup]))}
-
     x_mid <- 0.5*length(unique(dp[, xaxis]))
     
     # Plot setings
@@ -87,6 +91,7 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
         scale_x_discrete(drop = FALSE) +
         {if(sample_size_too_small) coord_cartesian(ylim = c(0, 1))} +
         {if(sample_size_too_small) annotate("text", x=x_mid, y=0.5, label= "Insufficient sample")} + 
+        {if(too_many_categories) annotate("text", x=x_mid, y=0.5, label= "Too many categories")} + 
         scale_y_continuous(labels=percent) +
         theme(panel.background = element_rect(fill = "white")) +
         theme(axis.line.x = element_line(color = "black"), axis.line.y = element_line(color = "black")) +

@@ -9,10 +9,13 @@ format_dataframe <- function(df) {
     df$Status <- factor(df$Status, c("active", "inactive", "historical", "transferred"), c("Active", "Inactive", "Historical", "Transferred"))
     df$School_Year <- factor(df$School_Year, c("AY", "EY", "Nursery", "Reception", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"),
                              c("-3", "-2", "-1", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"))
-    df$School_Year_Child_ID <- interaction(df$School_Year, df$Child_ID, sep="-")
-    df$Child_ID_School_Year <- interaction(df$Child_ID, df$School_Year, sep="-")
+
+    df$Child_ID <- as.character(df$Child_ID)
+    df$Organisation <- as.character(df$Organisation)
+    df$School_Year_Child_ID <- as.character(interaction(df$School_Year, df$Child_ID, sep="-"))
+    df$Child_ID_School_Year <- as.character(interaction(df$Child_ID, df$School_Year, sep="-"))
     df$Completed_Date_yy_mm_dd <- strftime(df$Completed_Date, "%y-%m-%d")
-    df$Child_ID_Completed_date <- interaction(df$Completed_Date_yy_mm_dd, df$Child_ID, sep="-")
+    df$Child_ID_Completed_date <- as.character(interaction(df$Completed_Date_yy_mm_dd, df$Child_ID, sep="-"))
     
     # Apply cleaning described in dissclaimer text in the Sample reports
     df <- df[df$Dev_Stage %in% unlist(devstrand_categories), ]

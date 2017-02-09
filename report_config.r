@@ -16,19 +16,8 @@ report_filters <- list(
 )
 
 # report1: These are the bar charts in the pdf labelled ‘Sample 1’. For the Headstart set of schools these include a bar
-#         chart for all schools and then each individual Headstart school. Some account holders may not include a large
-#         number of schools. Henry will set up the script so that a user can input the level of detail required.
-# report1a: a side-by-side bar chart (rather than stacked) - this is a more appropriate representation
-# report2: This is the bar chart given in the pdf labelled ‘Sample 3’ and looks at individual pupil journeys by
-#         development stage. The plots on individual progress are not required.
-# report3: This is the bar chart/scatter plot given in the pdf labelled ‘Sample 2’. Henry will consider this plot and
-#         provide alternative formats if there are any improved ways of visualising the data.
-# report4: This is the TOL activity given in the spreadsheet called ‘Headstart Data – 11 05 16 for RHead.xlsx’).
-#         (This plot should be prioritised over plot 3 if there are time constraints).
-
+#         chart for all schools, schools in locality 1 and 6  and 3 individual Headstart school.
 report1 = list(
-    "title"=list("type"="text",
-                 "text"="Headstart Schools - Academic Year 2014/15"),
     "chart1"=list("type"="bar_stacked",
                   "title"="ALL HEADSTART SCHOOLS\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
                   "measure"="score_change",
@@ -80,9 +69,9 @@ report1 = list(
                   "filter"=list("org_brunell"=list("column"="Organisation", "value"="Brunel Primary", "filter_type"="contains")))
 )
 
+# report1a: TAn alternative version of Report 1 using side-by-side bar charts (rather than stacked)
+# this is a more appropriate representation of the results.
 report1a = list(
-    "title"=list("type"="text",
-                 "text"="Headstart Schools - Academic Year 2014/15"),
     "chart1"=list("type"="bar_side_by_side",
                   "title"="ALL HEADSTART SCHOOLS\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
                   "measure"="score_change",
@@ -134,6 +123,8 @@ report1a = list(
                   "filter"=list("org_brunell"=list("column"="Organisation", "value"="Brunel Primary", "filter_type"="contains")))
 )
 
+# report2: This is the bar chart given in the pdf labelled ‘Sample 3’ and looks at individual pupil journeys by
+#          development stage. The plots on individual progress are not required.
 report2 = list(
     "chart1"=list("type"="pie",
                   "title"="ALL HEADSTART SCHOOLS\nShare of pupils in each Development Stage at\nfirst assessment in 2014/15",
@@ -217,6 +208,8 @@ report2 = list(
                                                                                             "Trenode C of E Primary School"), "filter_type"="in")))
 )
 
+# report3: This is the bar chart/scatter plot given in the pdf labelled ‘Sample 2’. Henry will consider this plot and
+#         provide alternative formats if there are any improved ways of visualising the data.
 report3 = list(
     "chart1"=list("type"="bar_stacked",
                   "title"="HEADSTART SCHOOL - Acorn Academy - Nine Maidens\nIndividual pupil journeys during academic year 2014/15",
@@ -226,12 +219,19 @@ report3 = list(
                   "colour_by"="Dev_Stage",
                   "filter"=list("org_brunell"=list("column"="Organisation", "value"="Brunel Primary", "filter_type"="contains")))
 )
+
+
+# report4: This is the TOL activity given in the spreadsheet called ‘Headstart Data – 11 05 16 for RHead.xlsx’).
+#         (This plot should be prioritised over plot 3 if there are time constraints).
+# Report 4 to follow.
+
 reports = list("report1"=report1,
                "report1a"=report1a,
                "report2"=report2,
                "report3"=report3)
 
-reports = list("report3"=report3)
+################################## END OF CONFIG ######################################################################
+################################## BELOW ARE FUNCTIONS ASSOCIATED WITH CONFIG ABOVE ###################################
 
 # Determine filename from report config
 plot_filename <- function(chart_config, file_extention) {
@@ -250,7 +250,6 @@ for(i in names(reports)) {
     }
 }
 
-# DO NOT EDIT BELOW.
 # Function to extract info from report filters to create a WHERE clause to use
 # in the querying of thrive_online. Ensures only data required the report is
 # grabbed
@@ -288,5 +287,3 @@ sql_fieldname_lookup <- list("AccountID"="o.accountId",
                              "Profiled_ID"="c.childId",
                              "Completed_Date"="p.completedDate",
                              "Dev_Stage"="p.developmentalStageId")
-
-
