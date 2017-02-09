@@ -1,21 +1,27 @@
+# Set up references to folders to use when saving plots or data or querying 
+# sql queries to retrieve data from thrive online.
 working_dir <- getwd()
 plots_dir <- file.path(working_dir, "plots")
 sql_dir <- file.path(working_dir, "sql")
 ifelse(!dir.exists(plots_dir), dir.create(plots_dir), FALSE)
 
-# data_source
+# Specify references to the thive_online and csv data sources.
+# "ThriveServer" is the name given to the ODBC connection
 data_sources = list(
-    "thrive"="ThriveServer",
-    "csv"=file.path("\\", "LS-WVL7F6", "share", "Documents", "Select", "Thrive", "In", "TOL Individual Profile Data Sample for SSS5.csv")
+    "thrive"="ThriveServer"
 )
 
 # data_source determines whether data is to be retrived from:
-# thrive_online - the live database
-# csv - a local copy of the sample csv data
+# - thrive_online - the live database
 data_source = "thrive"
 
-# which was created the last time data was retrived from thrive_online
-# rdata 
+# A second data source is a copy of the data last grabbed from thrive online
+# which is saved locally in folder called rdata in your working direrctory.
+# The filename of the rdata copy of data begins with a date which is used to
+# identify how many days since it was last updated. If
+# try_use_rdata_if_recent = TRUE; and
+# No. days since it was last updated is < if_recent_days
+# then rdata local copy will be used
 if_recent_days <- 2
 try_use_rdata_if_recent = TRUE
 
@@ -49,6 +55,7 @@ style_guide <- list(
     )
 )
 
+# A look-up of column name used in chart and corresponding x and y-axis labels.
 chart_col_labels = list(
     "Organisation"="Organisation", 
     "Account_ID"="Account ID",
@@ -67,8 +74,12 @@ chart_col_labels = list(
     "score_change"="Average change in score",
     "School_Year_Child_ID"="School Year-Pupil ID",
     "Child_ID_School_year"="Pupil ID-School Year",
-    "Completed_Date_yy_mm_dd"="Date of assessment"
+    "Completed_Date_yy_mm_dd"="Date of assessment",
+    "Child_ID_Completed_date"="Pupil ID-Date of ssessment"
 )
+
+################################## END OF CONFIG ######################################################################
+################################## BELOW ARE FUNCTIONS ASSOCIATED WITH CONFIG ABOVE ###################################
 
 # Update data_source if recent Rdata has been requested
 if(try_use_rdata_if_recent) {

@@ -1,8 +1,10 @@
-# main
+# main.r - click on [source] to run this script to create the charts and data needed for the pdf reports.
+
+# Clear all results in memory from last time.
 rm(list=ls())
 
 # Load functions to manage local Rdata copies of data if available
-# Also installs required packages if necesary
+# Also installs required packages if necessary.
 source("rdata_utils.r")
 
 # Load global_config which creates the following objects:
@@ -24,33 +26,27 @@ source("get_data.r")
 source("data_transforms.r")
 
 # Read in data from source defined in data_source in global_config.r
-# apply formating to variables and calculate analysis variables
+# apply formating to variables and calculate analysis variables.
 d <- read_data(data_source)
 
-# Define groups within which percentage point change in assessment scores is to be calculated
+# Define groups within which percentage point change in assessment scores is to be calculated.
 score_change_groups <- list("Child_ID", "Dev_Stage")
 score_change_groups2 <- list("Child_ID")
 
-# Create a data.table of percentage point score change for each child within dev stage 
-score_dt <- score_data(d, score_change_groups)
+# Create a data.table of percentage point score change for each child:
+score_dt <- score_data(d, score_change_groups)     # within dev stage 
+score_dt2 <- score_data(d, score_change_groups2)   # ignoring dev stage 
 
-# Create a data.table of percentage point score change for each child ignoring  dev stage 
-score_dt2 <- score_data(d, score_change_groups2)
-
-# Create a dataframe holding results formatted for displaying in bulleted summary
-# first_last_pupil_shares <- pupil_share_Dev_Stage(score_dt2, unlist(get_devstrand_categories(style_guide)))
-# save(first_last_pupil_shares, file=file.path("rdata", "first_last_pupil_shares.Rdata"))
-
-# Create a data.table of percentage point score change data for each child within dev stage
+# Create a data.table of percentage point score change data for each child within dev stage.
 score_change_dt <- score_change_data(score_dt, score_change_groups)
 
-# Load in bar chart and pie chart plotting functions
+# Load in bar chart and pie chart plotting functions.
 source("plot_functions.r")
 
-# Remove existing plots
+# Remove existing plots.
 delete_existing_plots()
 
-# Create png files of all charts of type "bar_stacked"
+# Create .png files of all charts and .Rdata results data files for Report 2.
 for(i in reports) {
     for(j in i){
         if(grepl("bar", j[["type"]])) {
