@@ -14,9 +14,27 @@ read_locality_data <- function(data_src) {
     return(d)
 }
 
+# Import a table of pupil counts by organisation
+# No. Allocated (max(licenseOrganisation.paidForCapacity) over organisationId)
+# No. Active (count(DISTINCT(childOrganisation.childId)) over organisationId)
+# No. profiled (count(DISTINCT(profileChild.childId)) over organisationId)
+read_pupil_counts_data <- function(data_src) {
+    if(data_src=="thrive") {
+        lines <- readLines(file.path(sql_dir, "pupil_counts_by_type_and_organisation.sql"))
+        query <- paste(lines, collapse=" ")
+        conn <- odbcConnect(data_sources[[data_src]])
+        d <- sqlQuery(conn, query)
+        d <- format_pupil_counts_df(d)
+        save(d, file=rdata_pupil_counts_folderfilename)
+    } else {
+        load(rdata_pupil_counts_folderfilename)
+    }
+    return(d)
+}
+
 # Import assessment scores data and format.
 read_data <- function(data_src) {
-    locality_lookup <- read_locality_data(data_sources[[data_src]])
+    locality_lookup <- read_locality_data(data_src)
     if(data_src=="csv") {
         d <- read.csv(data_sources[[data_src]], colClasses=c_classes)
         d <- merge(d, locality_lookup, all.x=TRUE)
@@ -43,7 +61,8 @@ read_data <- function(data_src) {
     return(d)
 }
 
-# Combine the filter_where_clause with the where_clasue already in the query
+# Function to combine the filter_where_clause with the where_clause already in
+# the pupil_assessments.sql query
 add_where_clause <- function(query_lines, filter_where_clause) {
     if(any(grepl("WHERE", query_lines))) {
         existing_where_clause_position <- (1:length(query_lines))[grepl("WHERE", query_lines)]

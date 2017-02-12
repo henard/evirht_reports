@@ -11,8 +11,6 @@ source("rdata_utils.r")
 #   data_source
 #   global_filters
 #   style_guide
-#   devstrand_colour_palette
-#   devstrand_categories
 source("global_config.r")
 
 # Load report_config which creates the following objects:
@@ -25,11 +23,15 @@ source("get_data.r")
 # Load in data transform functions
 source("data_transforms.r")
 
-# Read in data from source defined in data_source in global_config.r
+# Read in assessment data from source defined in data_source in global_config.r
 # apply formating to variables and calculate analysis variables.
 d <- read_data(data_source)
 
-# Define groups within which percentage point change in assessment scores is to be calculated.
+# Read in pupil_counts data from source defined in data_source in global_config.r
+# apply formating to variables and calculate analysis variables.
+pupil_counts <- read_pupil_counts_data(data_source)
+
+# Define groups within which percentage point change in assessment scores are to be calculated.
 score_change_groups <- list("Child_ID", "Dev_Stage")
 score_change_groups2 <- list("Child_ID")
 
@@ -46,15 +48,15 @@ source("plot_functions.r")
 # Remove existing plots.
 delete_existing_plots()
 
-# Create .png files of all charts and .Rdata results data files for Report 2.
+# Create .png files of all charts and .Rdata results data files in report.
 for(i in reports) {
     for(j in i){
         if(grepl("bar", j[["type"]])) {
-            do.call(get("bar_chart"), c(j, "data_set_name"="score_change_dt"))
+            do.call(get("bar_chart"), j)
         } else if(grepl("pie", j[["type"]])) {
-            do.call(get("pie_chart"), c(j, "data_set_name"="score_dt2"))
+            do.call(get("pie_chart"), j)
         } else if(grepl("data", j[["type"]])) {
-            do.call(get("pupil_shares_data"), c(j, "data_set_name"="score_dt2", get_devstrand_categories(style_guide)))
+            do.call(get("pupil_shares_data"), c(j, get_devstrand_categories(style_guide)))
         }
     }
 }

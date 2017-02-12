@@ -9,6 +9,7 @@ todays_date <- format(Sys.Date(), "%Y%m%d")
 rdata_filename <- "TOL_Individual_Profile_Data.Rdata"
 rdata_folder <- "rdata"
 rdata_locality_folderfilename <- file.path(rdata_folder, "orgid_locality_lookup.Rdata")
+rdata_pupil_counts_folderfilename <- file.path(rdata_folder, "pupil_counts_by_type_and_organisation.Rdata")
 
 # Check for a locally stored copy of data in Rdata format
 get_most_recent_rdata_filename <- function() {
