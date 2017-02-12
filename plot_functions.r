@@ -1,7 +1,7 @@
 library(ggplot2)
 library(scales)
 
-bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, filename, long_filename, data_set_name) {
+bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, filename, long_filename, dataset) {
     
     # Determine if plotting child_ids - handled differently
     plotting_child_ids <- any(grepl("Child_ID", c(xaxis, xgroup)))
@@ -10,7 +10,7 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
     # Determine stacked or side-by-side bar chart
     if(grepl("side", type)) postn <- "dodge" else postn <- "stack"
 
-    data_set <- get(data_set_name)
+    data_set <- get(dataset)
 
     # Determine whether x-axis categories are to be grouped by a second variable
     grouped <- (xgroup %in% names(data_set))
@@ -25,7 +25,6 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
 
     # Filter data as per config for chart
     if(!("all" %in% unlist(names(filter)))) data_set <- filter_dt(data_set, filter)
-
     {if(grouped) levs_present <- levels_present(data_set[, get(xgroup)])}
 
     # Check if sample size <10 , if so use empty plot dataframe
@@ -44,6 +43,9 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
     if(plotting_child_ids | plotting_organisations) max_no_categories <- 100 else max_no_categories <- 100
     too_many_categories <- nrow(dp)>max_no_categories
 
+    # Plot setings
+    default_font_size = 10
+
     # Configure x-axis label settings for different  x-axis variables 
     if(plotting_child_ids) {
         # limit number of Child_IDs, convert to character, rotate axis labels
@@ -52,6 +54,7 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
         x_vjust = 0.5
         x_hjust = 0
         plot_height = 10
+        font_size=default_font_size-2
     } else if(plotting_organisations) {
         # limit number of Child_IDs, convert to character, rotate axis labels
         if(too_many_categories) dp <- dp[dp$Organisation %in% unique(dp$Organisation)[1:min(40,length(unique(dp$Organisation)))], ]
@@ -59,6 +62,7 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
         x_vjust = 1
         x_hjust = 0
         plot_height = 12
+        font_size=default_font_size-2
     } else {
         dp[, xaxis] <- factor(dp[, xaxis], levels=levels_present(dp[, xaxis]))
         # Ensure the width of bars is consistent when plot type="side_by_side"
@@ -67,14 +71,17 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
         x_vjust = 0.5
         x_hjust = 0.5
         plot_height = 8
+        font_size=default_font_size
     }
     
     x_mid <- 0.5*length(unique(dp[, xaxis]))
     
-    # Plot setings
-    default_font_size = 10
-    devstrand_colour_palette <- get_devstrand_colour_palette(style_guide)
-    
+    if(colour_by=="pupil_count_type") {
+        colour_palette <- get_colour_palette(style_guide, "pupil_counts_colours")
+    } else {
+        colour_palette <- get_colour_palette(style_guide, "devstrand_colours")
+    }
+
     # Plot and save
     p = ggplot(data=dp, aes(x=get(xaxis), y=get(measure), fill=get(colour_by))) +
         geom_bar(stat = "identity", position=postn, colour="black", size=0.2) +
@@ -86,7 +93,7 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
         ggtitle(title) +
         theme(plot.title = element_text(lineheight=.8, face="bold", size=default_font_size)) +
         theme(panel.grid.major.y = element_line(colour = "grey", linetype = "solid", size=0.2), panel.grid.minor.x = element_blank(), panel.grid.major.x = element_blank()) + 
-        scale_fill_manual(values=unlist(devstrand_colour_palette)) + 
+        scale_fill_manual(values=unlist(colour_palette)) + 
         scale_colour_discrete(drop = FALSE) +
         scale_x_discrete(drop = FALSE) +
         {if(sample_size_too_small) coord_cartesian(ylim = c(0, 1))} +
@@ -97,7 +104,7 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
         theme(axis.line.x = element_line(color = "black"), axis.line.y = element_line(color = "black")) +
         guides(fill = guide_legend(title = get_column_labels(chart_col_labels, colour_by), title.position = "top")) +
         theme(axis.title = element_text(size=default_font_size)) +
-        theme(axis.text.x = element_text(angle = xaxis_text_angle, vjust=x_vjust, hjust=x_hjust, size=default_font_size)) +
+        theme(axis.text.x = element_text(angle = xaxis_text_angle, vjust=x_vjust, hjust=x_hjust, size=font_size)) +
         theme(axis.text.y = element_text(angle = 0, vjust=0.5, hjust=0.5, size=default_font_size)) +
         theme(legend.title = element_text(colour="black", size=default_font_size, face="bold"), legend.position = "right", legend.text = element_text(colour="black", size=default_font_size))
 
@@ -105,21 +112,9 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
     sprintf("Saving plot: %s", file.path(plots_dir, filename))
 }
 
-# type <- "pie"
-# title <- "ALL HEADSTART SCHHOLS\nShare of pupils in each Development Stage at first assesssment in 2014/15"
-# measure <- "c"
-# xaxis <- ""
-# xgroup <- ""
-# colour_by <- "Dev_Stage"
-# filter <- list("N_assessment_2+"=list("column"="N_assessments", "lower"=2, "upper"=10, "filter_type"="range"),
-# "Assessment_n_1"=list("column"="Assessment_n_rev", "values"=list(-1), "filter_type"="in"))
-# filename <- "pie_chart_test"
-# long_filename <- "pie_chart_test"
-# data_set_name <- "score_dt2"
-
-pie_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, filename, long_filename, data_set_name) {
+pie_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, filename, long_filename, dataset) {
     
-    data_set <-  get(data_set_name)
+    data_set <-  get(dataset)
     
     # Determine whether x-axis categories are to be grouped by a second variable
     grouped <- (xgroup %in% names(data_set))
@@ -140,7 +135,12 @@ pie_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
     
     # Plot setings
     default_font_size = 10
-    devstrand_colour_palette <- get_devstrand_colour_palette(style_guide)
+    if(colour_by=="pupil_count_type") {
+        colour_palette <- get_colour_palette(style_guide, "pupil_counts_colours")
+    } else {
+        colour_palette <- get_colour_palette(style_guide, "devstrand_colours")
+    }
+    # devstrand_colour_palette <- get_devstrand_colour_palette(style_guide)
     
     blank_theme <- theme_minimal() +
         theme(
@@ -161,7 +161,7 @@ pie_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
         ggtitle(title)  +
         geom_text(aes(x = 1.2, y = dp[, "y_pos"], label = percent(dp[, measure])), size=3) +
         theme(axis.text.x=element_blank()) +
-        scale_fill_manual(values=unlist(devstrand_colour_palette)) + 
+        scale_fill_manual(values=unlist(colour_palette)) + 
         blank_theme +
         guides(fill = guide_legend(title = get_column_labels(chart_col_labels, colour_by), title.position = "top")) +
         theme(legend.title = element_text(colour="black", size=default_font_size, face="bold"), legend.position = "right", legend.text = element_text(colour="black", size=default_font_size))

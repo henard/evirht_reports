@@ -33,6 +33,23 @@ format_sql_df <- function(df) {
     return(df)
 }
 
+# Apply changes to format of data specific to pupil_counts data imported (from SQL)
+format_pupil_counts_df <- function(df) {
+    df$Organisation <- as.character(df$Organisation)
+    df$pct_Allocated <- df$N_Allocated / df$N_Allocated
+    df[df$N_Allocated==0 & !is.na(df$N_Allocated), "pct_Allocated"] <- 0
+    df$pct_Active <- df$N_Active / df$N_Allocated
+    df[df$N_Allocated==0 & !is.na(df$N_Allocated), "pct_Active"] <- 0
+    df$pct_Profiled <- df$N_Profiled / df$N_Allocated
+    df[df$N_Allocated==0 & !is.na(df$N_Allocated), "pct_Profiled"] <- 0
+    dfl <- reshape(df, varying=c("N_Allocated", "N_Active", "N_Profiled", "pct_Allocated", "pct_Active", "pct_Profiled"),
+                   direction="long", idvar="Organisation_ID", sep="_")
+    names(dfl)[names(dfl) == 'time'] <- "pupil_count_type"
+    dfl <- dfl[dfl$pupil_count_type %in% c("Active", "Profiled"), ]
+    dfl <- data.table(dfl)
+    return(dfl)
+}
+
 # Apply changes to format of data specific to data imported from csv
 format_csv_df <- function(df) {
     df <- df[, -(13:31)]
@@ -120,9 +137,9 @@ score_change_data <- function(DT, groups) {
     return(DT[Assessment_n_rev==-1])
 }
 
-pupil_shares_data <- function(type, title, measure, by, filter, filename, long_filename, data_set_name, devstrand_categories) {
+pupil_shares_data <- function(type, title, measure, by, filter, filename, long_filename, dataset, devstrand_categories) {
     
-    df <-  get(data_set_name)
+    df <-  get(dataset)
     # Create model formular from config for aggregate function
     formula_str <- paste(measure, "~", by, sep=" ")
     
@@ -136,7 +153,7 @@ pupil_shares_data <- function(type, title, measure, by, filter, filename, long_f
     last$pct <- last$c/sum(last$c)
     names(last) <- c("Dev_Stage", "last_n","last_pct")
     first_last <- merge(first, last)
-    first_last$Dev_Stage <- factor(first_last$Dev_Stage, devstrand_categories)
+    first_last$Dev_Stage <- factor(first_last$Dev_Stage, levels=devstrand_categories)
     first_last <- first_last[rev(order(first_last$Dev_Stage)), ]
     first_last$pct_change <- paste(round(100*(abs(first_last$last_pct-first_last$first_pct)), 0), "%", sep="")
     first_last[first_last$pct_change=="0%", "pct_change"] <- ""

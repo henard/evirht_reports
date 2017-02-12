@@ -19,6 +19,7 @@ report_filters <- list(
 #         chart for all schools, schools in locality 1 and 6  and 3 individual Headstart school.
 report1 = list(
     "chart1"=list("type"="bar_stacked",
+                  "dataset" = "score_change_dt",
                   "title"="ALL HEADSTART SCHOOLS\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
                   "measure"="score_change",
                   "xaxis"="School_Year",
@@ -26,6 +27,7 @@ report1 = list(
                   "colour_by"="Dev_Stage",
                   "filter"=list("all"=list("column"=NA, "values"=NA, "filter_type"="all"))),
     "chart2"=list("type"="bar_stacked",
+                  "dataset" = "score_change_dt",
                   "title"="HEADSTART LOCALITY 1\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
                   "measure"="score_change",
                   "xaxis"="School_Year",
@@ -33,6 +35,7 @@ report1 = list(
                   "colour_by"="Dev_Stage",
                   "filter"=list("locality1"=list("column"="Locality", "values"=list(1), "filter_type"="in"))),
     "chart3"=list("type"="bar_stacked",
+                  "dataset" = "score_change_dt",
                   "title"="HEADSTART LOCALITY 6\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
                   "measure"="score_change",
                   "xaxis"="School_Year",
@@ -40,6 +43,7 @@ report1 = list(
                   "colour_by"="Dev_Stage",
                   "filter"=list("locality6"=list("column"="Locality", "values"=list(6), "filter_type"="in"))),
     "chart4"=list("type"="bar_stacked",
+                  "dataset" = "score_change_dt",
                   "title"="BRUNEL PRIMARY SCHOOL\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
                   "measure"="score_change",
                   "xaxis"="School_Year",
@@ -47,6 +51,7 @@ report1 = list(
                   "colour_by"="Dev_Stage",
                   "filter"=list("org_brunell"=list("column"="Organisation", "value"="Brunel Primary", "filter_type"="contains"))),
     "chart5"=list("type"="bar_stacked",
+                  "dataset" = "score_change_dt",
                   "title"="CALLINGTON COMMUNITY COLLEGE\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
                   "measure"="score_change",
                   "xaxis"="School_Year",
@@ -54,6 +59,7 @@ report1 = list(
                   "colour_by"="Dev_Stage",
                   "filter"=list("org_callington"=list("column"="Organisation", "value"="Callington Community", "filter_type"="contains"))),
     "chart6"=list("type"="bar_stacked",
+                  "dataset" = "score_change_dt",
                   "title"="BODRIGGY ACADEMY\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
                   "measure"="score_change",
                   "xaxis"="School_Year",
@@ -61,6 +67,7 @@ report1 = list(
                   "colour_by"="Dev_Stage",
                   "filter"=list("org_callington"=list("column"="Organisation", "value"="Bodriggy", "filter_type"="contains"))),
     "chart7"=list("type"="bar_stacked",
+                  "dataset" = "score_change_dt",
                   "title"="BRUNEL PRIMARY SCHOOL\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
                   "measure"="score_change",
                   "xaxis"="Child_ID",
@@ -73,6 +80,7 @@ report1 = list(
 # this is a more appropriate representation of the results.
 report1a = list(
     "chart1"=list("type"="bar_side_by_side",
+                  "dataset" = "score_change_dt",
                   "title"="ALL HEADSTART SCHOOLS\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
                   "measure"="score_change",
                   "xaxis"="School_Year",
@@ -80,6 +88,7 @@ report1a = list(
                   "colour_by"="Dev_Stage",
                   "filter"=list("all"=list("column"=NA, "values"=NA, "filter_type"="all"))),
     "chart2"=list("type"="bar_side_by_side",
+                  "dataset" = "score_change_dt",
                   "title"="HEADSTART LOCALITY 1\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
                   "measure"="score_change",
                   "xaxis"="School_Year",
@@ -87,6 +96,7 @@ report1a = list(
                   "colour_by"="Dev_Stage",
                   "filter"=list("locality1"=list("column"="Locality", "values"=list(1), "filter_type"="in"))),
     "chart3"=list("type"="bar_side_by_side",
+                  "dataset" = "score_change_dt",
                   "title"="HEADSTART LOCALITY 6\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
                   "measure"="score_change",
                   "xaxis"="School_Year",
@@ -94,6 +104,7 @@ report1a = list(
                   "colour_by"="Dev_Stage",
                   "filter"=list("locality6"=list("column"="Locality", "values"=list(6), "filter_type"="in"))),
     "chart4"=list("type"="bar_side_by_side",
+                  "dataset" = "score_change_dt",
                   "title"="BRUNEL PRIMARY SCHOOL\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
                   "measure"="score_change",
                   "xaxis"="School_Year",
@@ -101,6 +112,7 @@ report1a = list(
                   "colour_by"="Dev_Stage",
                   "filter"=list("org_brunell"=list("column"="Organisation", "value"="Brunel Primary", "filter_type"="contains"))),
     "chart5"=list("type"="bar_side_by_side",
+                  "dataset" = "score_change_dt",
                   "title"="CALLINGTON COMMUNITY COLLEGE\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
                   "measure"="score_change",
                   "xaxis"="School_Year",
@@ -108,6 +120,7 @@ report1a = list(
                   "colour_by"="Dev_Stage",
                   "filter"=list("org_callington"=list("column"="Organisation", "value"="Callington Community", "filter_type"="contains"))),
     "chart6"=list("type"="bar_side_by_side",
+                  "dataset" = "score_change_dt",
                   "title"="BODRIGGY ACADEMY\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
                   "measure"="score_change",
                   "xaxis"="School_Year",
@@ -115,6 +128,7 @@ report1a = list(
                   "colour_by"="Dev_Stage",
                   "filter"=list("org_callington"=list("column"="Organisation", "value"="Bodriggy", "filter_type"="contains"))),
     "chart7"=list("type"="bar_side_by_side",
+                  "dataset" = "score_change_dt",
                   "title"="BRUNEL PRIMARY SCHOOL\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
                   "measure"="score_change",
                   "xaxis"="Child_ID",
@@ -127,6 +141,7 @@ report1a = list(
 #          development stage. The plots on individual progress are not required.
 report2 = list(
     "chart1"=list("type"="pie",
+                  "dataset" = "score_dt2",
                   "title"="ALL HEADSTART SCHOOLS\nShare of pupils in each Development Stage at\nfirst assessment in 2014/15",
                   "measure"="c",
                   "xaxis"="",
@@ -135,6 +150,7 @@ report2 = list(
                   "filter"=list("N_assessment_2+"=list("column"="N_assessments", "lower"=2, "upper"=10, "filter_type"="range"),
                                 "Assessment_n_1"=list("column"="Assessment_n", "values"=list(1), "filter_type"="in"))),
     "chart2"=list("type"="pie",
+                  "dataset" = "score_dt2",
                   "title"="ALL HEADSTART SCHOOLS\nShare of pupils in each Development Stage at\nlast assessment in 2014/15",
                   "measure"="c",
                   "xaxis"="",
@@ -143,11 +159,13 @@ report2 = list(
                   "filter"=list("N_assessment_2+"=list("column"="N_assessments", "lower"=2, "upper"=10, "filter_type"="range"),
                                 "Assessment_n_1"=list("column"="Assessment_n_rev", "values"=list(-1), "filter_type"="in"))),
     "data1"=list("type"="data",
+                 "dataset" = "score_dt2",
                  "title"="ALL HEADSTART SCHOOLS\nChange in share of pupils in each Development Stage between\nfirst &last assessment in 2014/15",
                  "measure"="c",
                  "by"="Dev_Stage",
                  "filter"=list("all"=list("column"=NA, "values"=NA, "filter_type"="all"))),
     "chart3"=list("type"="pie",
+                  "dataset" = "score_dt2",
                   "title"="HEADSTART LOCALITY 1\nShare of pupils in each Development Stage at\nfirst assessment in 2014/15",
                   "measure"="c",
                   "xaxis"="",
@@ -157,6 +175,7 @@ report2 = list(
                                 "Assessment_n_1"=list("column"="Assessment_n", "values"=list(1), "filter_type"="in"),
                                 "locality1"=list("column"="Locality", "values"=list(1), "filter_type"="in"))),
     "chart4"=list("type"="pie",
+                  "dataset" = "score_dt2",
                   "title"="HEADSTART LOCALITY 1\nShare of pupils in each Development Stage at\nlast assessment in 2014/15",
                   "measure"="c",
                   "xaxis"="",
@@ -166,11 +185,13 @@ report2 = list(
                                 "Assessment_n_1"=list("column"="Assessment_n_rev", "values"=list(-1), "filter_type"="in"),
                                 "locality1"=list("column"="Locality", "values"=list(1), "filter_type"="in"))),
     "data2"=list("type"="data",
+                 "dataset" = "score_dt2",
                  "title"="HEADSTART LOCALITY 1\nChange in share of pupils in each Development Stage between\nfirst &last assessment in 2014/15",
                  "measure"="c",
                  "by"="Dev_Stage",
                  "filter"=list("locality1"=list("column"="Locality", "values"=list(1), "filter_type"="in"))),
     "chart5"=list("type"="bar_stacked",
+                  "dataset" = "score_change_dt",
                   "title"="HEADSTART SCHOOLS\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
                   "measure"="score_change",
                   "xaxis"="Organisation",
@@ -212,6 +233,7 @@ report2 = list(
 #         provide alternative formats if there are any improved ways of visualising the data.
 report3 = list(
     "chart1"=list("type"="bar_stacked",
+                  "dataset" = "score_change_dt",
                   "title"="HEADSTART SCHOOL - Acorn Academy - Nine Maidens\nIndividual pupil journeys during academic year 2014/15",
                   "measure"="score_change",
                   "xaxis"="Child_ID_Completed_date",
@@ -220,18 +242,31 @@ report3 = list(
                   "filter"=list("org_brunell"=list("column"="Organisation", "value"="Brunel Primary", "filter_type"="contains")))
 )
 
-
 # report4: This is the TOL activity given in the spreadsheet called ‘Headstart Data – 11 05 16 for RHead.xlsx’).
 #         (This plot should be prioritised over plot 3 if there are time constraints).
-# Report 4 to follow.
+report4 = list(
+    "chart1"=list("type"="bar_side_by_side",
+                  "dataset" = "pupil_counts",
+                  "title"="HEADSTART KERNOW - TOL activity",
+                  "measure"="pct",
+                  "xaxis"="Organisation",
+                  "xgroup"="",
+                  "colour_by"="pupil_count_type",
+                  "filter"=list("Org_seln"=list("column"="Organisation_ID", "values"=c(1780, 871, 676, 1362, 1076, 671, 885, 1777, 1363,
+                                                                                       874, 886, 1359, 1075, 875, 1355, 887, 883, 1356,
+                                                                                       1361, 876, 893, 890, 877, 675, 1077, 813, 888, 878,
+                                                                                       673, 867, 870, 889, 884, 894, 1443, 891, 868, 869,
+                                                                                       879, 881, 1196, 892, 880, 882), "filter_type"="in")))
+)
 
 reports = list("report1"=report1,
                "report1a"=report1a,
                "report2"=report2,
-               "report3"=report3)
+               "report3"=report3,
+               "report4"=report4)
 
 ################################## END OF CONFIG ######################################################################
-################################## BELOW ARE FUNCTIONS ASSOCIATED WITH CONFIG ABOVE ###################################
+################################## BELOW ARE FUNCTIONS ASSOCIATED WITH CONFIG ABOVE  - Do not edit below ##############
 
 # Determine filename from report config
 plot_filename <- function(chart_config, file_extention) {
@@ -250,7 +285,7 @@ for(i in names(reports)) {
     }
 }
 
-# Function to extract info from report filters to create a WHERE clause to use
+# Function to extract info from report_filters to create a WHERE clause to use
 # in the querying of thrive_online. Ensures only data required the report is
 # grabbed
 create_where_clause <- function(report_filters) {
@@ -273,7 +308,7 @@ create_where_clause <- function(report_filters) {
     return(paste("WHERE",paste(unlist(where_clauses), collapse=' AND ')))
 }
 
-# Where clause of query to Thrive online needs to reference the fields as they
+# Where clause of query to thrive_online needs to reference the fields as they
 # exist in SQL, not there aliases used in analysis and specified in the global cofig
 sql_fieldname_lookup <- list("AccountID"="o.accountId",
                              "Organisation_ID"="o.organisationId",

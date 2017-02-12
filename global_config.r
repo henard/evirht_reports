@@ -5,14 +5,14 @@ plots_dir <- file.path(working_dir, "plots")
 sql_dir <- file.path(working_dir, "sql")
 ifelse(!dir.exists(plots_dir), dir.create(plots_dir), FALSE)
 
-# Specify references to the thive_online and csv data sources.
+# Specify reference to the thive_online data sources.
 # "ThriveServer" is the name given to the ODBC connection
 data_sources = list(
     "thrive"="ThriveServer"
 )
 
 # data_source determines whether data is to be retrived from:
-# - thrive_online - the live database
+# "thrive" is the live thrive_online database
 data_source = "thrive"
 
 # A second data source is a copy of the data last grabbed from thrive online
@@ -45,13 +45,19 @@ style_guide <- list(
         "green"="#8BB63A",
         "yellow"="#F1CA00",
         "orange"="#D57B16",
-        "red"="#C33415"
+        "red"="#C33415",
+        "active_green"="#009900",
+        "profiled_red"="#993300"
     ),
     "devstrand_colours" = list(
         "Power & Identity"="green",
         "Thinking"="yellow",
         "Doing"="orange",
         "Being"="red"
+    ),
+    "pupil_counts_colours" = list(
+        "Profiled"="active_green",
+        "Active"="profiled_red"
     )
 )
 
@@ -75,11 +81,13 @@ chart_col_labels = list(
     "School_Year_Child_ID"="School Year-Pupil ID",
     "Child_ID_School_year"="Pupil ID-School Year",
     "Completed_Date_yy_mm_dd"="Date of assessment",
-    "Child_ID_Completed_date"="Pupil ID-Date of ssessment"
+    "Child_ID_Completed_date"="Pupil ID-Date of ssessment",
+    "pct"="Percentage of allocated pupils",
+    "pupil_count_type"="Active / profiled"
 )
 
 ################################## END OF CONFIG ######################################################################
-################################## BELOW ARE FUNCTIONS ASSOCIATED WITH CONFIG ABOVE ###################################
+################################## BELOW ARE FUNCTIONS ASSOCIATED WITH CONFIG ABOVE  - Do not edit ####################
 
 # Update data_source if recent Rdata has been requested
 if(try_use_rdata_if_recent) {
@@ -87,13 +95,11 @@ if(try_use_rdata_if_recent) {
     data_source <- updated_sources$data_source
     data_sources <- updated_sources$data_sources
 }
-
 sprintf("Using data source: %s", data_source)
 
-# DO NOT EDIT BELOW.
 # Functions to extract info out of the style guide config.
-get_devstrand_colour_palette <- function(style_guide) {
-    return(lapply(style_guide[["devstrand_colours"]], function(x) style_guide[["colour_palette"]][[x]]))
+get_colour_palette <- function(style_guide, colours) {
+    return(lapply(style_guide[[colours]], function(x) style_guide[["colour_palette"]][[x]]))
 }
 
 get_devstrand_categories <- function(style_guide) {
