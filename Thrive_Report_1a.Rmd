@@ -5,7 +5,7 @@ header-includes:
    \usepackage{fancyhdr}
    \pagestyle{fancy}
    \setlength\headheight{24pt}
-   \fancyhead[R]{\includegraphics[width=5cm]{../Thrive_Logo_CMYK_square.png}}
+   \fancyhead[R]{\includegraphics[width=5cm]{Thrive_Logo_CMYK_square.png}}
    \renewcommand{\headrulewidth}{0pt}
 output: pdf_document
 geometry: margin=1cm
