@@ -60,3 +60,5 @@ for(i in reports) {
         }
     }
 }
+
+print("main.r completed running")
