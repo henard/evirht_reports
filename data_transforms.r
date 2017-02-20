@@ -7,9 +7,8 @@ format_dataframe <- function(df) {
     df$Overall_Score <- df$Overall_Score/100
     
     df$Status <- factor(df$Status, c("active", "inactive", "historical", "transferred"), c("Active", "Inactive", "Historical", "Transferred"))
-    df$School_Year <- factor(df$School_Year, c("AY", "EY", "Nursery", "Reception", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"),
-                             c("-3", "-2", "-1", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"))
-
+    df$School_Year <- factor(df$School_Year)
+    
     df$Child_ID <- as.character(df$Child_ID)
     df$Organisation <- as.character(df$Organisation)
     df$School_Year_Child_ID <- as.character(interaction(df$School_Year, df$Child_ID, sep="-"))
@@ -53,6 +52,8 @@ format_pupil_counts_df <- function(df) {
 # Apply changes to format of data specific to data imported from csv
 format_csv_df <- function(df) {
     df <- df[, -(13:31)]
+    df$School_Year <- factor(df$School_Year, c("AY", "EY", "Nursery", "Reception", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"),
+                             c("-3", "-2", "-1", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"))
     df$Child_DOB <- as.Date(df$Child_DOB, "%d/%m/%Y")
     df$Completed_Date <- as.Date(df$Completed_Date, "%d/%m/%Y")
     df$Dev_Stage <- factor(df$Dev_Stage, c("Interdependence", "Skill & Structure", "Power & Identity", "Thinking", "Doing", "Being"),
