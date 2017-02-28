@@ -16,69 +16,8 @@ report_filters <- list(
 )
 
 # report1: These are the bar charts in the pdf labelled ‘Sample 1’. For the Headstart set of schools these include a bar
-#         chart for all schools, schools in locality 1 and 6  and 3 individual Headstart school.
+#         chart for all schools, schools in locality 1 and 6  and 3 individual Headstart school. (Now all in side-by-side format)
 report1 = list(
-    "chart1"=list("type"="bar_stacked",
-                  "dataset" = "score_change_dt",
-                  "title"="ALL HEADSTART SCHOOLS\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
-                  "measure"="score_change",
-                  "xaxis"="School_Year",
-                  "xgroup"="",
-                  "colour_by"="Dev_Stage",
-                  "filter"=list("all"=list("column"=NA, "values"=NA, "filter_type"="all"))),
-    "chart2"=list("type"="bar_stacked",
-                  "dataset" = "score_change_dt",
-                  "title"="HEADSTART LOCALITY 1\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
-                  "measure"="score_change",
-                  "xaxis"="School_Year",
-                  "xgroup"="",
-                  "colour_by"="Dev_Stage",
-                  "filter"=list("locality1"=list("column"="Locality", "values"=list(1), "filter_type"="in"))),
-    "chart3"=list("type"="bar_stacked",
-                  "dataset" = "score_change_dt",
-                  "title"="HEADSTART LOCALITY 6\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
-                  "measure"="score_change",
-                  "xaxis"="School_Year",
-                  "xgroup"="",
-                  "colour_by"="Dev_Stage",
-                  "filter"=list("locality6"=list("column"="Locality", "values"=list(6), "filter_type"="in"))),
-    "chart4"=list("type"="bar_stacked",
-                  "dataset" = "score_change_dt",
-                  "title"="BRUNEL PRIMARY SCHOOL\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
-                  "measure"="score_change",
-                  "xaxis"="School_Year",
-                  "xgroup"="",
-                  "colour_by"="Dev_Stage",
-                  "filter"=list("org_brunell"=list("column"="Organisation", "value"="Brunel Primary", "filter_type"="contains"))),
-    "chart5"=list("type"="bar_stacked",
-                  "dataset" = "score_change_dt",
-                  "title"="CALLINGTON COMMUNITY COLLEGE\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
-                  "measure"="score_change",
-                  "xaxis"="School_Year",
-                  "xgroup"="",
-                  "colour_by"="Dev_Stage",
-                  "filter"=list("org_callington"=list("column"="Organisation", "value"="Callington Community", "filter_type"="contains"))),
-    "chart6"=list("type"="bar_stacked",
-                  "dataset" = "score_change_dt",
-                  "title"="BODRIGGY ACADEMY\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
-                  "measure"="score_change",
-                  "xaxis"="School_Year",
-                  "xgroup"="",
-                  "colour_by"="Dev_Stage",
-                  "filter"=list("org_callington"=list("column"="Organisation", "value"="Bodriggy", "filter_type"="contains"))),
-    "chart7"=list("type"="bar_stacked",
-                  "dataset" = "score_change_dt",
-                  "title"="BRUNEL PRIMARY SCHOOL\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
-                  "measure"="score_change",
-                  "xaxis"="Child_ID",
-                  "xgroup"="School_Year",
-                  "colour_by"="Dev_Stage",
-                  "filter"=list("org_brunell"=list("column"="Organisation", "value"="Brunel Primary", "filter_type"="contains")))
-)
-
-# report1a: TAn alternative version of Report 1 using side-by-side bar charts (rather than stacked)
-# this is a more appropriate representation of the results.
-report1a = list(
     "chart1"=list("type"="bar_side_by_side",
                   "dataset" = "score_change_dt",
                   "title"="ALL HEADSTART SCHOOLS\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
@@ -137,8 +76,7 @@ report1a = list(
                   "filter"=list("org_brunell"=list("column"="Organisation", "value"="Brunel Primary", "filter_type"="contains")))
 )
 
-# report2: This is the bar chart given in the pdf labelled ‘Sample 3’ and looks at individual pupil journeys by
-#          development stage. The plots on individual progress are not required.
+# report2: This is pie charts of share of pupils across development stages given in the pdf labelled ‘Sample 3’.
 report2 = list(
     "chart1"=list("type"="pie",
                   "dataset" = "score_dt2",
@@ -189,44 +127,7 @@ report2 = list(
                  "title"="HEADSTART LOCALITY 1\nChange in share of pupils in each Development Stage between\nfirst &last assessment in 2014/15",
                  "measure"="c",
                  "by"="Dev_Stage",
-                 "filter"=list("locality1"=list("column"="Locality", "values"=list(1), "filter_type"="in"))),
-    "chart5"=list("type"="bar_stacked",
-                  "dataset" = "score_change_dt",
-                  "title"="HEADSTART SCHOOLS\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
-                  "measure"="score_change",
-                  "xaxis"="Organisation",
-                  "xgroup"="",
-                  "colour_by"="Dev_Stage",
-                  "filter"=list("org_selection1"=list("column"="Organisation", "values"=list("Acorn Academy Cornwall",
-                                                                                            "Antony C of E",
-                                                                                            "Bodriggy Academy",
-                                                                                            "Braddock CE Primary",
-                                                                                            "Brunel Primary and Nursery Academy",
-                                                                                            "Burraton Primary School",
-                                                                                            "Callington Community College",
-                                                                                            "Calstock Primary School",
-                                                                                            "Dobwalls Community Primary School",
-                                                                                            "Duloe School",
-                                                                                            "Liskeard Hillfort Primary School",
-                                                                                            "Looe Primary School",
-                                                                                            "Millbrook C of E Primary",
-                                                                                            "Nancledra School",
-                                                                                            "Newlyn School",
-                                                                                            "Nine Maidens APA - Primary",
-                                                                                            "Nine Maidens APA - Secondary",
-                                                                                            "Pelynt School",
-                                                                                            "Pendeen School",
-                                                                                            "Pensans Primary School",
-                                                                                            "Pensilva Primary School",
-                                                                                            "Sir Robert Gefferys",
-                                                                                            "St Cleer Primary School",
-                                                                                            "St Hilary School",
-                                                                                            "St Levan School",
-                                                                                            "St Martins C of E VA Primary School",
-                                                                                            "St Marys C of E Primary School Penzance",
-                                                                                            "St Stephens Primary Saltash",
-                                                                                            "Stoke Climsland School",
-                                                                                            "Trenode C of E Primary School"), "filter_type"="in")))
+                 "filter"=list("locality1"=list("column"="Locality", "values"=list(1), "filter_type"="in")))
 )
 
 # report3: This is the bar chart/scatter plot given in the pdf labelled ‘Sample 2’. Henry will consider this plot and
@@ -259,11 +160,53 @@ report4 = list(
                                                                                        879, 881, 1196, 892, 880, 882), "filter_type"="in")))
 )
 
+# report5: This is the bar chart given in the pdf labelled ‘Sample 3’ and looks at individual pupil journeys by
+#          development stage. The plots on individual progress are not required. (Now a in a new report of its own)
+report5 = list(
+    "chart5"=list("type"="bar_stacked",
+                  "dataset" = "score_change_dt",
+                  "title"="HEADSTART SCHOOLS\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
+                  "measure"="score_change",
+                  "xaxis"="Organisation",
+                  "xgroup"="",
+                  "colour_by"="Dev_Stage",
+                  "filter"=list("org_selection1"=list("column"="Organisation", "values"=list("Acorn Academy Cornwall",
+                                                                                             "Antony C of E",
+                                                                                             "Bodriggy Academy",
+                                                                                             "Braddock CE Primary",
+                                                                                             "Brunel Primary and Nursery Academy",
+                                                                                             "Burraton Primary School",
+                                                                                             "Callington Community College",
+                                                                                             "Calstock Primary School",
+                                                                                             "Dobwalls Community Primary School",
+                                                                                             "Duloe School",
+                                                                                             "Liskeard Hillfort Primary School",
+                                                                                             "Looe Primary School",
+                                                                                             "Millbrook C of E Primary",
+                                                                                             "Nancledra School",
+                                                                                             "Newlyn School",
+                                                                                             "Nine Maidens APA - Primary",
+                                                                                             "Nine Maidens APA - Secondary",
+                                                                                             "Pelynt School",
+                                                                                             "Pendeen School",
+                                                                                             "Pensans Primary School",
+                                                                                             "Pensilva Primary School",
+                                                                                             "Sir Robert Gefferys",
+                                                                                             "St Cleer Primary School",
+                                                                                             "St Hilary School",
+                                                                                             "St Levan School",
+                                                                                             "St Martins C of E VA Primary School",
+                                                                                             "St Marys C of E Primary School Penzance",
+                                                                                             "St Stephens Primary Saltash",
+                                                                                             "Stoke Climsland School",
+                                                                                             "Trenode C of E Primary School"), "filter_type"="in")))
+)
+
 reports = list("report1"=report1,
-               "report1a"=report1a,
                "report2"=report2,
                "report3"=report3,
-               "report4"=report4)
+               "report4"=report4,
+               "report5"=report5)
 
 ################################## END OF CONFIG ######################################################################
 ################################## BELOW ARE FUNCTIONS ASSOCIATED WITH CONFIG ABOVE  - Do not edit below ##############
