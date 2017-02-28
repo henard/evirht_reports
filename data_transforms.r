@@ -74,14 +74,22 @@ levels_present <- function(column) {
 # When data is aggregated for ploting, factor levels can be lost.
 # This expands the dataframe row-wise so all combinations of factors exist as a 
 # row
-expand_dataframe <- function(df, measure_colname) {
+expand_dataframe <- function(df, measure_colname, factors_only=FALSE) {
     ll <- list()
     factors <- setdiff(names(df), measure_colname)
     for(column in factors) {
-        ll[[column]] <- levels(factor(df[, column]))
+        if(factors_only) {
+            if(inherits(df[, column], "factor")) {
+                ll[[column]] <- levels(factor(df[, column]))
+            }
+        } else {
+            ll[[column]] <- levels(factor(df[, column]))
+        }
     }
-    df <- merge(expand.grid(ll), df, all.x=TRUE)
-    df[is.na(df[, measure_colname]), measure_colname] <- 0.00001
+    if(length(ll)>0) {
+        df <- merge(expand.grid(ll), df, all.x=TRUE)
+        df[is.na(df[, measure_colname]), measure_colname] <- 0.00001
+    }
     return(df)
 }
 

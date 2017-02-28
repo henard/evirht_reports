@@ -81,7 +81,7 @@ chart_col_labels = list(
     "School_Year_Child_ID"="School Year-Pupil ID",
     "Child_ID_School_year"="Pupil ID-School Year",
     "Completed_Date_yy_mm_dd"="Date of assessment",
-    "Child_ID_Completed_date"="Pupil ID-Date of ssessment",
+    "Child_ID_Completed_date"="Pupil ID-Date of Assessment",
     "pct"="Percentage of allocated pupils",
     "pupil_count_type"="Active / profiled"
 )

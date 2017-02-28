@@ -6,6 +6,7 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
     # Determine if plotting child_ids - handled differently
     plotting_child_ids <- any(grepl("Child_ID", c(xaxis, xgroup)))
     plotting_organisations <- any(grepl("Organisation", c(xaxis, xgroup)))
+    plotting_ids <- plotting_child_ids | plotting_organisations
     
     # Determine stacked or side-by-side bar chart
     if(grepl("side", type)) postn <- "dodge" else postn <- "stack"
@@ -29,7 +30,7 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
     if(grouped) levs_present <- levels_present(data_set[, get(xgroup)])
 
     # Create an indicator of when the sample size is too small, if so use empty plot dataframe
-    if(plotting_child_ids | plotting_organisations) min_sample_size <- 1 else min_sample_size <- 10
+    if(plotting_child_ids | plotting_organisations) min_sample_size <- 1 else min_sample_size <- 1
     sample_size_too_small <- nrow(data_set)<min_sample_size
     if(sample_size_too_small) {
         dp <- dp_empty
@@ -59,19 +60,46 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
     # Plot setings
     default_font_size = 10
 
+    # # Configure x-axis label settings for different  x-axis variables 
+    # if(plotting_child_ids) {
+    #     xaxis_text_angle = -90
+    #     x_vjust = 0.5
+    #     x_hjust = 0
+    #     plot_height = 10
+    #     x_font_size=default_font_size-floor(((number_of_categories-1)/20))
+    # } else if(plotting_organisations) {
+    #     xaxis_text_angle = -45
+    #     x_vjust = 1
+    #     x_hjust = 0
+    #     plot_height = 12
+    #     x_font_size=default_font_size-floor(((number_of_categories-1)/20))
+    # } else {
+    #     dp[, xaxis] <- factor(dp[, xaxis], levels=levels_present(dp[, xaxis]))
+    #     # Ensure the width of bars is consistent when plot type="side_by_side"
+    #     dp <- expand_dataframe(dp, measure)
+    #     xaxis_text_angle = 0
+    #     x_vjust = 0.5
+    #     x_hjust = 0.5
+    #     plot_height = 8
+    #     x_font_size=default_font_size-floor(((number_of_categories-1)/20))
+    # }
+    
+    if(!grouped & plotting_ids)
+        # Ensure the width of bars is consistent when plot type="side_by_side"
+        dp <- expand_dataframe(dp, measure)
     # Configure x-axis label settings for different  x-axis variables 
     if(plotting_child_ids) {
         xaxis_text_angle = -90
         x_vjust = 0.5
         x_hjust = 0
         plot_height = 10
-        font_size=default_font_size-2
+        x_font_size=default_font_size-floor(((number_of_categories-1)/20))
     } else if(plotting_organisations) {
         xaxis_text_angle = -45
         x_vjust = 1
         x_hjust = 0
         plot_height = 12
-        font_size=default_font_size-2
+        x_font_size=default_font_size-floor(((number_of_categories-1)/20))
     } else {
         dp[, xaxis] <- factor(dp[, xaxis], levels=levels_present(dp[, xaxis]))
         # Ensure the width of bars is consistent when plot type="side_by_side"
@@ -80,9 +108,9 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
         x_vjust = 0.5
         x_hjust = 0.5
         plot_height = 8
-        font_size=default_font_size
+        x_font_size=default_font_size-floor(((number_of_categories-1)/20))
     }
-    
+
     xlab_text <- get_column_labels(chart_col_labels, xlab)
     if(too_many_categories & !sample_size_too_small) xlab_text <- paste(xlab_text, " (showing ", chunk_size, " out of ", number_of_categories, " categories.)")
     x_mid <- 0.5*length(unique(dp[, xaxis]))
@@ -96,8 +124,10 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
     # Plot and save
     p = ggplot(data=dp, aes(x=get(xaxis), y=get(measure), fill=get(colour_by))) +
         geom_bar(stat = "identity", position=postn, colour="black", size=0.2) +
-        {if(grouped & !plotting_child_ids) facet_grid(~get(xgroup), switch = "x", space = "free_x")} +
-        {if(grouped & plotting_child_ids) facet_grid(~get(xgroup), switch = "x", scales="free_x", space = "free_x")} +
+        # {if(grouped & !plotting_child_ids) facet_grid(~get(xgroup), switch = "x", space = "free_x")} +
+        # {if(grouped & plotting_child_ids) facet_grid(~get(xgroup), switch = "x", scales="free_x", space = "free_x")} +
+        {if(grouped & !plotting_ids) facet_grid(~get(xgroup), switch = "x", space = "free_x")} +
+        {if(grouped & plotting_ids) facet_grid(~get(xgroup), switch = "x", scales="free_x", space = "free_x")} +
         {if(grouped) theme(panel.spacing = unit(0, "lines"), strip.background = element_blank(), strip.placement = "outside")} +
         xlab(xlab_text) +
         ylab(get_column_labels(chart_col_labels, measure)) +
@@ -108,13 +138,13 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
         scale_colour_discrete(drop = FALSE) +
         scale_x_discrete(drop = FALSE) +
         {if(sample_size_too_small) coord_cartesian(ylim = c(0, 1))} +
-        {if(sample_size_too_small) annotate("text", x=x_mid, y=0.5, label= "Insufficient sample")} + 
+        {if(sample_size_too_small) annotate("text", x=x_mid, y=0.5, label= "No data for specified chart filter")} + 
         scale_y_continuous(labels=percent) +
         theme(panel.background = element_rect(fill = "white")) +
         theme(axis.line.x = element_line(color = "black"), axis.line.y = element_line(color = "black")) +
         guides(fill = guide_legend(title = get_column_labels(chart_col_labels, colour_by), title.position = "top")) +
         theme(axis.title = element_text(size=default_font_size)) +
-        theme(axis.text.x = element_text(angle = xaxis_text_angle, vjust=x_vjust, hjust=x_hjust, size=font_size)) +
+        theme(axis.text.x = element_text(angle = xaxis_text_angle, vjust=x_vjust, hjust=x_hjust, size=x_font_size)) +
         theme(axis.text.y = element_text(angle = 0, vjust=0.5, hjust=0.5, size=default_font_size)) +
         theme(legend.title = element_text(colour="black", size=default_font_size, face="bold"), legend.position = "right", legend.text = element_text(colour="black", size=default_font_size))
 
