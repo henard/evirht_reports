@@ -37,14 +37,17 @@ format_pupil_counts_df <- function(df) {
     df$Organisation <- as.character(df$Organisation)
     df$pct_Allocated <- df$N_Allocated / df$N_Allocated
     df[df$N_Allocated==0 & !is.na(df$N_Allocated), "pct_Allocated"] <- 0
-    df$pct_Active <- df$N_Active / df$N_Allocated
+    df$pct_Active <- (df$N_Active-df$N_Profiled) / df$N_Allocated
+    # df$pct_Active <- df$N_Active / df$N_Allocated
     df[df$N_Allocated==0 & !is.na(df$N_Allocated), "pct_Active"] <- 0
     df$pct_Profiled <- df$N_Profiled / df$N_Allocated
     df[df$N_Allocated==0 & !is.na(df$N_Allocated), "pct_Profiled"] <- 0
     dfl <- reshape(df, varying=c("N_Allocated", "N_Active", "N_Profiled", "pct_Allocated", "pct_Active", "pct_Profiled"),
                    direction="long", idvar="Organisation_ID", sep="_")
     names(dfl)[names(dfl) == 'time'] <- "pupil_count_type"
-    dfl <- dfl[dfl$pupil_count_type %in% c("Active", "Profiled"), ]
+    # dfl <- dfl[dfl$pupil_count_type %in% c("Active", "Profiled"), ]
+    dfl[!dfl$pupil_count_type %in% c("Active", "Profiled"), "pct"] <- NA
+    dfl[!dfl$pupil_count_type %in% c("Active", "Profiled", "Allocated"), "N"] <- NA
     dfl <- data.table(dfl)
     return(dfl)
 }
@@ -74,7 +77,7 @@ levels_present <- function(column) {
 # When data is aggregated for ploting, factor levels can be lost.
 # This expands the dataframe row-wise so all combinations of factors exist as a 
 # row
-expand_dataframe <- function(df, measure_colname, factors_only=FALSE) {
+expand_dataframe <- function(df, measure_colname, factors_only=TRUE) {
     # List to hold the levels over which to expand the dataframe by
     ll <- list()
 

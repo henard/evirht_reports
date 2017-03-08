@@ -25,7 +25,7 @@ report1 = list(
                   "xaxis"="School_Year",
                   "xgroup"="",
                   "colour_by"="Dev_Stage",
-                  "filter"=list("hs_locality1"=list("column"="AccountID", "values"=list(259, 261), "filter_type"="in"))),
+                  "filter"=list("hs_locality1_6"=list("column"="AccountID", "values"=list(259, 261), "filter_type"="in"))),
     "chart2"=list("type"="bar_side_by_side",
                   "dataset" = "score_change_dt",
                   "title"="HEADSTART LOCALITY 1\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
@@ -65,15 +65,16 @@ report1 = list(
                   "xaxis"="School_Year",
                   "xgroup"="",
                   "colour_by"="Dev_Stage",
-                  "filter"=list("org_callington"=list("column"="Organisation", "value"="Bodriggy", "filter_type"="contains"))),
-    "chart7"=list("type"="bar_side_by_side",
-                  "dataset" = "score_change_dt",
-                  "title"="BRUNEL PRIMARY SCHOOL\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
-                  "measure"="score_change",
-                  "xaxis"="Child_ID",
-                  "xgroup"="School_Year",
-                  "colour_by"="Dev_Stage",
-                  "filter"=list("org_brunell"=list("column"="Organisation", "value"="Brunel Primary", "filter_type"="contains")))
+                  "filter"=list("org_callington"=list("column"="Organisation", "value"="Bodriggy", "filter_type"="contains")))
+    # ,
+    # "chart7"=list("type"="bar_side_by_side",
+    #               "dataset" = "score_change_dt",
+    #               "title"="BRUNEL PRIMARY SCHOOL\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
+    #               "measure"="score_change",
+    #               "xaxis"="Child_ID",
+    #               "xgroup"="School_Year",
+    #               "colour_by"="Dev_Stage",
+    #               "filter"=list("org_brunell"=list("column"="Organisation", "value"="Brunel Primary", "filter_type"="contains")))
 )
 
 # report2: This is pie charts of share of pupils across development stages given in the pdf labelled ‘Sample 3’.
@@ -85,7 +86,8 @@ report2 = list(
                   "xaxis"="",
                   "xgroup"="",
                   "colour_by"="Dev_Stage",
-                  "filter"=list("N_assessment_2+"=list("column"="N_assessments", "lower"=2, "upper"=10, "filter_type"="range"),
+                  "filter"=list("hs_locality1_6"=list("column"="AccountID", "values"=list(259, 261), "filter_type"="in"),
+                                "N_assessment_2+"=list("column"="N_assessments", "lower"=2, "upper"=10, "filter_type"="range"),
                                 "Assessment_n_1"=list("column"="Assessment_n", "values"=list(1), "filter_type"="in"))),
     "chart2"=list("type"="pie",
                   "dataset" = "score_dt2",
@@ -94,7 +96,8 @@ report2 = list(
                   "xaxis"="",
                   "xgroup"="",
                   "colour_by"="Dev_Stage",
-                  "filter"=list("N_assessment_2+"=list("column"="N_assessments", "lower"=2, "upper"=10, "filter_type"="range"),
+                  "filter"=list("hs_locality1_6"=list("column"="AccountID", "values"=list(259, 261), "filter_type"="in"),
+                                "N_assessment_2+"=list("column"="N_assessments", "lower"=2, "upper"=10, "filter_type"="range"),
                                 "Assessment_n_1"=list("column"="Assessment_n_rev", "values"=list(-1), "filter_type"="in"))),
     "data1"=list("type"="data",
                  "dataset" = "score_dt2",
@@ -109,9 +112,9 @@ report2 = list(
                   "xaxis"="",
                   "xgroup"="",
                   "colour_by"="Dev_Stage",
-                  "filter"=list("N_assessment_2+"=list("column"="N_assessments", "lower"=2, "upper"=10, "filter_type"="range"),
-                                "Assessment_n_1"=list("column"="Assessment_n", "values"=list(1), "filter_type"="in"),
-                                "locality1"=list("column"="Locality", "values"=list(1), "filter_type"="in"))),
+                  "filter"=list("hs_locality1"=list("column"="AccountID", "values"=list(259), "filter_type"="in"),
+                                "N_assessment_2+"=list("column"="N_assessments", "lower"=2, "upper"=10, "filter_type"="range"),
+                                "Assessment_n_1"=list("column"="Assessment_n", "values"=list(1), "filter_type"="in"))),
     "chart4"=list("type"="pie",
                   "dataset" = "score_dt2",
                   "title"="HEADSTART LOCALITY 1\nShare of pupils in each Development Stage at\nlast assessment in 2014/15",
@@ -119,15 +122,18 @@ report2 = list(
                   "xaxis"="",
                   "xgroup"="",
                   "colour_by"="Dev_Stage",
-                  "filter"=list("N_assessment_2+"=list("column"="N_assessments", "lower"=2, "upper"=10, "filter_type"="range"),
-                                "Assessment_n_1"=list("column"="Assessment_n_rev", "values"=list(-1), "filter_type"="in"),
-                                "locality1"=list("column"="Locality", "values"=list(1), "filter_type"="in"))),
-    "data2"=list("type"="data",
-                 "dataset" = "score_dt2",
-                 "title"="HEADSTART LOCALITY 1\nChange in share of pupils in each Development Stage between\nfirst &last assessment in 2014/15",
-                 "measure"="c",
-                 "by"="Dev_Stage",
-                 "filter"=list("locality1"=list("column"="Locality", "values"=list(1), "filter_type"="in")))
+                  "filter"=list("hs_locality1"=list("column"="AccountID", "values"=list(259), "filter_type"="in"),
+                                "N_assessment_2+"=list("column"="N_assessments", "lower"=2, "upper"=10, "filter_type"="range"),
+                                "Assessment_n_1"=list("column"="Assessment_n", "values"=list(1), "filter_type"="in")))
+    # ,
+    # "data2"=list("type"="data",
+    #              "dataset" = "score_dt2",
+    #              "title"="HEADSTART LOCALITY 1\nChange in share of pupils in each Development Stage between\nfirst &last assessment in 2014/15",
+    #              "measure"="c",
+    #              "by"="Dev_Stage",
+    #              "filter"=list("hs_locality1"=list("column"="AccountID", "values"=list(259), "filter_type"="in"),
+    #                            "N_assessment_2+"=list("column"="N_assessments", "lower"=2, "upper"=10, "filter_type"="range"),
+    #                            "Assessment_n_1"=list("column"="Assessment_n", "values"=list(1), "filter_type"="in")))
 )
 
 # report3: This is the bar chart/scatter plot given in the pdf labelled ‘Sample 2’. Henry will consider this plot and
@@ -146,10 +152,22 @@ report3 = list(
 # report4: This is the TOL activity given in the spreadsheet called ‘Headstart Data – 11 05 16 for RHead.xlsx’).
 #         (This plot should be prioritised over plot 3 if there are time constraints).
 report4 = list(
-    "chart1"=list("type"="bar_side_by_side",
+    "chart1"=list("type"="bar_stacked",
                   "dataset" = "pupil_counts",
                   "title"="HEADSTART KERNOW - TOL activity",
                   "measure"="pct",
+                  "xaxis"="Organisation",
+                  "xgroup"="",
+                  "colour_by"="pupil_count_type",
+                  "filter"=list("Org_seln"=list("column"="Organisation_ID", "values"=c(1780, 871, 676, 1362, 1076, 671, 885, 1777, 1363,
+                                                                                       874, 886, 1359, 1075, 875, 1355, 887, 883, 1356,
+                                                                                       1361, 876, 893, 890, 877, 675, 1077, 813, 888, 878,
+                                                                                       673, 867, 870, 889, 884, 894, 1443, 891, 868, 869,
+                                                                                       879, 881, 1196, 892, 880, 882), "filter_type"="in"))),
+    "chart2"=list("type"="bar_side_by_side",
+                  "dataset" = "pupil_counts",
+                  "title"="HEADSTART KERNOW - TOL activity",
+                  "measure"="N",
                   "xaxis"="Organisation",
                   "xgroup"="",
                   "colour_by"="pupil_count_type",
@@ -183,7 +201,7 @@ report5 = list(
 
 reports = list("report1"=report1,
                "report2"=report2,
-               "report3"=report3,
+               # "report3"=report3,
                "report4"=report4,
                "report5"=report5)
 

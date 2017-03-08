@@ -22,7 +22,7 @@ data_source = "thrive"
 # try_use_rdata_if_recent = TRUE; and
 # No. days since it was last updated is < if_recent_days
 # then rdata local copy will be used
-if_recent_days <- 2
+if_recent_days <- -1
 try_use_rdata_if_recent = TRUE
 
 # Define storage types of csv data
@@ -46,8 +46,8 @@ style_guide <- list(
         "yellow"="#F1CA00",
         "orange"="#D57B16",
         "red"="#C33415",
-        "active_green"="#009900",
-        "profiled_red"="#993300"
+        "active_green"="#005500",
+        "profiled_red"="#009900"
     ),
     "devstrand_colours" = list(
         "Power & Identity"="green",
@@ -83,6 +83,7 @@ chart_col_labels = list(
     "Completed_Date_yy_mm_dd"="Date of assessment",
     "Child_ID_Completed_date"="Pupil ID-Date of Assessment",
     "pct"="Percentage of allocated pupils",
+    "N"="Number of pupils",
     "pupil_count_type"="Active / profiled"
 )
 
