@@ -75,17 +75,25 @@ levels_present <- function(column) {
 # This expands the dataframe row-wise so all combinations of factors exist as a 
 # row
 expand_dataframe <- function(df, measure_colname, factors_only=FALSE) {
+    # List to hold the levels over which to expand the dataframe by
     ll <- list()
-    factors <- setdiff(names(df), measure_colname)
-    for(column in factors) {
-        if(factors_only) {
-            if(inherits(df[, column], "factor")) {
-                ll[[column]] <- levels(factor(df[, column]))
-            }
+
+    # Determine th list of columns to include to identify the levels
+    if(factors_only) {
+        columns <- setdiff(names(df)[sapply(df, is.factor)], measure_colname)
+    } else {
+        columns <- setdiff(names(df), measure_colname)
+    }
+
+    # Identify the levels
+    for(column in columns) {
+        if(inherits(df[, column], "factor")) {
+            ll[[column]] <- levels(df[, column])
         } else {
             ll[[column]] <- levels(factor(df[, column]))
         }
     }
+
     if(length(ll)>0) {
         df <- merge(expand.grid(ll), df, all.x=TRUE)
         df[is.na(df[, measure_colname]), measure_colname] <- 0.00001
