@@ -1,5 +1,6 @@
 library(ggplot2)
 library(scales)
+library(grid)
 
 bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, filename, long_filename, dataset) {
     
@@ -7,6 +8,11 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
     plotting_child_ids <- any(grepl("Child_ID", c(xaxis, xgroup)))
     plotting_org_ids <- any(grepl("Organisation", c(xaxis, xgroup)))
     plotting_ids <- plotting_child_ids | plotting_org_ids
+    plotting_ids_on_xaxis <- grepl("Child_ID", xaxis) | grepl("Organisation", xaxis)
+    
+    # Determine units of measure
+    measure_units <- "Pupils"
+    if(measure=="Overall_Score") measure_units <- "Profiles"
     
     # Determine stacked or side-by-side bar chart
     if(grepl("side", type)) postn <- "dodge" else postn <- "stack"
@@ -27,7 +33,7 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
     names(dp_empty)[names(dp_empty) == 'mean'] <- measure
     dp_empty[measure] <- 0.00001
 
-        # Filter data as per config for chart
+    # Filter data as per config for chart
     if(!("all" %in% unlist(names(filter)))) data_set <- filter_dt(data_set, filter)
     if(grouped) levs_present <- levels_present(data_set[, get(xgroup)])
 
@@ -48,6 +54,7 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
     # Todo = annotate plot with this information
     sample_sizes <- list("sum"=sum(dp$n_pupils), "min"=min(dp$n_pupils), "max"=max(dp$n_pupils))
     dp[ , !(names(dp) %in% c("n_pupils"))]
+    sample_size_text <- paste(measure_units,": ", sample_sizes$sum, " range (", sample_sizes$min, ", ", sample_sizes$max, ")", sep="")
 
     # Reverse the order of Dev_Stage when display side-by-side charts
     if(postn == "dodge" & colour_by == "Dev_Stage") {
@@ -87,6 +94,7 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
         x_hjust = 0
         plot_height = 10
         x_font_size=default_font_size-floor(((number_of_categories-1)/20))
+        # dp[, xaxis] <- as.character(dp[, xaxis])
     } else if(plotting_org_ids) {
         xaxis_text_angle = -45
         x_vjust = 1
@@ -103,6 +111,11 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
         x_font_size=default_font_size-floor(((number_of_categories-1)/20))
     }
 
+    # Aggregating converts character variables into factors - revert this for id variables
+    if(grouped & plotting_ids_on_xaxis){
+        dp[, xaxis] <- as.character(dp[, xaxis])
+    }
+    
     xlab_text <- get_column_labels(chart_col_labels, xlab)
     if(too_many_categories & !sample_size_too_small) xlab_text <- paste(xlab_text, " (showing ", chunk_size, " out of ", number_of_categories, " categories.)")
     x_mid <- 0.5*length(unique(dp[, xaxis]))
@@ -112,9 +125,13 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
     } else {
         colour_palette <- get_colour_palette(style_guide, "devstrand_colours")
     }
+    charts_ymax <- 1
 
+    grob=grobTree(textGrob(sample_size_text, x=1, y=1, hjust=1, vjust=1, gp=gpar(col="black", fontsize=10)))
+    
     # Plot and save
-    p = ggplot(data=dp, aes(x=get(xaxis), y=get(measure), fill=get(colour_by))) +
+    # p = ggplot(data=dp, aes(x=get(xaxis), y=get(measure), fill=get(colour_by))) +
+    p = ggplot(data=dp, aes_string(x=xaxis, y=measure, fill=colour_by)) +
         geom_bar(stat = "identity", position=postn, colour="black", size=0.2) +
         # {if(grouped & !plotting_child_ids) facet_grid(~get(xgroup), switch = "x", space = "free_x")} +
         # {if(grouped & plotting_child_ids) facet_grid(~get(xgroup), switch = "x", scales="free_x", space = "free_x")} +
@@ -125,14 +142,16 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
         ylab(get_column_labels(chart_col_labels, measure)) +
         ggtitle(title) +
         theme(plot.title = element_text(lineheight=.8, face="bold", size=default_font_size)) +
-        theme(panel.grid.major.y = element_line(colour = "grey", linetype = "solid", size=0.2), panel.grid.minor.x = element_blank(), panel.grid.major.x = element_blank()) + 
+        # theme(panel.grid.major.y = element_line(colour = "grey", linetype = "solid", size=0.2), panel.grid.minor.x = element_blank(), panel.grid.major.x = element_blank()) + 
+        theme(panel.grid.major.y = element_line(colour = "grey", linetype = "solid", size=0.3), panel.grid.minor.x = element_blank(), panel.grid.major.x = element_line(colour = "grey", linetype = "dotted", size=0.3)) + 
         scale_fill_manual(values=unlist(colour_palette)) + 
         scale_colour_discrete(drop = FALSE) +
         scale_x_discrete(drop = FALSE) +
         {if(sample_size_too_small) coord_cartesian(ylim = c(0, 1))} +
         {if(sample_size_too_small) annotate("text", x=x_mid, y=0.5, label= "No data for specified chart filter")} + 
         # {if(sample_sizes) annotate("text", x=0, y=1, label= paste("Sample: N=", sample_sizes$sum, sep=""))} + 
-        scale_y_continuous(labels=percent) +
+        annotation_custom(grob) +
+        {if(measure != "N") scale_y_continuous(labels=percent)} +
         theme(panel.background = element_rect(fill = "white")) +
         theme(axis.line.x = element_line(color = "black"), axis.line.y = element_line(color = "black")) +
         guides(fill = guide_legend(title = get_column_labels(chart_col_labels, colour_by), title.position = "top")) +
