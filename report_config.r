@@ -65,16 +65,15 @@ report1 = list(
                   "xaxis"="School_Year",
                   "xgroup"="",
                   "colour_by"="Dev_Stage",
-                  "filter"=list("org_callington"=list("column"="Organisation", "value"="Bodriggy", "filter_type"="contains")))
-    # ,
-    # "chart7"=list("type"="bar_side_by_side",
-    #               "dataset" = "score_change_dt",
-    #               "title"="BRUNEL PRIMARY SCHOOL\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
-    #               "measure"="score_change",
-    #               "xaxis"="Child_ID",
-    #               "xgroup"="School_Year",
-    #               "colour_by"="Dev_Stage",
-    #               "filter"=list("org_brunell"=list("column"="Organisation", "value"="Brunel Primary", "filter_type"="contains")))
+                  "filter"=list("org_callington"=list("column"="Organisation", "value"="Bodriggy", "filter_type"="contains"))),
+    "chart7"=list("type"="bar_side_by_side",
+                  "dataset" = "score_change_dt",
+                  "title"="BRUNEL PRIMARY SCHOOL\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
+                  "measure"="score_change",
+                  "xaxis"="Child_ID",
+                  "xgroup"="School_Year",
+                  "colour_by"="Dev_Stage",
+                  "filter"=list("org_brunell"=list("column"="Organisation", "value"="Brunel Primary", "filter_type"="contains")))
 )
 
 # report2: This is pie charts of share of pupils across development stages given in the pdf labelled ‘Sample 3’.
@@ -104,7 +103,7 @@ report2 = list(
                  "title"="ALL HEADSTART SCHOOLS\nChange in share of pupils in each Development Stage between\nfirst &last assessment in 2014/15",
                  "measure"="c",
                  "by"="Dev_Stage",
-                 "filter"=list("all"=list("column"=NA, "values"=NA, "filter_type"="all"))),
+                 "filter"=list("hs_locality1_6"=list("column"="AccountID", "values"=list(259, 261), "filter_type"="in"))),
     "chart3"=list("type"="pie",
                   "dataset" = "score_dt2",
                   "title"="HEADSTART LOCALITY 1\nShare of pupils in each Development Stage at\nfirst assessment in 2014/15",
@@ -124,16 +123,13 @@ report2 = list(
                   "colour_by"="Dev_Stage",
                   "filter"=list("hs_locality1"=list("column"="AccountID", "values"=list(259), "filter_type"="in"),
                                 "N_assessment_2+"=list("column"="N_assessments", "lower"=2, "upper"=10, "filter_type"="range"),
-                                "Assessment_n_1"=list("column"="Assessment_n", "values"=list(1), "filter_type"="in")))
-    # ,
-    # "data2"=list("type"="data",
-    #              "dataset" = "score_dt2",
-    #              "title"="HEADSTART LOCALITY 1\nChange in share of pupils in each Development Stage between\nfirst &last assessment in 2014/15",
-    #              "measure"="c",
-    #              "by"="Dev_Stage",
-    #              "filter"=list("hs_locality1"=list("column"="AccountID", "values"=list(259), "filter_type"="in"),
-    #                            "N_assessment_2+"=list("column"="N_assessments", "lower"=2, "upper"=10, "filter_type"="range"),
-    #                            "Assessment_n_1"=list("column"="Assessment_n", "values"=list(1), "filter_type"="in")))
+                                "Assessment_n_1"=list("column"="Assessment_n_rev", "values"=list(-1), "filter_type"="in"))),
+    "data2"=list("type"="data",
+                 "dataset" = "score_dt2",
+                 "title"="HEADSTART LOCALITY 1\nChange in share of pupils in each Development Stage between\nfirst &last assessment in 2014/15",
+                 "measure"="c",
+                 "by"="Dev_Stage",
+                 "filter"=list("hs_locality1"=list("column"="AccountID", "values"=list(259), "filter_type"="in")))
 )
 
 # report3: This is the bar chart/scatter plot given in the pdf labelled ‘Sample 2’. Henry will consider this plot and
@@ -201,7 +197,7 @@ report5 = list(
 
 reports = list("report1"=report1,
                "report2"=report2,
-               # "report3"=report3,
+               "report3"=report3,
                "report4"=report4,
                "report5"=report5)
 

@@ -46,8 +46,9 @@ style_guide <- list(
         "yellow"="#F1CA00",
         "orange"="#D57B16",
         "red"="#C33415",
-        "active_green"="#005500",
-        "profiled_red"="#009900"
+        "allocated_green"="#009900",
+        "active_green"="#006600",
+        "profiled_green"="#003300"
     ),
     "devstrand_colours" = list(
         "Power & Identity"="green",
@@ -55,9 +56,14 @@ style_guide <- list(
         "Doing"="orange",
         "Being"="red"
     ),
+    "pupil_pct_colours" = list(
+        "Active"="active_green",
+        "Profiled"="profiled_green"
+    ),
     "pupil_counts_colours" = list(
-        "Profiled"="active_green",
-        "Active"="profiled_red"
+        "Allocated"="allocated_green",
+        "Active"="active_green",
+        "Profiled"="profiled_green"
     )
 )
 
@@ -105,6 +111,10 @@ get_colour_palette <- function(style_guide, colours) {
 
 get_devstrand_categories <- function(style_guide) {
     return(list(names(style_guide[["devstrand_colours"]])))
+}
+
+get_colourby_categories <- function(style_guide, colourby_colours) {
+    return(list(names(style_guide[[colourby_colours]])))
 }
 
 get_column_labels <- function(col_labels, cols) {

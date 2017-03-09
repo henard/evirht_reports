@@ -34,6 +34,7 @@ format_sql_df <- function(df) {
 
 # Apply changes to format of data specific to pupil_counts data imported (from SQL)
 format_pupil_counts_df <- function(df) {
+    pupil_count_categories <- get_colourby_categories(style_guide, "pupil_counts_colours")
     df$Organisation <- as.character(df$Organisation)
     df$pct_Allocated <- df$N_Allocated / df$N_Allocated
     df[df$N_Allocated==0 & !is.na(df$N_Allocated), "pct_Allocated"] <- 0
@@ -49,6 +50,7 @@ format_pupil_counts_df <- function(df) {
     dfl[!dfl$pupil_count_type %in% c("Active", "Profiled"), "pct"] <- NA
     dfl[!dfl$pupil_count_type %in% c("Active", "Profiled", "Allocated"), "N"] <- NA
     dfl <- data.table(dfl)
+    dfl$pupil_count_type <- factor(dfl$pupil_count_type, levels=unlist(pupil_count_categories))
     return(dfl)
 }
 
