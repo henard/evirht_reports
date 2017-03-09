@@ -61,14 +61,19 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
         dp[, colour_by] <- factor(dp[, colour_by], levels=rev(levels(dp[, colour_by])))
     }
 
+    # Make colour_by variable a factor with levels limited to those still present
+    if(measure=="pct") dp[, colour_by] <- factor(dp[, colour_by])
+
     # Assign each bar/ category in plot data a chunk number 'chunk' depending upon chunk size
     # For chunk_size = 100, chunck 1 is 1-100, chunk 2 is 101-200 and so on.
     chunk_size <- 100
-    if(postn=="stack") {
+    # if(postn=="stack") {
+    if(!grouped) {
         dp_chunk <- dp[!duplicated(dp[, xlab, drop=F]), xlab, drop=F]
     } else {
         dp_chunk <- dp[, xlab, drop=F]
     }
+
     number_of_categories <- nrow(dp_chunk)
     dp_chunk$chunk <- floor((1:number_of_categories)/chunk_size)+1
     dp <- merge(dp, dp_chunk, all.x=TRUE)
@@ -112,10 +117,13 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
     }
 
     # Aggregating converts character variables into factors - revert this for id variables
-    if(grouped & plotting_ids_on_xaxis){
+    # if(grouped & plotting_ids_on_xaxis){
+    #     dp[, xaxis] <- as.character(dp[, xaxis])
+    # }
+    if(plotting_ids_on_xaxis){
         dp[, xaxis] <- as.character(dp[, xaxis])
     }
-    
+
     xlab_text <- get_column_labels(chart_col_labels, xlab)
     if(too_many_categories & !sample_size_too_small) xlab_text <- paste(xlab_text, " (showing ", chunk_size, " out of ", number_of_categories, " categories.)")
     x_mid <- 0.5*length(unique(dp[, xaxis]))
@@ -125,32 +133,26 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
     } else {
         colour_palette <- get_colour_palette(style_guide, "devstrand_colours")
     }
-    charts_ymax <- 1
 
     grob=grobTree(textGrob(sample_size_text, x=1, y=1, hjust=1, vjust=1, gp=gpar(col="black", fontsize=10)))
     
     # Plot and save
-    # p = ggplot(data=dp, aes(x=get(xaxis), y=get(measure), fill=get(colour_by))) +
     p = ggplot(data=dp, aes_string(x=xaxis, y=measure, fill=colour_by)) +
         geom_bar(stat = "identity", position=postn, colour="black", size=0.2) +
-        # {if(grouped & !plotting_child_ids) facet_grid(~get(xgroup), switch = "x", space = "free_x")} +
-        # {if(grouped & plotting_child_ids) facet_grid(~get(xgroup), switch = "x", scales="free_x", space = "free_x")} +
-        {if(grouped & !plotting_ids) facet_grid(~get(xgroup), switch = "x", space = "free_x")} +
-        {if(grouped & plotting_ids) facet_grid(~get(xgroup), switch = "x", scales="free_x", space = "free_x")} +
+        {if(grouped & !plotting_ids) facet_grid(reformulate(xgroup), switch = "x", space = "free_x")} +
+        {if(grouped & plotting_ids) facet_grid(reformulate(xgroup), switch = "x", scales="free_x", space = "free_x")} +
         {if(grouped) theme(panel.spacing = unit(0, "lines"), strip.background = element_blank(), strip.placement = "outside")} +
         xlab(xlab_text) +
         ylab(get_column_labels(chart_col_labels, measure)) +
         ggtitle(title) +
         theme(plot.title = element_text(lineheight=.8, face="bold", size=default_font_size)) +
-        # theme(panel.grid.major.y = element_line(colour = "grey", linetype = "solid", size=0.2), panel.grid.minor.x = element_blank(), panel.grid.major.x = element_blank()) + 
         theme(panel.grid.major.y = element_line(colour = "grey", linetype = "solid", size=0.3), panel.grid.minor.x = element_blank(), panel.grid.major.x = element_line(colour = "grey", linetype = "dotted", size=0.3)) + 
         scale_fill_manual(values=unlist(colour_palette)) + 
         scale_colour_discrete(drop = FALSE) +
         scale_x_discrete(drop = FALSE) +
         {if(sample_size_too_small) coord_cartesian(ylim = c(0, 1))} +
         {if(sample_size_too_small) annotate("text", x=x_mid, y=0.5, label= "No data for specified chart filter")} + 
-        # {if(sample_sizes) annotate("text", x=0, y=1, label= paste("Sample: N=", sample_sizes$sum, sep=""))} + 
-        annotation_custom(grob) +
+        {if(colour_by!="pupil_count_type" & !grouped) annotation_custom(grob)} +
         {if(measure != "N") scale_y_continuous(labels=percent)} +
         theme(panel.background = element_rect(fill = "white")) +
         theme(axis.line.x = element_line(color = "black"), axis.line.y = element_line(color = "black")) +
@@ -187,12 +189,13 @@ pie_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
     
     # Plot setings
     default_font_size = 10
-    if(colour_by=="pupil_count_type") {
+    if(measure=="pct") {
+        colour_palette <- get_colour_palette(style_guide, "pupil_pct_colours")
+    } else if(measure=="N") {
         colour_palette <- get_colour_palette(style_guide, "pupil_counts_colours")
     } else {
         colour_palette <- get_colour_palette(style_guide, "devstrand_colours")
     }
-    # devstrand_colour_palette <- get_devstrand_colour_palette(style_guide)
     
     blank_theme <- theme_minimal() +
         theme(
