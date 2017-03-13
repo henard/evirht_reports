@@ -21,6 +21,8 @@ load(file.path("rdata", "report2_data1.Rdata"))
 report2_data1 <- first_last
 load(file.path("rdata", "report2_data2.Rdata"))
 report2_data2 <- first_last
+load(file.path("rdata", "report2_data3.Rdata"))
+report2_data3 <- first_last
 ```
 # Headstart Schools - Academic Year 2014/15\
 
@@ -37,6 +39,13 @@ Change in number of pupils at each developmental stage between earliest and late
 * Pupils at DOING                        `r report2_data2$change_text[[2]]`\
 * Pupils at THINKING                     `r report2_data2$change_text[[3]]`\
 * Pupils at POWER & IDENTITY             `r report2_data2$change_text[[4]]`\
+\newline
+![](plots/report2_chart5.png){ width=50% } ![](plots/report2_chart6.png){ width=50% }\
+Change in number of pupils at each developmental stage between earliest and latest assessment date during 2014/15 academic year:\
+Pupils at BEING             `r report2_data3$change_text[[1]]`\
+Pupils at DOING             `r report2_data3$change_text[[2]]`\
+Pupils at THINKING          `r report2_data3$change_text[[3]]`\
+Pupils at POWER & IDENTITY  `r report2_data3$change_text[[4]]`\
 \newline
 Please note that the earliest and latest assessment dates within the stated timeframe will vary for different pupils and different organisations.\
 \newpage
