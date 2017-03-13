@@ -4,6 +4,8 @@ library(grid)
 
 bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, filename, long_filename, dataset) {
     
+    plot_size_scale = 1.5
+    
     # Determine if plotting child_ids - handled differently
     plotting_child_ids <- any(grepl("Child_ID", c(xaxis, xgroup)))
     plotting_org_ids <- any(grepl("Organisation", c(xaxis, xgroup)))
@@ -162,7 +164,7 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
         theme(axis.text.y = element_text(angle = 0, vjust=0.5, hjust=0.5, size=default_font_size)) +
         theme(legend.title = element_text(colour="black", size=default_font_size, face="bold"), legend.position = "right", legend.text = element_text(colour="black", size=default_font_size))
 
-    ggsave(file.path(plots_dir, filename), plot = p, width = 20, height = plot_height, units = "cm")
+    ggsave(file.path(plots_dir, filename), plot = p, width = plot_size_scale*20, height = plot_size_scale*plot_height, units = "cm")
     sprintf("Saving plot: %s", file.path(plots_dir, filename))
 }
 

@@ -130,6 +130,33 @@ report2 = list(
                  "measure"="c",
                  "by"="Dev_Stage",
                  "filter"=list("hs_locality1"=list("column"="AccountID", "values"=list(259), "filter_type"="in")))
+    ,
+    "chart5"=list("type"="pie",
+                  "dataset" = "score_dt2",
+                  "title"="BRUNEL PRIMARY SCHOOL\nShare of pupils in each Development Stage at\nfirst assessment in 2014/15",
+                  "measure"="c",
+                  "xaxis"="",
+                  "xgroup"="",
+                  "colour_by"="Dev_Stage",
+                  "filter"=list("org_brunell"=list("column"="Organisation_ID", "values"=list(418), "filter_type"="in"),
+                                "N_assessment_2+"=list("column"="N_assessments", "lower"=2, "upper"=10, "filter_type"="range"),
+                                "Assessment_n_1"=list("column"="Assessment_n", "values"=list(1), "filter_type"="in"))),
+    "chart6"=list("type"="pie",
+                  "dataset" = "score_dt2",
+                  "title"="BRUNEL PRIMARY SCHOOL\nShare of pupils in each Development Stage at\nlast assessment in 2014/15",
+                  "measure"="c",
+                  "xaxis"="",
+                  "xgroup"="",
+                  "colour_by"="Dev_Stage",
+                  "filter"=list("org_brunell"=list("column"="Organisation_ID", "values"=list(418), "filter_type"="in"),
+                                "N_assessment_2+"=list("column"="N_assessments", "lower"=2, "upper"=10, "filter_type"="range"),
+                                "Assessment_n_1"=list("column"="Assessment_n_rev", "values"=list(-1), "filter_type"="in"))),
+    "data3"=list("type"="data",
+                 "dataset" = "score_dt2",
+                 "title"="BRUNEL PRIMARY SCHOOL\nChange in share of pupils in each Development Stage between\nfirst &last assessment in 2014/15",
+                 "measure"="c",
+                 "by"="Dev_Stage",
+                 "filter"=list("org_brunell"=list("column"="Organisation_ID", "values"=list(418), "filter_type"="in")))
 )
 
 # report3: This is the bar chart/scatter plot given in the pdf labelled ‘Sample 2’. Henry will consider this plot and
@@ -142,7 +169,7 @@ report3 = list(
                   "xaxis"="Child_ID_Completed_date",
                   "xgroup"="School_Year",
                   "colour_by"="Dev_Stage",
-                  "filter"=list("org_brunell"=list("column"="Organisation", "value"="Brunel Primary", "filter_type"="contains")))
+                  "filter"=list("org_acorn"=list("column"="Organisation_ID", "values"=list(675, 1077), "filter_type"="in")))
 )
 
 # report4: This is the TOL activity given in the spreadsheet called ‘Headstart Data – 11 05 16 for RHead.xlsx’).

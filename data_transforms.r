@@ -101,7 +101,9 @@ expand_dataframe <- function(df, measure_colname, factors_only=TRUE) {
 
     if(length(ll)>0) {
         df <- merge(expand.grid(ll), df, all.x=TRUE)
-        df[is.na(df[, measure_colname]), measure_colname] <- 0.00001
+        for(column in measure_colname) {
+            df[is.na(df[, column]), column] <- 0.00001
+        }
     }
     return(df)
 }
@@ -170,17 +172,19 @@ pupil_shares_data <- function(type, title, measure, by, filter, filename, long_f
     
     first <- aggregate(formula(formula_str), data=df[df$N_assessments>=2 & df$Assessment_n==1], FUN=sum)
     first$pct <- first$c/sum(first$c)
-    names(first) <- c("Dev_Stage", "first_n","first_pct")
+    names(first) <- c("Dev_Stage", "first_n", "first_pct")
     last <- aggregate(c ~ Dev_Stage, data=df[df$N_assessments>=2 & df$Assessment_n_rev==-1], FUN=sum)
     last$pct <- last$c/sum(last$c)
-    names(last) <- c("Dev_Stage", "last_n","last_pct")
-    first_last <- merge(first, last)
+    names(last) <- c("Dev_Stage", "last_n", "last_pct")
+    first_last <- merge(first, last, all=TRUE)
     first_last$Dev_Stage <- factor(first_last$Dev_Stage, levels=devstrand_categories)
+    first_last <- expand_dataframe(first_last, c("first_n", "first_pct", "last_n", "last_pct"))
     first_last <- first_last[rev(order(first_last$Dev_Stage)), ]
     first_last$pct_change <- paste(round(100*(abs(first_last$last_pct-first_last$first_pct)), 0), "%", sep="")
     first_last[first_last$pct_change=="0%", "pct_change"] <- ""
     first_last$dir_change <- as.character(factor(first_last$last_pct>first_last$first_pct, c(TRUE, FALSE), c("increase","reduction")))
     first_last[first_last$pct_change=="", "dir_change"] <- "unchanged"
     first_last$change_text <- paste(first_last$pct_change, first_last$dir_change, sep=" ")
+    first_last$change_text2 <- paste("Pupils at", toupper(first_last$Dev_Stage), first_last$pct_change, first_last$dir_change, sep=" ")
     save(first_last, file=file.path("rdata", filename))
 }
