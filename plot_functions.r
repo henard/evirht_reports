@@ -184,7 +184,7 @@ pie_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
     dp <- aggregate(formula(formula_str), data_set, sum)
     dp[, measure] <- dp[, measure]/sum(dp[, measure])
     dp[, "y_pos"] <- 1-(cumsum(dp[, measure]) - dp[, measure]/2)
-
+    dp <- add_xposoffset(dp, measure)
     # Make x-axis variables factors with levels limited to those still present in the data after filtering
     {if(grouped) dp[, xgroup] <- factor(dp[, xgroup], levels=levels_present(dp[, xgroup]))}
     # dp[, xaxis] <- factor(dp[, xaxis], levels=levels_present(dp[, xaxis]))
@@ -216,7 +216,7 @@ pie_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
         geom_bar(width = 1, stat = "identity", colour="black", size=0.2) +
         coord_polar("y", start=0) + 
         ggtitle(title)  +
-        geom_text(aes(x = 1.2, y = dp[, "y_pos"], label = percent(dp[, measure])), size=3) +
+        geom_text(aes(x = 1.2-dp[, "xlaboffset"]*0.25, y = dp[, "y_pos"], label = percent(dp[, measure])), size=3) +
         theme(axis.text.x=element_blank()) +
         scale_fill_manual(values=unlist(colour_palette)) + 
         blank_theme +

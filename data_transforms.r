@@ -161,6 +161,15 @@ score_change_data <- function(DT, groups) {
     return(DT[Assessment_n_rev==-1])
 }
 
+movsum <- function(x, n=2) {filter(x,rep(1,n), sides=1, circular=TRUE)}
+
+add_xposoffset <- function(data, measure) {
+    data$space <- (movsum(data[, measure], 2) + rev(movsum(rev(data[, measure]), 2)))/4
+    data$xlaboffset <- 0
+    data[data$space<=0.05, "xlaboffset"] <- 1
+    return(data)
+}
+
 pupil_shares_data <- function(type, title, measure, by, filter, filename, long_filename, dataset, devstrand_categories) {
     
     df <-  get(dataset)
