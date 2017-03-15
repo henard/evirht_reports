@@ -1,226 +1,261 @@
 # Report Configuration file
 
+# The following section details the arguments that must be defined to set up each report.
+# These arguments are to be edited by Thrive.
+
+# Report-wide arguments
+# Set the academic year by editing the following start & end dates.
+yr_start = "2014-09-01"
+yr_end = "2015-09-01"
+# Set the school years that are to be extracted by adding/removing from the following list.
+school_yrs = list("-1", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13")
+
+# Report 1 arguments
+# Report 1 can be set up to have as many charts as the user wants, simply add or remove a chart from each argument below.
+# Set the account or organisation IDs for each chart requested by editing the following.
+report1_ids_in <- list(chart1 = c(259,261),
+                       chart2 = 259,
+                       chart3 = 261,
+                       chart4 = 418,
+                       chart5 = 1319,
+                       chart6 = 676,
+                       chart7 = 418)
+# Provide labels for each chart requested (these are used within the chart titles)
+report1_labels_in <- list(chart1 = "ALL HEADSTART SCHOOLS",
+                          chart2 = "HEADSTART LOCALITY 1",
+                          chart3 = "HEADSTART LOCALITY 6",
+                          chart4 = "Brunel Primary School",
+                          chart5 = "Callington Community College",
+                          chart6 = "Bodriggy Academy",
+                          chart7 = "Brunel Primary School")
+# Define the levels for each chart requested.
+# Account or Organisation will produce a bar chart for percentage point change in assessments for the whole organisation or account
+# defined by its ID. Pupil will produce a bar chart for pupil ID by school year and must be at an Organisation level (i.e., an organisation 
+# ID is given in report1_ids_in for that chart).
+report1_levels_in <- list(chart1 = "Account",
+                          chart2 = "Account",
+                          chart3 = "Account",
+                          chart4 = "Organisation",
+                          chart5 = "Organisation",
+                          chart6 = "Organisation",
+                          chart7 = "Pupil")
+# Define the main heading for the report
+report1_heading <- "Headstart Schools"
+
+# Report 2 arguments
+# Report 2 can be set up to have as many charts as the user wants, simply add or remove a chart from each argument below.
+# Report 2 is set to produce pie charts by organisation or account. Set the organisation or account IDs for each chart requested by editing the following.
+report2_ids_in <- list(chart1 = c(259,261),
+                       chart2 = 259,
+                       chart3 = 418)
+# Provide labels for each chart requested (these are used within the chart titles)
+report2_labels_in <- list(chart1 = "ALL HEADSTART SCHOOLS",
+                          chart2 =  "HEADSTART LOCALITY 1",
+                          chart3 = "Brunel Primary School")
+# Define the levels for each chart requested (these can be either account or organisation).
+report2_levels_in <- list(chart1 = "Account",
+                          chart2 = "Account",
+                          chart3 = "Organisation")
+# Define the main heading for the report
+report2_heading <- "Headstart Schools"
+
+# Report 3 arguments
+# Report 3 filters by organisation only and is set up to produce one chart at a time.
+# Set the organisation ID below.
+report3_ids_in <- list(chart1 = c(675,1077)) 
+# Provide a label for the chart requested (these are used within the chart titles)
+report3_labels_in <- list(chart1 = "Acorn Academy - Nine Maidens")
+# Define the main heading for the report
+report3_heading <- "Headstart Schools"
+
+# Report 4 arguments
+# Report 4 filters by account only and is set up to produce one chart at a time.
+# Set the account ID below.
+report4_ids_in <- list(chart1 = c(259)) 
+# Provide a label for the chart requested (these are used within the chart titles)
+report4_labels_in <- list(chart1 = "HEADSTART LOCALITY 1")
+# Define the main heading for the report
+report4_heading <- "Headstart Schools"
+
+# Report 5 arguments
+# Report 5 can be set up to have as many charts as the user wants, simply add or remove a chart from each argument below.
+# Report 5 is set to produce bar charts by account only. Set the account IDs for each chart requested by editing the following.
+report5_ids_in <- list(chart1 = c(259),
+                       chart2 = c(261))
+# Provide a label for the chart requested (these are used within the chart title
+report5_labels_in <- list(chart1 = "HEADSTART LOCALITY 1",
+                          chart2 = "HEADSTART LOCALITY 6")
+# Define the main heading for the report
+report5_heading <- "Headstart Schools"
+
+######################################################################################################
+# Filters - recommended not to edit without support
+
 # Report-wide filter applied when querying data
 report_filters <- list(
     "time_filter"=list(
         "column"="Completed_Date",
-        "lower"="2014-09-01",
-        "upper"="2015-09-01",
+        "lower"=yr_start,
+        "upper"=yr_end,
         "filter_type"="range"
     ),
     "school_year_filter"=list(
         "column"="School_Year",
-        "values"=list("-1", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"),
+        "values"=school_yrs,
         "filter_type"="in"
     )
 )
 
+
+academic_yr = paste(gsub("(.+)(-)(.+)(-)(.+)","\\1",yr_start),"/",gsub("(.+)(-)(.+)(-)(.+)","\\1",yr_end),sep="")
+
 # report1: These are the bar charts in the pdf labelled ‘Sample 1’. For the Headstart set of schools these include a bar
 #         chart for all schools, schools in locality 1 and 6  and 3 individual Headstart school. (Now all in side-by-side format)
-report1 = list(
-    "chart1"=list("type"="bar_side_by_side",
+report1 = list()
+for(i in seq_along(report1_ids_in)){
+    if(length(report1_ids_in) != length(report1_levels_in) || length(report1_ids_in) != length(report1_labels_in))stop("Number of input ids, labels or levels in Report 1 are not the same length")
+    if(report1_levels_in[[i]]=="Pupil") xtitle = "Child_ID" else xtitle = "School_Year"
+    if(report1_levels_in[[i]] == "Account"){
+        temp =  list("type"="bar_side_by_side",
+                     "dataset" = "score_change_dt",
+                     "title"=paste(toupper(report1_labels_in[[i]]),"\nAverage percentage point change between first and last assessment scores\nduring academic year ",academic_yr,sep=""),
+                     "measure"="score_change",
+                     "xaxis"=xtitle,
+                     "xgroup"="",
+                     "colour_by"="Dev_Stage",
+                     "filter"=list("hs_locality"=list("column"="AccountID", "values"=list(report1_ids_in[[i]]), "filter_type"="in")))
+    } else if(report1_levels_in[[i]] == "Organisation"){
+        temp=list("type"="bar_side_by_side",
                   "dataset" = "score_change_dt",
-                  "title"="ALL HEADSTART SCHOOLS\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
+                  "title"= paste(toupper(report1_labels_in[[i]]),"\nAverage percentage point change between first and last assessment scores\nduring academic year ",academic_yr,sep=""),
                   "measure"="score_change",
-                  "xaxis"="School_Year",
+                  "xaxis"=xtitle,
                   "xgroup"="",
                   "colour_by"="Dev_Stage",
-                  "filter"=list("hs_locality1_6"=list("column"="AccountID", "values"=list(259, 261), "filter_type"="in"))),
-    "chart2"=list("type"="bar_side_by_side",
+                  "filter" = list("org"=list("column"="Organisation_ID", "values"=list(report1_ids_in[[i]]), "filter_type"="in")))
+    } else {
+        temp=list("type"="bar_side_by_side",
                   "dataset" = "score_change_dt",
-                  "title"="HEADSTART LOCALITY 1\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
+                  "title"=paste(toupper(report1_labels_in[[i]]),"\nAverage percentage point change between first and last assessment scores\nduring academic year ",academic_yr,sep=""),
                   "measure"="score_change",
-                  "xaxis"="School_Year",
-                  "xgroup"="",
-                  "colour_by"="Dev_Stage",
-                  "filter"=list("hs_locality1"=list("column"="AccountID", "values"=list(259), "filter_type"="in"))),
-    "chart3"=list("type"="bar_side_by_side",
-                  "dataset" = "score_change_dt",
-                  "title"="HEADSTART LOCALITY 6\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
-                  "measure"="score_change",
-                  "xaxis"="School_Year",
-                  "xgroup"="",
-                  "colour_by"="Dev_Stage",
-                  "filter"=list("hs_locality6"=list("column"="AccountID", "values"=list(261), "filter_type"="in"))),
-    "chart4"=list("type"="bar_side_by_side",
-                  "dataset" = "score_change_dt",
-                  "title"="BRUNEL PRIMARY SCHOOL\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
-                  "measure"="score_change",
-                  "xaxis"="School_Year",
-                  "xgroup"="",
-                  "colour_by"="Dev_Stage",
-                  "filter"=list("org_brunell"=list("column"="Organisation", "value"="Brunel Primary", "filter_type"="contains"))),
-    "chart5"=list("type"="bar_side_by_side",
-                  "dataset" = "score_change_dt",
-                  "title"="CALLINGTON COMMUNITY COLLEGE\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
-                  "measure"="score_change",
-                  "xaxis"="School_Year",
-                  "xgroup"="",
-                  "colour_by"="Dev_Stage",
-                  "filter"=list("org_callington"=list("column"="Organisation", "value"="Callington Community", "filter_type"="contains"))),
-    "chart6"=list("type"="bar_side_by_side",
-                  "dataset" = "score_change_dt",
-                  "title"="BODRIGGY ACADEMY\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
-                  "measure"="score_change",
-                  "xaxis"="School_Year",
-                  "xgroup"="",
-                  "colour_by"="Dev_Stage",
-                  "filter"=list("org_callington"=list("column"="Organisation", "value"="Bodriggy", "filter_type"="contains"))),
-    "chart7"=list("type"="bar_side_by_side",
-                  "dataset" = "score_change_dt",
-                  "title"="BRUNEL PRIMARY SCHOOL\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
-                  "measure"="score_change",
-                  "xaxis"="Child_ID",
+                  "xaxis"=xtitle,
                   "xgroup"="School_Year",
                   "colour_by"="Dev_Stage",
-                  "filter"=list("org_brunell"=list("column"="Organisation", "value"="Brunel Primary", "filter_type"="contains")))
-)
+                  "filter"=list("org" = list("column"="Organisation_ID", "values"=list(report1_ids_in[[i]]), "filter_type"="in")))
+    }
+    report1[[i]] = assign(paste("chart",i,sep=""),temp)
+}
+names(report1) = paste("chart",seq_along(report1_ids_in),sep="")
+
+report1_fullheading <- paste(report1_heading," - Academic Year ",academic_yr,sep="")
+save(report1_fullheading,file = "rdata/report1_fullheading.RData")
+
 
 # report2: This is pie charts of share of pupils across development stages given in the pdf labelled ‘Sample 3’.
-report2 = list(
-    "chart1"=list("type"="pie",
+report2 = list()
+index = 1
+for(i in seq_along(report2_ids_in)){
+    if(length(report2_ids_in) != length(report2_levels_in) || length(report2_ids_in) != length(report2_labels_in))stop("Number of input ids, labels or levels in Report 2 are not the same length")
+    if(report2_levels_in[[i]] == "Account") col_level = "AccountID" else col_level = "Organisation_ID"
+    temp1=list("type"="pie",
                   "dataset" = "score_dt2",
-                  "title"="ALL HEADSTART SCHOOLS\nShare of pupils in each Development Stage at\nfirst assessment in 2014/15",
+                  "title"=paste(toupper(report2_labels_in[[i]]),"\nShare of pupils in each Development Stage at\nfirst assessment in ",academic_yr,sep=""),
                   "measure"="c",
                   "xaxis"="",
                   "xgroup"="",
                   "colour_by"="Dev_Stage",
-                  "filter"=list("hs_locality1_6"=list("column"="AccountID", "values"=list(259, 261), "filter_type"="in"),
+                  "filter"=list("org"=list("column"=col_level, "values"=list(report2_ids_in[[i]]), "filter_type"="in"),
                                 "N_assessment_2+"=list("column"="N_assessments", "lower"=2, "upper"=10, "filter_type"="range"),
-                                "Assessment_n_1"=list("column"="Assessment_n", "values"=list(1), "filter_type"="in"))),
-    "chart2"=list("type"="pie",
+                                "Assessment_n_1"=list("column"="Assessment_n", "values"=list(1), "filter_type"="in")))
+    report2[[index]] = assign(paste("chart",(i*2-1),sep=""),temp1)
+    index = index + 1
+    temp2=list("type"="pie",
                   "dataset" = "score_dt2",
-                  "title"="ALL HEADSTART SCHOOLS\nShare of pupils in each Development Stage at\nlast assessment in 2014/15",
+                  "title"=paste(toupper(report2_labels_in[[i]]),"\nShare of pupils in each Development Stage at\nlast assessment in ",academic_yr,sep=""),
                   "measure"="c",
                   "xaxis"="",
                   "xgroup"="",
                   "colour_by"="Dev_Stage",
-                  "filter"=list("hs_locality1_6"=list("column"="AccountID", "values"=list(259, 261), "filter_type"="in"),
+                  "filter"=list("org"=list("column"=col_level, "values"=list(report2_ids_in[[i]]), "filter_type"="in"),
                                 "N_assessment_2+"=list("column"="N_assessments", "lower"=2, "upper"=10, "filter_type"="range"),
-                                "Assessment_n_1"=list("column"="Assessment_n_rev", "values"=list(-1), "filter_type"="in"))),
-    "data1"=list("type"="data",
+                                "Assessment_n_1"=list("column"="Assessment_n_rev", "values"=list(-1), "filter_type"="in")))
+    report2[[index]] = assign(paste("chart",(i*2),sep=""),temp2)
+    index = index + 1
+    temp3=list("type"="data",
                  "dataset" = "score_dt2",
-                 "title"="ALL HEADSTART SCHOOLS\nChange in share of pupils in each Development Stage between\nfirst &last assessment in 2014/15",
+                 "title"=paste(toupper(report2_labels_in[[i]]),"\nChange in share of pupils in each Development Stage between\nfirst &last assessment in ",academic_yr,sep=""),
                  "measure"="c",
                  "by"="Dev_Stage",
-                 "filter"=list("hs_locality1_6"=list("column"="AccountID", "values"=list(259, 261), "filter_type"="in"))),
-    "chart3"=list("type"="pie",
-                  "dataset" = "score_dt2",
-                  "title"="HEADSTART LOCALITY 1\nShare of pupils in each Development Stage at\nfirst assessment in 2014/15",
-                  "measure"="c",
-                  "xaxis"="",
-                  "xgroup"="",
-                  "colour_by"="Dev_Stage",
-                  "filter"=list("hs_locality1"=list("column"="AccountID", "values"=list(259), "filter_type"="in"),
-                                "N_assessment_2+"=list("column"="N_assessments", "lower"=2, "upper"=10, "filter_type"="range"),
-                                "Assessment_n_1"=list("column"="Assessment_n", "values"=list(1), "filter_type"="in"))),
-    "chart4"=list("type"="pie",
-                  "dataset" = "score_dt2",
-                  "title"="HEADSTART LOCALITY 1\nShare of pupils in each Development Stage at\nlast assessment in 2014/15",
-                  "measure"="c",
-                  "xaxis"="",
-                  "xgroup"="",
-                  "colour_by"="Dev_Stage",
-                  "filter"=list("hs_locality1"=list("column"="AccountID", "values"=list(259), "filter_type"="in"),
-                                "N_assessment_2+"=list("column"="N_assessments", "lower"=2, "upper"=10, "filter_type"="range"),
-                                "Assessment_n_1"=list("column"="Assessment_n_rev", "values"=list(-1), "filter_type"="in"))),
-    "data2"=list("type"="data",
-                 "dataset" = "score_dt2",
-                 "title"="HEADSTART LOCALITY 1\nChange in share of pupils in each Development Stage between\nfirst &last assessment in 2014/15",
-                 "measure"="c",
-                 "by"="Dev_Stage",
-                 "filter"=list("hs_locality1"=list("column"="AccountID", "values"=list(259), "filter_type"="in")))
-    ,
-    "chart5"=list("type"="pie",
-                  "dataset" = "score_dt2",
-                  "title"="BRUNEL PRIMARY SCHOOL\nShare of pupils in each Development Stage at\nfirst assessment in 2014/15",
-                  "measure"="c",
-                  "xaxis"="",
-                  "xgroup"="",
-                  "colour_by"="Dev_Stage",
-                  "filter"=list("org_brunell"=list("column"="Organisation_ID", "values"=list(418), "filter_type"="in"),
-                                "N_assessment_2+"=list("column"="N_assessments", "lower"=2, "upper"=10, "filter_type"="range"),
-                                "Assessment_n_1"=list("column"="Assessment_n", "values"=list(1), "filter_type"="in"))),
-    "chart6"=list("type"="pie",
-                  "dataset" = "score_dt2",
-                  "title"="BRUNEL PRIMARY SCHOOL\nShare of pupils in each Development Stage at\nlast assessment in 2014/15",
-                  "measure"="c",
-                  "xaxis"="",
-                  "xgroup"="",
-                  "colour_by"="Dev_Stage",
-                  "filter"=list("org_brunell"=list("column"="Organisation_ID", "values"=list(418), "filter_type"="in"),
-                                "N_assessment_2+"=list("column"="N_assessments", "lower"=2, "upper"=10, "filter_type"="range"),
-                                "Assessment_n_1"=list("column"="Assessment_n_rev", "values"=list(-1), "filter_type"="in"))),
-    "data3"=list("type"="data",
-                 "dataset" = "score_dt2",
-                 "title"="BRUNEL PRIMARY SCHOOL\nChange in share of pupils in each Development Stage between\nfirst &last assessment in 2014/15",
-                 "measure"="c",
-                 "by"="Dev_Stage",
-                 "filter"=list("org_brunell"=list("column"="Organisation_ID", "values"=list(418), "filter_type"="in")))
-)
+                 "filter"=list("org"=list("column"=col_level, "values"=list(report2_ids_in[[i]]), "filter_type"="in")))
+    report2[[index]] = assign(paste("data",i,sep=""),temp3)
+    index = index + 1
+}
+names(report2) = paste(rep(c("chart","chart","data"),length(report2_ids_in)),rep(seq_along(report2_ids_in),each=3)*rep(c(2,2,1),length(report2_ids_in))-(rep(c(1,0,0),length(report2_ids_in))),sep="")
+
+report2_fullheading <- paste(report2_heading," - Academic Year ",academic_yr,sep="")
+save(report2_fullheading,file = "rdata/report2_fullheading.RData")
 
 # report3: This is the bar chart/scatter plot given in the pdf labelled ‘Sample 2’. Henry will consider this plot and
 #         provide alternative formats if there are any improved ways of visualising the data.
+
 report3 = list(
     "chart1"=list("type"="bar_side_by_side",
                   "dataset" = "score_dt",
-                  "title"="HEADSTART SCHOOL - Acorn Academy - Nine Maidens\nIndividual pupil journeys during academic year 2014/15",
+                  "title"=paste(toupper(report3_labels_in[[1]]),"\nIndividual pupil journeys during academic year ",academic_yr,sep=""),
                   "measure"="Overall_Score",
                   "xaxis"="Child_ID_Completed_date",
                   "xgroup"="School_Year",
                   "colour_by"="Dev_Stage",
-                  "filter"=list("org_acorn"=list("column"="Organisation_ID", "values"=list(675, 1077), "filter_type"="in")))
+                  "filter"=list("org_brunell"=list("column"="Organisation_ID", "values"=list(report3_ids_in[[1]]), "filter_type"="in")))
 )
+
+report3_fullheading <- paste(report3_heading," - Academic Year ",academic_yr,sep="")
+save(report3_fullheading,file = "rdata/report3_fullheading.RData")
 
 # report4: This is the TOL activity given in the spreadsheet called ‘Headstart Data – 11 05 16 for RHead.xlsx’).
 #         (This plot should be prioritised over plot 3 if there are time constraints).
 report4 = list(
     "chart1"=list("type"="bar_stacked",
                   "dataset" = "pupil_counts",
-                  "title"="HEADSTART KERNOW - TOL activity",
+                  "title"=paste(toupper(report4_labels_in[[1]])," - TOL activity",sep=""),
                   "measure"="pct",
                   "xaxis"="Organisation",
                   "xgroup"="",
                   "colour_by"="pupil_count_type",
-                  "filter"=list("Org_seln"=list("column"="Organisation_ID", "values"=c(1780, 871, 676, 1362, 1076, 671, 885, 1777, 1363,
-                                                                                       874, 886, 1359, 1075, 875, 1355, 887, 883, 1356,
-                                                                                       1361, 876, 893, 890, 877, 675, 1077, 813, 888, 878,
-                                                                                       673, 867, 870, 889, 884, 894, 1443, 891, 868, 869,
-                                                                                       879, 881, 1196, 892, 880, 882), "filter_type"="in"))),
+                  "filter"=list("Org_seln"=list("column"="AccountID", "values"=list(report4_ids_in[[1]]), "filter_type"="in"))),
     "chart2"=list("type"="bar_side_by_side",
                   "dataset" = "pupil_counts",
-                  "title"="HEADSTART KERNOW - TOL activity",
+                  "title"=paste(toupper(report4_labels_in[[1]])," - TOL activity",sep=""),
                   "measure"="N",
                   "xaxis"="Organisation",
                   "xgroup"="",
                   "colour_by"="pupil_count_type",
-                  "filter"=list("Org_seln"=list("column"="Organisation_ID", "values"=c(1780, 871, 676, 1362, 1076, 671, 885, 1777, 1363,
-                                                                                       874, 886, 1359, 1075, 875, 1355, 887, 883, 1356,
-                                                                                       1361, 876, 893, 890, 877, 675, 1077, 813, 888, 878,
-                                                                                       673, 867, 870, 889, 884, 894, 1443, 891, 868, 869,
-                                                                                       879, 881, 1196, 892, 880, 882), "filter_type"="in")))
+                  "filter"=list("Org_seln"=list("column"="AccountID", "values"=list(report4_ids_in[[1]]), "filter_type"="in")))
 )
+
+report4_fullheading <- paste(report4_heading," - Academic Year ",academic_yr,sep="")
+save(report4_fullheading,file = "rdata/report4_fullheading.RData")
 
 # report5: This is the bar chart given in the pdf labelled ‘Sample 3’ and looks at individual pupil journeys by
 #          development stage. The plots on individual progress are not required. (Now a in a new report of its own)
-report5 = list(
-    "chart1"=list("type"="bar_side_by_side",
+report5 = list()
+for(i in seq_along(report5_ids_in)){
+    if(length(report5_ids_in) != length(report5_labels_in))stop("Number of input ids, labels or levels in Report 5 are not the same length")
+    temp=list("type"="bar_side_by_side",
                   "dataset" = "score_change_dt",
-                  "title"="HEADSTART LOCALITY 1\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
+                  "title"=paste(toupper(report5_labels_in[[i]]),"\nAverage percentage point change between first and last assessment scores\nduring academic year ",academic_yr,sep=""),
                   "measure"="score_change",
                   "xaxis"="Organisation",
                   "xgroup"="",
                   "colour_by"="Dev_Stage",
-                  "filter"=list("hs_locality1"=list("column"="AccountID", "values"=list(259), "filter_type"="in"))),
-    "chart2"=list("type"="bar_side_by_side",
-                  "dataset" = "score_change_dt",
-                  "title"="HEADSTART LOCALITY 6\nAverage percentage point change between first and last assessment scores\nduring academic year 2014/15",
-                  "measure"="score_change",
-                  "xaxis"="Organisation",
-                  "xgroup"="",
-                  "colour_by"="Dev_Stage",
-                  "filter"=list("hs_locality6"=list("column"="AccountID", "values"=list(261), "filter_type"="in")))
-)
+                  "filter"=list("org"=list("column"="AccountID", "values"=list(report5_ids_in[[i]]), "filter_type"="in")))
+    report5[[i]] = assign(paste("chart",i,sep=""),temp)
+    
+}
+names(report5) = paste("chart",seq_along(report5_ids_in),sep="")
+
+report5_fullheading <- paste(report5_heading," - Academic Year ",academic_yr,sep="")
+save(report5_fullheading,file = "rdata/report5_fullheading.RData")
 
 reports = list("report1"=report1,
                "report2"=report2,

@@ -17,36 +17,40 @@ spaces <- function(n) paste(rep(" ", n), collapse="")
 ```
 
 ```{r get_pupil_share_data, echo=FALSE}
-load(file.path("rdata", "report2_data1.Rdata"))
-report2_data1 <- first_last
-load(file.path("rdata", "report2_data2.Rdata"))
-report2_data2 <- first_last
-load(file.path("rdata", "report2_data3.Rdata"))
-report2_data3 <- first_last
+data_files = dir("rdata")[grep("report2_data",dir("rdata"))]
+for(i in seq_along(data_files)){
+    load(file.path("rdata", data_files[i]))
+    assign(paste("report2_data",i,sep=""),first_last)
+}
 ```
-# Headstart Schools - Academic Year 2014/15\
 
-![](plots/report2_chart1.png){ width=50% } ![](plots/report2_chart2.png){ width=50% }\
-Change in number of pupils at each developmental stage between earliest and latest assessment date during 2014/15 academic year:\
-Pupils at BEING             `r report2_data1$change_text[[1]]`\
-Pupils at DOING             `r report2_data1$change_text[[2]]`\
-Pupils at THINKING          `r report2_data1$change_text[[3]]`\
-Pupils at POWER & IDENTITY  `r report2_data1$change_text[[4]]`\
-\newline
-![](plots/report2_chart3.png){ width=50% } ![](plots/report2_chart4.png){ width=50% }\
-Change in number of pupils at each developmental stage between earliest and latest assessment date during 2014/15 academic year:\
-* Pupils at BEING `r print(spaces(10))`  `r report2_data2$change_text[[1]]`\
-* Pupils at DOING                        `r report2_data2$change_text[[2]]`\
-* Pupils at THINKING                     `r report2_data2$change_text[[3]]`\
-* Pupils at POWER & IDENTITY             `r report2_data2$change_text[[4]]`\
-\newline
-![](plots/report2_chart5.png){ width=50% } ![](plots/report2_chart6.png){ width=50% }\
-Change in number of pupils at each developmental stage between earliest and latest assessment date during 2014/15 academic year:\
-Pupils at BEING             `r report2_data3$change_text[[1]]`\
-Pupils at DOING             `r report2_data3$change_text[[2]]`\
-Pupils at THINKING          `r report2_data3$change_text[[3]]`\
-Pupils at POWER & IDENTITY  `r report2_data3$change_text[[4]]`\
-\newline
+```{r heading, echo = FALSE}
+load(file.path("rdata", "report2_fullheading.Rdata"))
+```
+
+```{r list of pngs, echo = FALSE}
+report2_pngs = dir("plots")[grep("report2",dir("plots"))]
+```
+
+
+# `r report2_fullheading[1]`\
+
+```{r insert plots and table of statistics, echo = F, results = 'asis'}
+for(i in seq_along(data_files)){
+    cat('![]')
+    cat(paste("(plots/",report2_pngs[i*2-1],")",sep=""))
+    cat('{ width=50%}')
+    cat('![]')
+    cat(paste("(plots/",report2_pngs[i*2],")",sep=""))
+    cat('{ width=50%}\n')
+    cat('Change in number of pupils at each developmental stage between earliest and latest assessment date during 2014/15 academic year:\n')
+    temp = eval(parse(text=paste("report2_data",i,sep="")))
+    print(knitr::kable(temp$change_text2, digits=2, booktabs=TRUE))
+    cat('\n')
+}
+```
+
+<!-- \newline -->
 Please note that the earliest and latest assessment dates within the stated timeframe will vary for different pupils and different organisations.\
 \newpage
 Note: This preliminary analysis of data is provided in good faith as a means of determining which graphs and charts are informative for organisations and clusters and which are not. The data for this exercise has been cleaned as follows: incomplete entries, entries labelled as ‘test’ or ‘training’, child ID profiles with spurious age data (>100years, <0 years) and replicated results (same child ID, result and exact time) have been removed. Where multiple entries existed for an individual child within the same Strand on the same day, only a single entry has been retained. This was the latest entry or, when the assessments had the same completion time, the lowest score was kept. If the number of assessment results given for a single child at the same time exceeded 5, all entries have been removed as the data set was deemed to be unreliable user test data. In cases where a child had been assessed only once within a Strand, the unique data entry has been discounted in all ‘progress’ charts where a minimum of two assessment results are needed. Fronting the Challenge Projects Ltd (Thrive) accept no liability arising from the use of these charts and graphs since it cannot take part in the decision as to when to profile individual children and at what developmental stage.
