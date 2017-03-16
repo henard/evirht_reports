@@ -175,21 +175,40 @@ add_xposoffset <- function(data, measure) {
 }
 
 pupil_shares_data <- function(type, title, measure, by, filter, filename, long_filename, dataset, devstrand_categories) {
-    
+
     df <-  get(dataset)
+
     # Create model formular from config for aggregate function
     formula_str <- paste(measure, "~", by, sep=" ")
-    
-    # Filter data as per config for chart
-    if(!("all" %in% unlist(names(filter)))) df <- filter_dt(df, filter)
-    
+
     first <- aggregate(formula(formula_str), data=df[df$N_assessments>=2 & df$Assessment_n==1], FUN=sum)
     first$pct <- first$c/sum(first$c)
     names(first) <- c("Dev_Stage", "first_n", "first_pct")
     last <- aggregate(c ~ Dev_Stage, data=df[df$N_assessments>=2 & df$Assessment_n_rev==-1], FUN=sum)
     last$pct <- last$c/sum(last$c)
     names(last) <- c("Dev_Stage", "last_n", "last_pct")
-    first_last <- merge(first, last, all=TRUE)
+    first_last_empty <- merge(first, last, all=TRUE)
+    first_last_empty[, c("first_n", "first_pct", "last_n", "last_pct")] = 0
+
+    # Filter data as per config for chart
+    if(!("all" %in% unlist(names(filter)))) df <- filter_dt(df, filter)
+
+    # Create an indicator of when the sample size is too small, if so use empty plot dataframe
+    min_sample_size <- 1
+    sample_size_too_small <- nrow(df)<min_sample_size
+    if(sample_size_too_small) {
+        first_last <- first_last_empty
+    } else {
+        # Aggregate filtered data to create data for plotting
+        first <- aggregate(formula(formula_str), data=df[df$N_assessments>=2 & df$Assessment_n==1], FUN=sum)
+        first$pct <- first$c/sum(first$c)
+        names(first) <- c("Dev_Stage", "first_n", "first_pct")
+        last <- aggregate(c ~ Dev_Stage, data=df[df$N_assessments>=2 & df$Assessment_n_rev==-1], FUN=sum)
+        last$pct <- last$c/sum(last$c)
+        names(last) <- c("Dev_Stage", "last_n", "last_pct")
+        first_last <- merge(first, last, all=TRUE)
+    }
+
     first_last$Dev_Stage <- factor(first_last$Dev_Stage, levels=devstrand_categories)
     first_last <- expand_dataframe(first_last, c("first_n", "first_pct", "last_n", "last_pct"))
     first_last <- first_last[rev(order(first_last$Dev_Stage)), ]
