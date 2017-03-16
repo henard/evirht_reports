@@ -40,12 +40,12 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
     if(grouped) levs_present <- levels_present(data_set[, get(xgroup)])
 
     # Create an indicator of when the sample size is too small, if so use empty plot dataframe
-    if(plotting_child_ids | plotting_org_ids) min_sample_size <- 1 else min_sample_size <- 1
+    min_sample_size <- 1
     sample_size_too_small <- nrow(data_set)<min_sample_size
     if(sample_size_too_small) {
         dp <- dp_empty
     } else {
-        # dp <- aggregate(formula(formula_str), data_set, mean)
+        # Aggregate filtered data to create data for plotting
         dp <- aggregate(formula(formula_str), data_set, FUN = function(x) c(mean = mean(x), n_pupils = length(x)))
         dp <- do.call(data.frame, dp)
         names(dp) <- sub(".*\\.", "", names(dp))
@@ -53,7 +53,6 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
     }
 
     # Capture sample size measurements then remove sample size column (n_pupils) from dataframe
-    # Todo = annotate plot with this information
     sample_sizes <- list("sum"=sum(dp$n_pupils), "min"=min(dp$n_pupils), "max"=max(dp$n_pupils))
     dp[ , !(names(dp) %in% c("n_pupils"))]
     sample_size_text <- paste(measure_units,": ", sample_sizes$sum, " range (", sample_sizes$min, ", ", sample_sizes$max, ")", sep="")
@@ -91,9 +90,9 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
     # Plot setings
     default_font_size = 10
 
-    if(!grouped)
-        # Ensure the width of bars is consistent when plot type="side_by_side"
-        dp <- expand_dataframe(dp, measure)
+    # Ensure the width of bars is consistent when plot type="side_by_side"
+    if(!grouped) dp <- expand_dataframe(dp, measure)
+
     # Configure x-axis label settings for different  x-axis variables 
     if(plotting_child_ids) {
         xaxis_text_angle = -90
@@ -119,23 +118,23 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
     }
 
     # Aggregating converts character variables into factors - revert this for id variables
-    # if(grouped & plotting_ids_on_xaxis){
-    #     dp[, xaxis] <- as.character(dp[, xaxis])
-    # }
-    if(plotting_ids_on_xaxis){
-        dp[, xaxis] <- as.character(dp[, xaxis])
-    }
+    if(plotting_ids_on_xaxis) dp[, xaxis] <- as.character(dp[, xaxis])
 
+    # If not all categories are being included say so in the x-axis lable
     xlab_text <- get_column_labels(chart_col_labels, xlab)
     if(too_many_categories & !sample_size_too_small) xlab_text <- paste(xlab_text, " (showing ", chunk_size, " out of ", number_of_categories, " categories.)")
     x_mid <- 0.5*length(unique(dp[, xaxis]))
     
+    # Set colour palette according to colour_by variable
     if(colour_by=="pupil_count_type") {
         colour_palette <- get_colour_palette(style_guide, "pupil_counts_colours")
     } else {
         colour_palette <- get_colour_palette(style_guide, "devstrand_colours")
     }
 
+    # Configure grob for plotting sample size text in top right hand corner.
+    # (This method enables you to specify the relative position of the text
+    # - no need to specify the coordinates which change from one chart to the next)
     grob=grobTree(textGrob(sample_size_text, x=1, y=1, hjust=1, vjust=1, gp=gpar(col="black", fontsize=10)))
     
     # Plot and save
@@ -153,7 +152,7 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
         scale_colour_discrete(drop = FALSE) +
         scale_x_discrete(drop = FALSE) +
         {if(sample_size_too_small) coord_cartesian(ylim = c(0, 1))} +
-        {if(sample_size_too_small) annotate("text", x=x_mid, y=0.5, label= "No data for specified chart filter")} + 
+        {if(sample_size_too_small) annotate("text", x=x_mid, y=0.5, label= "No data in specified chart filter")} + 
         {if(colour_by!="pupil_count_type" & !grouped) annotation_custom(grob)} +
         {if(measure != "N") scale_y_continuous(labels=percent)} +
         theme(panel.background = element_rect(fill = "white")) +
@@ -170,21 +169,39 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
 
 pie_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, filename, long_filename, dataset) {
     
-    data_set <-  get(dataset)
+    data_set <- get(dataset)
     
     # Determine whether x-axis categories are to be grouped by a second variable
     grouped <- (xgroup %in% names(data_set))
     if(grouped) xlab <- xgroup else xlab <- ""
     
+    # Create model formular from config for aggregate function
+    formula_str <- paste(measure, "~", paste(c(colour_by, xlab), collapse=" + "), sep=" ")
+    formula_str <- paste(measure, "~", colour_by, sep=" ")
+    
+    # Create an 'empty' plot dataframe for when sample size <10 due to filtering applied
+    dp_empty <- aggregate(formula(formula_str), data_set, sum)
+    dp_empty[, measure] <- dp_empty[, measure]/sum(dp_empty[, measure])
+    dp_empty[, "y_pos"] <- 1-(cumsum(dp_empty[, measure]) - dp_empty[, measure]/2)
+    dp_empty <- add_xposoffset(dp_empty, measure)
+    dp_empty[measure] <- 0
+    
     # Filter data as per config for chart
     if(!("all" %in% unlist(names(filter)))) data_set <- filter_dt(data_set, filter)
     
-    # Create model formular from config for aggregate function
-    formula_str <- paste(measure, "~", paste(c(xlab, colour_by), collapse=" + "), sep=" ")
-    dp <- aggregate(formula(formula_str), data_set, sum)
-    dp[, measure] <- dp[, measure]/sum(dp[, measure])
-    dp[, "y_pos"] <- 1-(cumsum(dp[, measure]) - dp[, measure]/2)
-    dp <- add_xposoffset(dp, measure)
+    # Create an indicator of when the sample size is too small, if so use empty plot dataframe
+    min_sample_size <- 1
+    sample_size_too_small <- nrow(data_set)<min_sample_size
+    if(sample_size_too_small) {
+        dp <- dp_empty
+    } else {
+        # Aggregate filtered data to create data for plotting
+        dp <- aggregate(formula(formula_str), data_set, sum)
+        dp[, measure] <- dp[, measure]/sum(dp[, measure])
+        dp[, "y_pos"] <- 1-(cumsum(dp[, measure]) - dp[, measure]/2)
+        dp <- add_xposoffset(dp, measure)
+    }
+
     # Make x-axis variables factors with levels limited to those still present in the data after filtering
     {if(grouped) dp[, xgroup] <- factor(dp[, xgroup], levels=levels_present(dp[, xgroup]))}
     # dp[, xaxis] <- factor(dp[, xaxis], levels=levels_present(dp[, xaxis]))
@@ -216,7 +233,8 @@ pie_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
         geom_bar(width = 1, stat = "identity", colour="black", size=0.2) +
         coord_polar("y", start=0) + 
         ggtitle(title)  +
-        geom_text(aes(x = 1.2-dp[, "xlaboffset"]*0.25, y = dp[, "y_pos"], label = percent(dp[, measure])), size=3) +
+        {if(!sample_size_too_small) geom_text(aes(x = 1.2-dp[, "xlaboffset"]*0.25, y = dp[, "y_pos"], label = percent(dp[, measure])), size=3)} +
+        {if(sample_size_too_small) annotate("text", x=0, y=0, label= "No data in specified chart filter")} + 
         theme(axis.text.x=element_blank()) +
         scale_fill_manual(values=unlist(colour_palette)) + 
         blank_theme +
