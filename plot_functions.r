@@ -2,7 +2,7 @@ library(ggplot2)
 library(scales)
 library(grid)
 
-bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, filename, long_filename, dataset) {
+bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, filename, long_filename, dataset, auto_title) {
     
     plot_size_scale = 1.5
     
@@ -145,7 +145,7 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
         {if(grouped) theme(panel.spacing = unit(0, "lines"), strip.background = element_blank(), strip.placement = "outside")} +
         xlab(xlab_text) +
         ylab(get_column_labels(chart_col_labels, measure)) +
-        ggtitle(title) +
+        ggtitle(auto_title) +
         theme(plot.title = element_text(lineheight=.8, face="bold", size=default_font_size)) +
         theme(panel.grid.major.y = element_line(colour = "grey", linetype = "solid", size=0.3), panel.grid.minor.x = element_blank(), panel.grid.major.x = element_line(colour = "grey", linetype = "dotted", size=0.3)) + 
         scale_fill_manual(values=unlist(colour_palette)) + 
@@ -167,7 +167,7 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
     sprintf("Saving plot: %s", file.path(plots_dir, filename))
 }
 
-pie_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, filename, long_filename, dataset) {
+pie_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, filename, long_filename, dataset, auto_title) {
     
     data_set <- get(dataset)
     
@@ -232,7 +232,7 @@ pie_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
     p <- ggplot(dp, aes(x="", y=get(measure), fill=get(colour_by))) +
         geom_bar(width = 1, stat = "identity", colour="black", size=0.2) +
         coord_polar("y", start=0) + 
-        ggtitle(title)  +
+        ggtitle(auto_title)  +
         {if(!sample_size_too_small) geom_text(aes(x = 1.2-dp[, "xlaboffset"]*0.25, y = dp[, "y_pos"], label = percent(dp[, measure])), size=3)} +
         {if(sample_size_too_small) annotate("text", x=0, y=0, label= "No data in specified chart filter")} + 
         theme(axis.text.x=element_blank()) +
