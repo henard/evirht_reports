@@ -119,6 +119,7 @@ for(i in seq_along(report1_ids_in)){
         temp =  list("type"="bar_side_by_side",
                      "dataset" = "score_change_dt",
                      "title"=paste(toupper(report1_labels_in[[i]]),"\nAverage percentage point change between first and last assessment scores\nduring academic year ",academic_yr,sep=""),
+                     "auto_title"=paste("\nAverage percentage point change between first and last assessment scores\nduring academic year ",academic_yr,sep=""),
                      "measure"="score_change",
                      "xaxis"=xtitle,
                      "xgroup"="",
@@ -128,6 +129,7 @@ for(i in seq_along(report1_ids_in)){
         temp=list("type"="bar_side_by_side",
                   "dataset" = "score_change_dt",
                   "title"= paste(toupper(report1_labels_in[[i]]),"\nAverage percentage point change between first and last assessment scores\nduring academic year ",academic_yr,sep=""),
+                  "auto_title"= paste("\nAverage percentage point change between first and last assessment scores\nduring academic year ",academic_yr,sep=""),
                   "measure"="score_change",
                   "xaxis"=xtitle,
                   "xgroup"="",
@@ -137,6 +139,7 @@ for(i in seq_along(report1_ids_in)){
         temp=list("type"="bar_side_by_side",
                   "dataset" = "score_change_dt",
                   "title"=paste(toupper(report1_labels_in[[i]]),"\nAverage percentage point change between first and last assessment scores\nduring academic year ",academic_yr,sep=""),
+                  "auto_title"=paste("\nAverage percentage point change between first and last assessment scores\nduring academic year ",academic_yr,sep=""),
                   "measure"="score_change",
                   "xaxis"=xtitle,
                   "xgroup"="School_Year",
@@ -158,35 +161,38 @@ for(i in seq_along(report2_ids_in)){
     if(length(report2_ids_in) != length(report2_levels_in) || length(report2_ids_in) != length(report2_labels_in))stop("Number of input ids, labels or levels in Report 2 are not the same length")
     if(report2_levels_in[[i]] == "Account") col_level = "AccountID" else col_level = "Organisation_ID"
     temp1=list("type"="pie",
-                  "dataset" = "score_dt2",
-                  "title"=paste(toupper(report2_labels_in[[i]]),"\nShare of pupils in each Development Stage at\nfirst assessment in ",academic_yr,sep=""),
-                  "measure"="c",
-                  "xaxis"="",
-                  "xgroup"="",
-                  "colour_by"="Dev_Stage",
-                  "filter"=list("org"=list("column"=col_level, "values"=list(report2_ids_in[[i]]), "filter_type"="in"),
-                                "N_assessment_2+"=list("column"="N_assessments", "lower"=2, "upper"=10, "filter_type"="range"),
-                                "Assessment_n_1"=list("column"="Assessment_n", "values"=list(1), "filter_type"="in")))
+               "dataset" = "score_dt2",
+               "title"=paste(toupper(report2_labels_in[[i]]),"\nShare of pupils in each Development Stage at\nfirst assessment in ",academic_yr,sep=""),
+               "auto_title"=paste("\nShare of pupils in each Development Stage at\nfirst assessment in ",academic_yr,sep=""),
+               "measure"="c",
+               "xaxis"="",
+               "xgroup"="",
+               "colour_by"="Dev_Stage",
+               "filter"=list("org"=list("column"=col_level, "values"=list(report2_ids_in[[i]]), "filter_type"="in"),
+                             "N_assessment_2+"=list("column"="N_assessments", "lower"=2, "upper"=10, "filter_type"="range"),
+                             "Assessment_n_1"=list("column"="Assessment_n", "values"=list(1), "filter_type"="in")))
     report2[[index]] = assign(paste("chart",(i*2-1),sep=""),temp1)
     index = index + 1
     temp2=list("type"="pie",
-                  "dataset" = "score_dt2",
-                  "title"=paste(toupper(report2_labels_in[[i]]),"\nShare of pupils in each Development Stage at\nlast assessment in ",academic_yr,sep=""),
-                  "measure"="c",
-                  "xaxis"="",
-                  "xgroup"="",
-                  "colour_by"="Dev_Stage",
-                  "filter"=list("org"=list("column"=col_level, "values"=list(report2_ids_in[[i]]), "filter_type"="in"),
-                                "N_assessment_2+"=list("column"="N_assessments", "lower"=2, "upper"=10, "filter_type"="range"),
-                                "Assessment_n_1"=list("column"="Assessment_n_rev", "values"=list(-1), "filter_type"="in")))
+               "dataset" = "score_dt2",
+               "title"=paste(toupper(report2_labels_in[[i]]),"\nShare of pupils in each Development Stage at\nlast assessment in ",academic_yr,sep=""),
+               "auto_title"=paste("\nShare of pupils in each Development Stage at\nlast assessment in ",academic_yr,sep=""),
+               "measure"="c",
+               "xaxis"="",
+               "xgroup"="",
+               "colour_by"="Dev_Stage",
+               "filter"=list("org"=list("column"=col_level, "values"=list(report2_ids_in[[i]]), "filter_type"="in"),
+                             "N_assessment_2+"=list("column"="N_assessments", "lower"=2, "upper"=10, "filter_type"="range"),
+                             "Assessment_n_1"=list("column"="Assessment_n_rev", "values"=list(-1), "filter_type"="in")))
     report2[[index]] = assign(paste("chart",(i*2),sep=""),temp2)
     index = index + 1
     temp3=list("type"="data",
-                 "dataset" = "score_dt2",
-                 "title"=paste(toupper(report2_labels_in[[i]]),"\nChange in share of pupils in each Development Stage between\nfirst &last assessment in ",academic_yr,sep=""),
-                 "measure"="c",
-                 "by"="Dev_Stage",
-                 "filter"=list("org"=list("column"=col_level, "values"=list(report2_ids_in[[i]]), "filter_type"="in")))
+               "dataset" = "score_dt2",
+               "title"=paste(toupper(report2_labels_in[[i]]),"\nChange in share of pupils in each Development Stage between\nfirst &last assessment in ",academic_yr,sep=""),
+               "auto_title"=paste("\nChange in share of pupils in each Development Stage between\nfirst &last assessment in ",academic_yr,sep=""),
+               "measure"="c",
+               "by"="Dev_Stage",
+               "filter"=list("org"=list("column"=col_level, "values"=list(report2_ids_in[[i]]), "filter_type"="in")))
     report2[[index]] = assign(paste("data",i,sep=""),temp3)
     index = index + 1
 }
@@ -202,6 +208,7 @@ report3 = list(
     "chart1"=list("type"="bar_side_by_side",
                   "dataset" = "score_dt",
                   "title"=paste(toupper(report3_labels_in[[1]]),"\nIndividual pupil journeys during academic year ",academic_yr,sep=""),
+                  "auto_title"=paste("\nIndividual pupil journeys during academic year ",academic_yr,sep=""),
                   "measure"="Overall_Score",
                   "xaxis"="Child_ID_Completed_date",
                   "xgroup"="School_Year",
@@ -218,6 +225,7 @@ report4 = list(
     "chart1"=list("type"="bar_stacked",
                   "dataset" = "pupil_counts",
                   "title"=paste(toupper(report4_labels_in[[1]])," - TOL activity",sep=""),
+                  "auto_title"=" - TOL activity",
                   "measure"="pct",
                   "xaxis"="Organisation",
                   "xgroup"="",
@@ -226,6 +234,7 @@ report4 = list(
     "chart2"=list("type"="bar_side_by_side",
                   "dataset" = "pupil_counts",
                   "title"=paste(toupper(report4_labels_in[[1]])," - TOL activity",sep=""),
+                  "auto_title"=" - TOL activity",
                   "measure"="N",
                   "xaxis"="Organisation",
                   "xgroup"="",
@@ -242,13 +251,14 @@ report5 = list()
 for(i in seq_along(report5_ids_in)){
     if(length(report5_ids_in) != length(report5_labels_in))stop("Number of input ids, labels or levels in Report 5 are not the same length")
     temp=list("type"="bar_side_by_side",
-                  "dataset" = "score_change_dt",
-                  "title"=paste(toupper(report5_labels_in[[i]]),"\nAverage percentage point change between first and last assessment scores\nduring academic year ",academic_yr,sep=""),
-                  "measure"="score_change",
-                  "xaxis"="Organisation",
-                  "xgroup"="",
-                  "colour_by"="Dev_Stage",
-                  "filter"=list("org"=list("column"="AccountID", "values"=list(report5_ids_in[[i]]), "filter_type"="in")))
+              "dataset" = "score_change_dt",
+              "title"=paste(toupper(report5_labels_in[[i]]),"\nAverage percentage point change between first and last assessment scores\nduring academic year ",academic_yr,sep=""),
+              "auto_title"=paste("\nAverage percentage point change between first and last assessment scores\nduring academic year ",academic_yr,sep=""),
+              "measure"="score_change",
+              "xaxis"="Organisation",
+              "xgroup"="",
+              "colour_by"="Dev_Stage",
+              "filter"=list("org"=list("column"="AccountID", "values"=list(report5_ids_in[[i]]), "filter_type"="in")))
     report5[[i]] = assign(paste("chart",i,sep=""),temp)
     
 }
@@ -269,7 +279,34 @@ reports = list("report1"=report1,
 # Determine filename from report config
 plot_filename <- function(chart_config, file_extention) {
     filename <- paste(lapply(setdiff(names(chart_config), c("title", "filter")), function(x) chart_config[[x]]), collapse="_")
-    return(paste(filename, "_", names(chart_config[["filter"]]), file_extention, sep=""))
+    filename <- paste(filename, "_", names(chart_config[["filter"]]), sep="")
+    return(paste(filename, file_extention, sep="."))
+}
+
+# Determine auto_chart_title where Account or Organisation names are determined from AccountID or Organisation_IDs
+filter_values_text <- function(filter) {
+    if(filter$column=="AccountID") {
+        col_name = "Account"
+    } else if(filter$column=="Organisation_ID") {
+        col_name = "Organisation"
+    } else {
+        return("")
+    }
+
+    if(filter$filter_type=="in") {
+        id_lookup <- unique(pupil_counts, by=filter$column)
+        org_names <- id_lookup[get(filter$column) %in% unlist(filter$values), get(col_name)]
+    } else {
+        return("")
+    }
+    org_names <- org_names[lapply(org_names, function(x) nchar(as.character(x))) >0 ]
+    return(paste(trimws(org_names), collapse=", "))
+}
+
+filter_values_texts <- function(filters) {
+    org_names <- lapply(filters, function(x) filter_values_text(x))
+    org_names <- org_names[lapply(org_names, function(x) nchar(as.character(x))) >0 ]
+    return(paste(trimws(org_names), collapse=", "))
 }
 
 # Add automated filename to config
@@ -281,6 +318,19 @@ for(i in names(reports)) {
             reports[[i]][[j]]$filename <- paste(paste(i, j, sep="_"), file_extention, sep=".")
         }
     }
+}
+
+# Add automated chart labels
+add_auto_chart_labels <- function(reports) {
+    for(i in names(reports)) {
+        for(j in names(reports[[i]])) {
+            if(reports[[i]][[j]]$type!="text") {
+                if(reports[[i]][[j]]$type=="data") file_extention <- "Rdata" else file_extention <- "png"
+                reports[[i]][[j]]$auto_title <- paste(toupper(filter_values_texts(reports[[i]][[j]]$filter)), reports[[i]][[j]]$auto_title, sep="")
+            }
+        }
+    }
+    return(reports)
 }
 
 # Function to extract info from report_filters to create a WHERE clause to use

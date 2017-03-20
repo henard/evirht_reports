@@ -31,6 +31,9 @@ d <- read_data(data_source)
 # apply formating to variables and calculate analysis variables.
 pupil_counts <- read_pupil_counts_data(data_source)
 
+# Add automatically generated chart tiles
+reports <- add_auto_chart_labels(reports)
+
 # Define groups within which percentage point change in assessment scores are to be calculated.
 score_change_groups <- list("Child_ID", "Dev_Stage")
 score_change_groups2 <- list("Child_ID")
