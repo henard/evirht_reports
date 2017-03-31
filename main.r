@@ -3,9 +3,8 @@
 # Clear all results in memory from last time.
 rm(list=ls())
 
-# Load functions to manage local Rdata copies of data if available
-# Also installs required packages if necessary.
-source("rdata_utils.r")
+# Install required packages if necessary.
+source("install_rpackages.r")
 
 # Load global_config which creates the following objects:
 #   data_source
@@ -16,6 +15,9 @@ source("global_config.r")
 # Load report_config which creates the following objects:
 #   report
 source("report_config.r")
+
+# Load functions to manage local RData copies of data if available
+source("rdata_utils.r")
 
 # Load functions to get data
 source("get_data.r")
@@ -51,7 +53,7 @@ source("plot_functions.r")
 # Remove existing plots.
 delete_existing_plots()
 
-# Create .png files of all charts and .Rdata results data files in report.
+# Create .png files of all charts and .RData results data files in report.
 for(i in reports) {
     for(j in i){
         if(grepl("bar", j[["type"]])) {

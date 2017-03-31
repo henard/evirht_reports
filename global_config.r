@@ -2,6 +2,7 @@
 # sql queries to retrieve data from thrive online.
 working_dir <- getwd()
 plots_dir <- file.path(working_dir, "plots")
+data_dir <- file.path(working_dir, "rdata")
 sql_dir <- file.path(working_dir, "sql")
 ifelse(!dir.exists(plots_dir), dir.create(plots_dir), FALSE)
 
@@ -16,8 +17,8 @@ data_sources = list(
 data_source = "thrive"
 
 # A second data source is a copy of the data last grabbed from thrive online
-# which is saved locally in folder called rdata in your working direrctory.
-# The filename of the rdata copy of data begins with a date which is used to
+# which is saved locally in folder called RData in your working direrctory.
+# The filename of the RData copy of data begins with a date which is used to
 # identify how many days since it was last updated. If
 # try_use_rdata_if_recent = TRUE; and
 # No. days since it was last updated is < if_recent_days
@@ -95,14 +96,6 @@ chart_col_labels = list(
 
 ################################## END OF CONFIG ######################################################################
 ################################## BELOW ARE FUNCTIONS ASSOCIATED WITH CONFIG ABOVE  - Do not edit ####################
-
-# Update data_source if recent Rdata has been requested
-if(try_use_rdata_if_recent) {
-    updated_sources <- update_data_source_if_recent(data_source, data_sources)
-    data_source <- updated_sources$data_source
-    data_sources <- updated_sources$data_sources
-}
-sprintf("Using data source: %s", data_source)
 
 # Functions to extract info out of the style guide config.
 get_colour_palette <- function(style_guide, colours) {
