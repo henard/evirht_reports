@@ -5,57 +5,48 @@
 
 # Report-wide arguments
 # Set the academic year by editing the following start & end dates.
-yr_start = "2014-09-01"
-yr_end = "2015-09-01"
+yr_start = "2016-09-01"
+yr_end = "2017-09-01"
 # Set the school years that are to be extracted by adding/removing from the following list.
 school_yrs = list("-1", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13")
 
 # Report 1 arguments
 # Report 1 can be set up to have as many charts as the user wants, simply add or remove a chart from each argument below.
 # Set the account or organisation IDs for each chart requested by editing the following.
-report1_ids_in <- list(chart1 = c(259,261),
-                       chart2 = 259,
-                       chart3 = 261,
-                       chart4 = 418,
-                       chart5 = 1319,
-                       chart6 = 676,
-                       chart7 = 418)
+report1_ids_in <- list(chart1 = 1483,
+                       chart2 = 418,
+                       chart3 = 1319,
+                       chart4 = 676,
+                       chart5 = 418)
 # Provide labels for each chart requested (these are used within the chart titles)
 report1_labels_in <- list(chart1 = "",
                           chart2 = "",
                           chart3 = "",
                           chart4 = "",
-                          chart5 = "",
-                          chart6 = "",
-                          chart7 = "")
+                          chart5 = "")
 # Define the levels for each chart requested.
 # Account or Organisation will produce a bar chart for percentage point change in assessments for the whole organisation or account
 # defined by its ID. Pupil will produce a bar chart for pupil ID by school year and must be at an Organisation level (i.e., an organisation 
 # ID is given in report1_ids_in for that chart).
 report1_levels_in <- list(chart1 = "Account",
-                          chart2 = "Account",
-                          chart3 = "Account",
+                          chart2 = "Organisation",
+                          chart3 = "Organisation",
                           chart4 = "Organisation",
-                          chart5 = "Organisation",
-                          chart6 = "Organisation",
-                          chart7 = "Pupil")
+                          chart5 = "Pupil")
 # Define the main heading for the report
 report1_heading <- "Headstart Schools"
 
 # Report 2 arguments
 # Report 2 can be set up to have as many charts as the user wants, simply add or remove a chart from each argument below.
 # Report 2 is set to produce pie charts by organisation or account. Set the organisation or account IDs for each chart requested by editing the following.
-report2_ids_in <- list(chart1 = c(259,261),
-                       chart2 = 259,
-                       chart3 = 418)
+report2_ids_in <- list(chart1 = 1483,
+                       chart2 = 418)
 # Provide labels for each chart requested (these are used within the chart titles)
-report2_labels_in <- list(chart1 = "ALL HEADSTART SCHOOLS",
-                          chart2 = "",
-                          chart3 = "")
+report2_labels_in <- list(chart1 = "",
+                          chart2 = "")
 # Define the levels for each chart requested (these can be either account or organisation).
 report2_levels_in <- list(chart1 = "Account",
-                          chart2 = "Account",
-                          chart3 = "Organisation")
+                          chart2 = "Organisation")
 # Define the main heading for the report
 report2_heading <- "Headstart Schools"
 
@@ -71,7 +62,7 @@ report3_heading <- "Headstart Schools"
 # Report 4 arguments
 # Report 4 filters by account only and is set up to produce one chart at a time.
 # Set the account ID below.
-report4_ids_in <- list(chart1 = c(259)) 
+report4_ids_in <- list(chart1 = 1483) 
 # Provide a label for the chart requested (these are used within the chart titles)
 report4_labels_in <- list(chart1 = "")
 # Define the main heading for the report
@@ -80,11 +71,9 @@ report4_heading <- "Headstart Schools"
 # Report 5 arguments
 # Report 5 can be set up to have as many charts as the user wants, simply add or remove a chart from each argument below.
 # Report 5 is set to produce bar charts by account only. Set the account IDs for each chart requested by editing the following.
-report5_ids_in <- list(chart1 = c(259),
-                       chart2 = c(261))
+report5_ids_in <- list(chart1 = 1483)
 # Provide a label for the chart requested (these are used within the chart title
-report5_labels_in <- list(chart1 = "",
-                          chart2 = "")
+report5_labels_in <- list(chart1 = "")
 # Define the main heading for the report
 report5_heading <- "Headstart Schools"
 

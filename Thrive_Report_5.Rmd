@@ -29,7 +29,7 @@ report5_pngs = dir("plots")[grep("report5",dir("plots"))]
 for(i in seq_along(report5_pngs)){
     cat('![]')
     cat(paste("(plots/",report5_pngs[i],")",sep=""))
-    cat('{ width=100%}\n')
+    cat('{width=90%}\n')
 }
 ```
 
