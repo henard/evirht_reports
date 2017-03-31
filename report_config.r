@@ -151,7 +151,7 @@ for(i in seq_along(report1_ids_in)){
 names(report1) = paste("chart",seq_along(report1_ids_in),sep="")
 
 report1_fullheading <- paste(report1_heading," - Academic Year ",academic_yr,sep="")
-save(report1_fullheading,file = "rdata/report1_fullheading.RData")
+save(report1_fullheading, file=file.path(data_dir, "report1_fullheading.RData"))
 
 
 # report2: This is pie charts of share of pupils across development stages given in the pdf labelled ‘Sample 3’.
@@ -199,7 +199,7 @@ for(i in seq_along(report2_ids_in)){
 names(report2) = paste(rep(c("chart","chart","data"),length(report2_ids_in)),rep(seq_along(report2_ids_in),each=3)*rep(c(2,2,1),length(report2_ids_in))-(rep(c(1,0,0),length(report2_ids_in))),sep="")
 
 report2_fullheading <- paste(report2_heading," - Academic Year ",academic_yr,sep="")
-save(report2_fullheading,file = "rdata/report2_fullheading.RData")
+save(report2_fullheading, file=file.path(data_dir, "report2_fullheading.RData"))
 
 # report3: This is the bar chart/scatter plot given in the pdf labelled ‘Sample 2’. Henry will consider this plot and
 #         provide alternative formats if there are any improved ways of visualising the data.
@@ -217,7 +217,7 @@ report3 = list(
 )
 
 report3_fullheading <- paste(report3_heading," - Academic Year ",academic_yr,sep="")
-save(report3_fullheading,file = "rdata/report3_fullheading.RData")
+save(report3_fullheading, file=file.path(data_dir, "report3_fullheading.RData"))
 
 # report4: This is the TOL activity given in the spreadsheet called ‘Headstart Data – 11 05 16 for RHead.xlsx’).
 #         (This plot should be prioritised over plot 3 if there are time constraints).
@@ -243,7 +243,7 @@ report4 = list(
 )
 
 report4_fullheading <- paste(report4_heading," - Academic Year ",academic_yr,sep="")
-save(report4_fullheading,file = "rdata/report4_fullheading.RData")
+save(report4_fullheading, file=file.path(data_dir, "report4_fullheading.RData"))
 
 # report5: This is the bar chart given in the pdf labelled ‘Sample 3’ and looks at individual pupil journeys by
 #          development stage. The plots on individual progress are not required. (Now a in a new report of its own)
@@ -265,7 +265,7 @@ for(i in seq_along(report5_ids_in)){
 names(report5) = paste("chart",seq_along(report5_ids_in),sep="")
 
 report5_fullheading <- paste(report5_heading," - Academic Year ",academic_yr,sep="")
-save(report5_fullheading,file = "rdata/report5_fullheading.RData")
+save(report5_fullheading, file=file.path(data_dir, "report5_fullheading.RData"))
 
 reports = list("report1"=report1,
                "report2"=report2,
@@ -313,7 +313,7 @@ filter_values_texts <- function(filters) {
 for(i in names(reports)) {
     for(j in names(reports[[i]])) {
         if(reports[[i]][[j]]$type!="text") {
-            if(reports[[i]][[j]]$type=="data") file_extention <- "Rdata" else file_extention <- "png"
+            if(reports[[i]][[j]]$type=="data") file_extention <- "RData" else file_extention <- "png"
             reports[[i]][[j]]$long_filename <- paste(paste(i, j, sep="_"), plot_filename(reports[[i]][[j]], file_extention), sep="_")
             reports[[i]][[j]]$filename <- paste(paste(i, j, sep="_"), file_extention, sep=".")
         }
@@ -325,7 +325,7 @@ add_auto_chart_labels <- function(reports) {
     for(i in names(reports)) {
         for(j in names(reports[[i]])) {
             if(reports[[i]][[j]]$type!="text") {
-                if(reports[[i]][[j]]$type=="data") file_extention <- "Rdata" else file_extention <- "png"
+                if(reports[[i]][[j]]$type=="data") file_extention <- "RData" else file_extention <- "png"
                 reports[[i]][[j]]$auto_title <- paste(toupper(filter_values_texts(reports[[i]][[j]]$filter)), reports[[i]][[j]]$auto_title, sep="")
             }
         }

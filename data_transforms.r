@@ -218,5 +218,5 @@ pupil_shares_data <- function(type, title, measure, by, filter, filename, long_f
     first_last[first_last$pct_change=="", "dir_change"] <- "unchanged"
     first_last$change_text <- paste(first_last$pct_change, first_last$dir_change, sep=" ")
     first_last$change_text2 <- paste("Pupils at", toupper(first_last$Dev_Stage), first_last$pct_change, first_last$dir_change, sep=" ")
-    save(first_last, file=file.path("rdata", filename))
+    save(first_last, file=file.path(data_dir, filename))
 }
