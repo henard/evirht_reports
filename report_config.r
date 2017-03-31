@@ -21,13 +21,13 @@ report1_ids_in <- list(chart1 = c(259,261),
                        chart6 = 676,
                        chart7 = 418)
 # Provide labels for each chart requested (these are used within the chart titles)
-report1_labels_in <- list(chart1 = "ALL HEADSTART SCHOOLS",
-                          chart2 = "HEADSTART LOCALITY 1",
-                          chart3 = "HEADSTART LOCALITY 6",
-                          chart4 = "Brunel Primary School",
-                          chart5 = "Callington Community College",
-                          chart6 = "Bodriggy Academy",
-                          chart7 = "Brunel Primary School")
+report1_labels_in <- list(chart1 = "",
+                          chart2 = "",
+                          chart3 = "",
+                          chart4 = "",
+                          chart5 = "",
+                          chart6 = "",
+                          chart7 = "")
 # Define the levels for each chart requested.
 # Account or Organisation will produce a bar chart for percentage point change in assessments for the whole organisation or account
 # defined by its ID. Pupil will produce a bar chart for pupil ID by school year and must be at an Organisation level (i.e., an organisation 
@@ -50,8 +50,8 @@ report2_ids_in <- list(chart1 = c(259,261),
                        chart3 = 418)
 # Provide labels for each chart requested (these are used within the chart titles)
 report2_labels_in <- list(chart1 = "ALL HEADSTART SCHOOLS",
-                          chart2 =  "HEADSTART LOCALITY 1",
-                          chart3 = "Brunel Primary School")
+                          chart2 = "",
+                          chart3 = "")
 # Define the levels for each chart requested (these can be either account or organisation).
 report2_levels_in <- list(chart1 = "Account",
                           chart2 = "Account",
@@ -64,7 +64,7 @@ report2_heading <- "Headstart Schools"
 # Set the organisation ID below.
 report3_ids_in <- list(chart1 = c(675,1077)) 
 # Provide a label for the chart requested (these are used within the chart titles)
-report3_labels_in <- list(chart1 = "Acorn Academy - Nine Maidens")
+report3_labels_in <- list(chart1 = "")
 # Define the main heading for the report
 report3_heading <- "Headstart Schools"
 
@@ -73,7 +73,7 @@ report3_heading <- "Headstart Schools"
 # Set the account ID below.
 report4_ids_in <- list(chart1 = c(259)) 
 # Provide a label for the chart requested (these are used within the chart titles)
-report4_labels_in <- list(chart1 = "HEADSTART LOCALITY 1")
+report4_labels_in <- list(chart1 = "")
 # Define the main heading for the report
 report4_heading <- "Headstart Schools"
 
@@ -83,8 +83,8 @@ report4_heading <- "Headstart Schools"
 report5_ids_in <- list(chart1 = c(259),
                        chart2 = c(261))
 # Provide a label for the chart requested (these are used within the chart title
-report5_labels_in <- list(chart1 = "HEADSTART LOCALITY 1",
-                          chart2 = "HEADSTART LOCALITY 6")
+report5_labels_in <- list(chart1 = "",
+                          chart2 = "")
 # Define the main heading for the report
 report5_heading <- "Headstart Schools"
 
@@ -119,6 +119,7 @@ for(i in seq_along(report1_ids_in)){
         temp =  list("type"="bar_side_by_side",
                      "dataset" = "score_change_dt",
                      "title"=paste(toupper(report1_labels_in[[i]]),"\nAverage percentage point change between first and last assessment scores\nduring academic year ",academic_yr,sep=""),
+                     "title_org"=toupper(report1_labels_in[[i]]),
                      "auto_title"=paste("\nAverage percentage point change between first and last assessment scores\nduring academic year ",academic_yr,sep=""),
                      "measure"="score_change",
                      "xaxis"=xtitle,
@@ -129,6 +130,7 @@ for(i in seq_along(report1_ids_in)){
         temp=list("type"="bar_side_by_side",
                   "dataset" = "score_change_dt",
                   "title"= paste(toupper(report1_labels_in[[i]]),"\nAverage percentage point change between first and last assessment scores\nduring academic year ",academic_yr,sep=""),
+                  "title_org"= toupper(report1_labels_in[[i]]),
                   "auto_title"= paste("\nAverage percentage point change between first and last assessment scores\nduring academic year ",academic_yr,sep=""),
                   "measure"="score_change",
                   "xaxis"=xtitle,
@@ -139,6 +141,7 @@ for(i in seq_along(report1_ids_in)){
         temp=list("type"="bar_side_by_side",
                   "dataset" = "score_change_dt",
                   "title"=paste(toupper(report1_labels_in[[i]]),"\nAverage percentage point change between first and last assessment scores\nduring academic year ",academic_yr,sep=""),
+                  "title_org"=toupper(report1_labels_in[[i]]),
                   "auto_title"=paste("\nAverage percentage point change between first and last assessment scores\nduring academic year ",academic_yr,sep=""),
                   "measure"="score_change",
                   "xaxis"=xtitle,
@@ -163,6 +166,7 @@ for(i in seq_along(report2_ids_in)){
     temp1=list("type"="pie",
                "dataset" = "score_dt2",
                "title"=paste(toupper(report2_labels_in[[i]]),"\nShare of pupils in each Development Stage at\nfirst assessment in ",academic_yr,sep=""),
+               "title_org"=toupper(report2_labels_in[[i]]),
                "auto_title"=paste("\nShare of pupils in each Development Stage at\nfirst assessment in ",academic_yr,sep=""),
                "measure"="c",
                "xaxis"="",
@@ -176,6 +180,7 @@ for(i in seq_along(report2_ids_in)){
     temp2=list("type"="pie",
                "dataset" = "score_dt2",
                "title"=paste(toupper(report2_labels_in[[i]]),"\nShare of pupils in each Development Stage at\nlast assessment in ",academic_yr,sep=""),
+               "title_org"=toupper(report2_labels_in[[i]]),
                "auto_title"=paste("\nShare of pupils in each Development Stage at\nlast assessment in ",academic_yr,sep=""),
                "measure"="c",
                "xaxis"="",
@@ -189,6 +194,7 @@ for(i in seq_along(report2_ids_in)){
     temp3=list("type"="data",
                "dataset" = "score_dt2",
                "title"=paste(toupper(report2_labels_in[[i]]),"\nChange in share of pupils in each Development Stage between\nfirst &last assessment in ",academic_yr,sep=""),
+               "title_org"=toupper(report2_labels_in[[i]]),
                "auto_title"=paste("\nChange in share of pupils in each Development Stage between\nfirst &last assessment in ",academic_yr,sep=""),
                "measure"="c",
                "by"="Dev_Stage",
@@ -208,6 +214,7 @@ report3 = list(
     "chart1"=list("type"="bar_side_by_side",
                   "dataset" = "score_dt",
                   "title"=paste(toupper(report3_labels_in[[1]]),"\nIndividual pupil journeys during academic year ",academic_yr,sep=""),
+                  "title_org"=toupper(report3_labels_in[[1]]),
                   "auto_title"=paste("\nIndividual pupil journeys during academic year ",academic_yr,sep=""),
                   "measure"="Overall_Score",
                   "xaxis"="Child_ID_Completed_date",
@@ -225,6 +232,7 @@ report4 = list(
     "chart1"=list("type"="bar_stacked",
                   "dataset" = "pupil_counts",
                   "title"=paste(toupper(report4_labels_in[[1]])," - TOL activity",sep=""),
+                  "title_org"=toupper(report4_labels_in[[1]]),
                   "auto_title"=" - TOL activity",
                   "measure"="pct",
                   "xaxis"="Organisation",
@@ -234,6 +242,7 @@ report4 = list(
     "chart2"=list("type"="bar_side_by_side",
                   "dataset" = "pupil_counts",
                   "title"=paste(toupper(report4_labels_in[[1]])," - TOL activity",sep=""),
+                  "title_org"=toupper(report4_labels_in[[1]]),
                   "auto_title"=" - TOL activity",
                   "measure"="N",
                   "xaxis"="Organisation",
@@ -253,6 +262,7 @@ for(i in seq_along(report5_ids_in)){
     temp=list("type"="bar_side_by_side",
               "dataset" = "score_change_dt",
               "title"=paste(toupper(report5_labels_in[[i]]),"\nAverage percentage point change between first and last assessment scores\nduring academic year ",academic_yr,sep=""),
+              "title_org"=toupper(report5_labels_in[[i]]),
               "auto_title"=paste("\nAverage percentage point change between first and last assessment scores\nduring academic year ",academic_yr,sep=""),
               "measure"="score_change",
               "xaxis"="Organisation",
@@ -327,6 +337,22 @@ add_auto_chart_labels <- function(reports) {
             if(reports[[i]][[j]]$type!="text") {
                 if(reports[[i]][[j]]$type=="data") file_extention <- "RData" else file_extention <- "png"
                 reports[[i]][[j]]$auto_title <- paste(toupper(filter_values_texts(reports[[i]][[j]]$filter)), reports[[i]][[j]]$auto_title, sep="")
+            }
+        }
+    }
+    return(reports)
+}
+
+# Replace blank organisations in titles with automated organisation
+add_auto_chart_labels2 <- function(reports) {
+    for(i in names(reports)) {
+        for(j in names(reports[[i]])) {
+            if(reports[[i]][[j]]$type!="text") {
+                if(reports[[i]][[j]]$title_org=="") {
+                    reports[[i]][[j]]$auto_title <- paste(toupper(filter_values_texts(reports[[i]][[j]]$filter)), reports[[i]][[j]]$auto_title, sep="")
+                } else {
+                    reports[[i]][[j]]$auto_title <- paste(reports[[i]][[j]]$title_org, reports[[i]][[j]]$auto_title, sep="")
+                }
             }
         }
     }

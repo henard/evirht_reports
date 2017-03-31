@@ -174,7 +174,7 @@ add_xposoffset <- function(data, measure) {
     return(data)
 }
 
-pupil_shares_data <- function(type, title, measure, by, filter, filename, long_filename, dataset, devstrand_categories, auto_title) {
+pupil_shares_data <- function(type, title, measure, by, filter, filename, long_filename, dataset, devstrand_categories, auto_title, title_org) {
 
     df <-  get(dataset)
 
