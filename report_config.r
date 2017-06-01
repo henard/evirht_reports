@@ -107,7 +107,6 @@ for(i in seq_along(report1_ids_in)){
     if(report1_levels_in[[i]] == "Account"){
         temp =  list("type"="bar_side_by_side",
                      "dataset" = "score_change_dt",
-                     "title"=paste(toupper(report1_labels_in[[i]]),"\nAverage percentage point change between first and last assessment scores\nduring academic year ",academic_yr,sep=""),
                      "title_org"=toupper(report1_labels_in[[i]]),
                      "auto_title"=paste("\nAverage percentage point change between first and last assessment scores\nduring academic year ",academic_yr,sep=""),
                      "measure"="score_change",
@@ -118,7 +117,6 @@ for(i in seq_along(report1_ids_in)){
     } else if(report1_levels_in[[i]] == "Organisation"){
         temp=list("type"="bar_side_by_side",
                   "dataset" = "score_change_dt",
-                  "title"= paste(toupper(report1_labels_in[[i]]),"\nAverage percentage point change between first and last assessment scores\nduring academic year ",academic_yr,sep=""),
                   "title_org"= toupper(report1_labels_in[[i]]),
                   "auto_title"= paste("\nAverage percentage point change between first and last assessment scores\nduring academic year ",academic_yr,sep=""),
                   "measure"="score_change",
@@ -129,7 +127,6 @@ for(i in seq_along(report1_ids_in)){
     } else {
         temp=list("type"="bar_side_by_side",
                   "dataset" = "score_change_dt",
-                  "title"=paste(toupper(report1_labels_in[[i]]),"\nAverage percentage point change between first and last assessment scores\nduring academic year ",academic_yr,sep=""),
                   "title_org"=toupper(report1_labels_in[[i]]),
                   "auto_title"=paste("\nAverage percentage point change between first and last assessment scores\nduring academic year ",academic_yr,sep=""),
                   "measure"="score_change",
@@ -154,7 +151,6 @@ for(i in seq_along(report2_ids_in)){
     if(report2_levels_in[[i]] == "Account") col_level = "AccountID" else col_level = "Organisation_ID"
     temp1=list("type"="pie",
                "dataset" = "score_dt2",
-               "title"=paste(toupper(report2_labels_in[[i]]),"\nShare of pupils in each Development Stage at\nfirst assessment in ",academic_yr,sep=""),
                "title_org"=toupper(report2_labels_in[[i]]),
                "auto_title"=paste("\nShare of pupils in each Development Stage at\nfirst assessment in ",academic_yr,sep=""),
                "measure"="c",
@@ -168,7 +164,6 @@ for(i in seq_along(report2_ids_in)){
     index = index + 1
     temp2=list("type"="pie",
                "dataset" = "score_dt2",
-               "title"=paste(toupper(report2_labels_in[[i]]),"\nShare of pupils in each Development Stage at\nlast assessment in ",academic_yr,sep=""),
                "title_org"=toupper(report2_labels_in[[i]]),
                "auto_title"=paste("\nShare of pupils in each Development Stage at\nlast assessment in ",academic_yr,sep=""),
                "measure"="c",
@@ -182,7 +177,6 @@ for(i in seq_along(report2_ids_in)){
     index = index + 1
     temp3=list("type"="data",
                "dataset" = "score_dt2",
-               "title"=paste(toupper(report2_labels_in[[i]]),"\nChange in share of pupils in each Development Stage between\nfirst &last assessment in ",academic_yr,sep=""),
                "title_org"=toupper(report2_labels_in[[i]]),
                "auto_title"=paste("\nChange in share of pupils in each Development Stage between\nfirst &last assessment in ",academic_yr,sep=""),
                "measure"="c",
@@ -202,7 +196,6 @@ save(report2_fullheading, file=file.path(data_dir, "report2_fullheading.RData"))
 report3 = list(
     "chart1"=list("type"="bar_side_by_side",
                   "dataset" = "score_dt",
-                  "title"=paste(toupper(report3_labels_in[[1]]),"\nIndividual pupil journeys during academic year ",academic_yr,sep=""),
                   "title_org"=toupper(report3_labels_in[[1]]),
                   "auto_title"=paste("\nIndividual pupil journeys during academic year ",academic_yr,sep=""),
                   "measure"="Overall_Score",
@@ -220,7 +213,6 @@ save(report3_fullheading, file=file.path(data_dir, "report3_fullheading.RData"))
 report4 = list(
     "chart1"=list("type"="bar_stacked",
                   "dataset" = "pupil_counts",
-                  "title"=paste(toupper(report4_labels_in[[1]])," - TOL activity",sep=""),
                   "title_org"=toupper(report4_labels_in[[1]]),
                   "auto_title"=" - TOL activity",
                   "measure"="pct",
@@ -230,7 +222,6 @@ report4 = list(
                   "filter"=list("Org_seln"=list("column"="AccountID", "values"=list(report4_ids_in[[1]]), "filter_type"="in"))),
     "chart2"=list("type"="bar_side_by_side",
                   "dataset" = "pupil_counts",
-                  "title"=paste(toupper(report4_labels_in[[1]])," - TOL activity",sep=""),
                   "title_org"=toupper(report4_labels_in[[1]]),
                   "auto_title"=" - TOL activity",
                   "measure"="N",
@@ -250,7 +241,6 @@ for(i in seq_along(report5_ids_in)){
     if(length(report5_ids_in) != length(report5_labels_in))stop("Number of input ids, labels or levels in Report 5 are not the same length")
     temp=list("type"="bar_side_by_side",
               "dataset" = "score_change_dt",
-              "title"=paste(toupper(report5_labels_in[[i]]),"\nAverage percentage point change between first and last assessment scores\nduring academic year ",academic_yr,sep=""),
               "title_org"=toupper(report5_labels_in[[i]]),
               "auto_title"=paste("\nAverage percentage point change between first and last assessment scores\nduring academic year ",academic_yr,sep=""),
               "measure"="score_change",
@@ -277,7 +267,7 @@ reports = list("report1"=report1,
 
 # Determine filename from report config
 plot_filename <- function(chart_config, file_extention) {
-    filename <- paste(lapply(setdiff(names(chart_config), c("title", "filter")), function(x) chart_config[[x]]), collapse="_")
+    filename <- paste(lapply(setdiff(names(chart_config), c("title_org", "filter")), function(x) chart_config[[x]]), collapse="_")
     filename <- paste(filename, "_", names(chart_config[["filter"]]), sep="")
     return(paste(filename, file_extention, sep="."))
 }
