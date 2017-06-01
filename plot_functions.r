@@ -141,7 +141,7 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
 
     # Plot and save
     p = ggplot(data=dp, aes_string(x=xaxis, y=measure, fill=colour_by)) +
-        geom_bar(stat = "identity", position=postn, colour="black", size=0.2) +
+        geom_bar(stat = "identity", position=postn, colour="black", size=0.2, width=ifelse(plotting_child_ids, 0.5, 0.9)) +
         {if(plotting_sample_sizes) geom_text(aes(label=n_pupils, vjust=ifelse(score_change >= 0, -0.25, 1.25)), position=position_dodge(width=0.9), size=0.35*x_font_size)} +
         {if(grouped & !plotting_ids) facet_grid(reformulate(xgroup), switch = "x", space = "free_x")} +
         {if(grouped & plotting_ids) facet_grid(reformulate(xgroup), switch = "x", scales="free_x", space = "free_x")} +
@@ -158,6 +158,7 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
         {if(sample_size_too_small) annotate("text", x=x_mid, y=0.5, label= "No data in specified chart filter")} + 
         {if(colour_by!="pupil_count_type" & !grouped) annotation_custom(grob)} +
         {if(measure != "N") scale_y_continuous(labels=percent)} +
+        theme(panel.spacing = unit(1, "lines")) +
         theme(panel.background = element_rect(fill = "white")) +
         theme(axis.line.x = element_line(color = "black"), axis.line.y = element_line(color = "black")) +
         guides(fill = guide_legend(title = get_column_labels(chart_col_labels, colour_by), title.position = "top")) +
