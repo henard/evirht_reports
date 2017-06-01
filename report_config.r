@@ -113,6 +113,7 @@ for(i in seq_along(report1_ids_in)){
                      "xaxis"=xtitle,
                      "xgroup"="",
                      "colour_by"="Dev_Stage",
+                     "chunk_size"=10,
                      "filter"=list("hs_locality"=list("column"="AccountID", "values"=list(report1_ids_in[[i]]), "filter_type"="in")))
     } else if(report1_levels_in[[i]] == "Organisation"){
         temp=list("type"="bar_side_by_side",
@@ -123,6 +124,7 @@ for(i in seq_along(report1_ids_in)){
                   "xaxis"=xtitle,
                   "xgroup"="",
                   "colour_by"="Dev_Stage",
+                  "chunk_size"=10,
                   "filter" = list("org"=list("column"="Organisation_ID", "values"=list(report1_ids_in[[i]]), "filter_type"="in")))
     } else {
         temp=list("type"="bar_side_by_side",
@@ -133,6 +135,7 @@ for(i in seq_along(report1_ids_in)){
                   "xaxis"=xtitle,
                   "xgroup"="School_Year",
                   "colour_by"="Dev_Stage",
+                  "chunk_size"=10,
                   "filter"=list("org" = list("column"="Organisation_ID", "values"=list(report1_ids_in[[i]]), "filter_type"="in")))
     }
     report1[[i]] = assign(paste("chart",i,sep=""),temp)
@@ -157,6 +160,7 @@ for(i in seq_along(report2_ids_in)){
                "xaxis"="",
                "xgroup"="",
                "colour_by"="Dev_Stage",
+               "chunk_size"=10,
                "filter"=list("org"=list("column"=col_level, "values"=list(report2_ids_in[[i]]), "filter_type"="in"),
                              "N_assessment_2+"=list("column"="N_assessments", "lower"=2, "upper"=10, "filter_type"="range"),
                              "Assessment_n_1"=list("column"="Assessment_n", "values"=list(1), "filter_type"="in")))
@@ -170,6 +174,7 @@ for(i in seq_along(report2_ids_in)){
                "xaxis"="",
                "xgroup"="",
                "colour_by"="Dev_Stage",
+               "chunk_size"=10,
                "filter"=list("org"=list("column"=col_level, "values"=list(report2_ids_in[[i]]), "filter_type"="in"),
                              "N_assessment_2+"=list("column"="N_assessments", "lower"=2, "upper"=10, "filter_type"="range"),
                              "Assessment_n_1"=list("column"="Assessment_n_rev", "values"=list(-1), "filter_type"="in")))
@@ -202,6 +207,7 @@ report3 = list(
                   "xaxis"="Child_ID_Completed_date",
                   "xgroup"="School_Year",
                   "colour_by"="Dev_Stage",
+                  "chunk_size"=10,
                   "filter"=list("org_brunell"=list("column"="Organisation_ID", "values"=list(report3_ids_in[[1]]), "filter_type"="in")))
 )
 
@@ -219,6 +225,7 @@ report4 = list(
                   "xaxis"="Organisation",
                   "xgroup"="",
                   "colour_by"="pupil_count_type",
+                  "chunk_size"=10,
                   "filter"=list("Org_seln"=list("column"="AccountID", "values"=list(report4_ids_in[[1]]), "filter_type"="in"))),
     "chart2"=list("type"="bar_side_by_side",
                   "dataset" = "pupil_counts",
@@ -228,6 +235,7 @@ report4 = list(
                   "xaxis"="Organisation",
                   "xgroup"="",
                   "colour_by"="pupil_count_type",
+                  "chunk_size"=10,
                   "filter"=list("Org_seln"=list("column"="AccountID", "values"=list(report4_ids_in[[1]]), "filter_type"="in")))
 )
 
@@ -247,6 +255,7 @@ for(i in seq_along(report5_ids_in)){
               "xaxis"="Organisation",
               "xgroup"="",
               "colour_by"="Dev_Stage",
+              "chunk_size"=10,
               "filter"=list("org"=list("column"="AccountID", "values"=list(report5_ids_in[[i]]), "filter_type"="in")))
     report5[[i]] = assign(paste("chart",i,sep=""),temp)
     
