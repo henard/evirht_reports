@@ -12,6 +12,9 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
     plotting_ids <- plotting_child_ids | plotting_org_ids
     plotting_ids_on_xaxis <- grepl("Child_ID", xaxis) | grepl("Organisation", xaxis)
     
+    # Determine whether to plot sample_sizes
+    plotting_sample_sizes <- !plotting_child_ids & measure=="score_change"
+
     # Determine units of measure
     measure_units <- "Pupils"
     if(measure=="Overall_Score") measure_units <- "Profiles"
@@ -54,8 +57,7 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
 
     # Capture sample size measurements then remove sample size column (n_pupils) from dataframe
     sample_sizes <- list("sum"=sum(dp$n_pupils), "min"=min(dp$n_pupils), "max"=max(dp$n_pupils))
-    dp[ , !(names(dp) %in% c("n_pupils"))]
-    sample_size_text <- paste(measure_units,": ", sample_sizes$sum, " range (", sample_sizes$min, ", ", sample_sizes$max, ")", sep="")
+    sample_size_text <- paste(measure_units,": ", sample_sizes$sum, sep="")
 
     # Reverse the order of Dev_Stage when display side-by-side charts
     if(postn == "dodge" & colour_by == "Dev_Stage") {
@@ -136,10 +138,11 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
     # (This method enables you to specify the relative position of the text
     # - no need to specify the coordinates which change from one chart to the next)
     grob=grobTree(textGrob(sample_size_text, x=1, y=1, hjust=1, vjust=1, gp=gpar(col="black", fontsize=10)))
-    
+
     # Plot and save
     p = ggplot(data=dp, aes_string(x=xaxis, y=measure, fill=colour_by)) +
         geom_bar(stat = "identity", position=postn, colour="black", size=0.2) +
+        {if(plotting_sample_sizes) geom_text(aes(label=n_pupils, vjust=ifelse(score_change >= 0, -0.25, 1.25)), position=position_dodge(width=0.9), size=0.35*x_font_size)} +
         {if(grouped & !plotting_ids) facet_grid(reformulate(xgroup), switch = "x", space = "free_x")} +
         {if(grouped & plotting_ids) facet_grid(reformulate(xgroup), switch = "x", scales="free_x", space = "free_x")} +
         {if(grouped) theme(panel.spacing = unit(0, "lines"), strip.background = element_blank(), strip.placement = "outside")} +
