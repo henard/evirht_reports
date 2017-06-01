@@ -2,7 +2,7 @@ library(ggplot2)
 library(scales)
 library(grid)
 
-bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, filename, long_filename, dataset, auto_title, title_org) {
+bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, filename, long_filename, dataset, auto_title, title_org) {
     
     plot_size_scale = 1.5
     
@@ -171,7 +171,7 @@ bar_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, fi
     sprintf("Saving plot: %s", file.path(plots_dir, filename))
 }
 
-pie_chart <- function(type, title, measure, xaxis, xgroup, colour_by, filter, filename, long_filename, dataset, auto_title, title_org) {
+pie_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, filename, long_filename, dataset, auto_title, title_org) {
     
     data_set <- get(dataset)
     
