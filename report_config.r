@@ -62,15 +62,23 @@ report2_heading <- "Headstart Schools"
 # Report 3 arguments
 # Report 3 filters by organisation only and is set up to produce one chart at a time.
 # Set the organisation ID below.
-report3_ids_in <- list(chart1 = c(675,1077)) 
+report3_ids_in <- list(chart1 = c(675,1077),
+                       chart2 = c(675,1077)) 
+# Report 3 can additionally be filter by by school year
+# List the school year you would like to include below. Filtering is applied in addition to filtering specified in school_yrs above
+# e.g. chart1 = c(1, 2, 3) to include school years 1, 2 & 3; chart1 = c() to include all school years in data.
+report3_additional_filter_in <- list(chart1 = c(),
+                                  chart2 = c(1, 2, 3))
 # Specify an alternative chart title if you would like to overide the automated Chart title.
 # Specify "" (e.g. chart1 = "") to use an automatically generated chart title.
-report3_labels_in <- list(chart1 = "")
+report3_labels_in <- list(chart1 = "",
+                          chart2 = "")
 # Define the main heading for the report
 report3_heading <- "Headstart Schools"
 # Define chunk size - the maximum number of x-axis categories permitted per bar chart. A chart with 90 x-axis categories and 
 # a chunk_size = 30 would result in 3 separate bar charts named "..._chunk1.png", "..._chunk2.png" and "..._chunk3.png".
-report3_chunk_size_in <- list(chart1 = 60)
+report3_chunk_size_in <- list(chart1 = 60,
+                              chart2 = 60)
 
 # Report 4 arguments
 # Report 4 filters by organisation or account and is set up to produce one chart at a time.
@@ -125,45 +133,36 @@ academic_yr = paste(gsub("(.+)(-)(.+)(-)(.+)","\\1",yr_start),"/",gsub("(.+)(-)(
 
 # report1: These are the bar charts in the pdf labelled ‘Sample 1’. For the Headstart set of schools these include a bar
 #         chart for all schools, schools in locality 1 and 6  and 3 individual Headstart school. (Now all in side-by-side format)
+report1_template =  list(
+    "type"="bar_side_by_side",
+    "dataset" = "score_change_dt",
+    "title_org"=NA,
+    "auto_title"=paste("\nAverage percentage point change between first and last assessment scores\nduring academic year ",academic_yr,sep=""),
+    "measure"="score_change",
+    "xaxis"=NA,
+    "xgroup"="",
+    "colour_by"="Dev_Stage",
+    "chunk_size"=60,
+    "filter"=list("filter1"=list("column"=NA, "values"=NA, "filter_type"="in")))
+
 report1 = list()
 for(i in seq_along(report1_ids_in)){
     if(length(report1_ids_in) != length(report1_levels_in) ||
        length(report1_ids_in) != length(report1_labels_in) ||
        length(report1_ids_in) != length(report1_chunk_size_in))stop("Number of input ids, labels, levels or chunk_sizes in Report 1 are not the same length")
     if(report1_levels_in[[i]]=="Pupil") xtitle = "Child_ID" else xtitle = "School_Year"
+    temp <- report1_template
+    temp$title_org <- toupper(report1_labels_in[[i]])
+    temp$xaxis <- xtitle
+    temp$chunk_size <- report1_chunk_size_in[[i]]
+    temp$filter$filter1$values <- list(report1_ids_in[[i]])
     if(report1_levels_in[[i]] == "Account"){
-        temp =  list("type"="bar_side_by_side",
-                     "dataset" = "score_change_dt",
-                     "title_org"=toupper(report1_labels_in[[i]]),
-                     "auto_title"=paste("\nAverage percentage point change between first and last assessment scores\nduring academic year ",academic_yr,sep=""),
-                     "measure"="score_change",
-                     "xaxis"=xtitle,
-                     "xgroup"="",
-                     "colour_by"="Dev_Stage",
-                     "chunk_size"=report1_chunk_size_in[[i]],
-                     "filter"=list("hs_locality"=list("column"="AccountID", "values"=list(report1_ids_in[[i]]), "filter_type"="in")))
+        temp$filter$filter1$column <- "AccountID"
     } else if(report1_levels_in[[i]] == "Organisation"){
-        temp=list("type"="bar_side_by_side",
-                  "dataset" = "score_change_dt",
-                  "title_org"= toupper(report1_labels_in[[i]]),
-                  "auto_title"= paste("\nAverage percentage point change between first and last assessment scores\nduring academic year ",academic_yr,sep=""),
-                  "measure"="score_change",
-                  "xaxis"=xtitle,
-                  "xgroup"="",
-                  "colour_by"="Dev_Stage",
-                  "chunk_size"=report1_chunk_size_in[[i]],
-                  "filter" = list("org"=list("column"="Organisation_ID", "values"=list(report1_ids_in[[i]]), "filter_type"="in")))
+        temp$filter$filter1$column <- "Organisation_ID"
     } else {
-        temp=list("type"="bar_side_by_side",
-                  "dataset" = "score_change_dt",
-                  "title_org"=toupper(report1_labels_in[[i]]),
-                  "auto_title"=paste("\nAverage percentage point change between first and last assessment scores\nduring academic year ",academic_yr,sep=""),
-                  "measure"="score_change",
-                  "xaxis"=xtitle,
-                  "xgroup"="School_Year",
-                  "colour_by"="Dev_Stage",
-                  "chunk_size"=report1_chunk_size_in[[i]],
-                  "filter"=list("org" = list("column"="Organisation_ID", "values"=list(report1_ids_in[[i]]), "filter_type"="in")))
+        temp$xgroup <- "School_Year"
+        temp$filter$filter1$column <- "Organisation_ID"
     }
     report1[[i]] = assign(paste("chart",i,sep=""),temp)
 }
@@ -225,19 +224,32 @@ save(report2_fullheading, file=file.path(data_dir, "report2_fullheading.RData"))
 # report3: This is the bar chart/scatter plot given in the pdf labelled ‘Sample 2’. Henry will consider this plot and
 #         provide alternative formats if there are any improved ways of visualising the data.
 
-report3 = list(
-    "chart1"=list("type"="bar_side_by_side",
-                  "dataset" = "score_dt",
-                  "title_org"=toupper(report3_labels_in[[1]]),
-                  "auto_title"=paste("\nIndividual pupil journeys during academic year ",academic_yr,sep=""),
-                  "measure"="Overall_Score",
-                  "xaxis"="Child_ID_Completed_date",
-                  "xgroup"="School_Year",
-                  "colour_by"="Dev_Stage",
-                  "chunk_size"=report3_chunk_size_in[[1]],
-                  "filter"=list("org_brunell"=list("column"="Organisation_ID", "values"=list(report3_ids_in[[1]]), "filter_type"="in")))
-)
+report3_template = list(
+    "type"="bar_side_by_side",
+    "dataset" = "score_dt",
+    "title_org"=NA,
+    "auto_title"=paste("\nIndividual pupil journeys during academic year ",academic_yr,sep=""),
+    "measure"="Overall_Score",
+    "xaxis"="Child_ID_Completed_date",
+    "xgroup"="School_Year",
+    "colour_by"="Dev_Stage",
+    "chunk_size"=NA,
+    "filter"=list("org"=list("column"="Organisation_ID", "values"=NA, "filter_type"="in")))
 
+report3 = list()
+for(i in seq_along(report3_ids_in)){
+    if(length(report3_ids_in) != length(report3_additional_filter_in) ||
+       length(report3_ids_in) != length(report3_labels_in) ||
+       length(report3_ids_in) != length(report3_chunk_size_in))stop("Number of input ids, labels, additional_filter or chunk_sizes in Report 3 are not the same length")
+    temp <- report3_template
+    temp$title_org <- toupper(report3_labels_in[[i]])
+    temp$chunk_size <- report3_chunk_size_in[[i]]
+    temp$filter$org$values <- list(report3_ids_in[[i]])
+    if(!is.null(report3_additional_filter_in[[i]])) temp$filter$filter2 <- list("column"="School_Year", "values"=list(report3_additional_filter_in[[i]]), "filter_type"="in")
+    print(temp$filter)
+    report3[[i]] = assign(paste("chart",i,sep=""),temp)
+}
+names(report3) = paste("chart",seq_along(report3_ids_in),sep="")
 report3_fullheading <- paste(report3_heading," - Academic Year ",academic_yr,sep="")
 save(report3_fullheading, file=file.path(data_dir, "report3_fullheading.RData"))
 
