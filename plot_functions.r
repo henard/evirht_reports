@@ -2,7 +2,7 @@ library(ggplot2)
 library(scales)
 library(grid)
 
-bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, filename, long_filename, dataset, auto_title, title_org) {
+bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, chunk_size, filename, long_filename, dataset, auto_title, title_org) {
     
     plot_size_scale = 1.5
     
@@ -55,10 +55,6 @@ bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, filename,
         names(dp)[names(dp) == 'mean'] <- measure
     }
 
-    # Capture sample size measurements then remove sample size column (n_pupils) from dataframe
-    sample_sizes <- list("sum"=sum(dp$n_pupils), "min"=min(dp$n_pupils), "max"=max(dp$n_pupils))
-    sample_size_text <- paste(measure_units,": ", sample_sizes$sum, sep="")
-
     # Reverse the order of Dev_Stage when display side-by-side charts
     if(postn == "dodge" & colour_by == "Dev_Stage") {
         dp[, colour_by] <- factor(dp[, colour_by], levels=rev(levels(dp[, colour_by])))
@@ -69,23 +65,22 @@ bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, filename,
 
     # Assign each bar/ category in plot data a chunk number 'chunk' depending upon chunk size
     # For chunk_size = 100, chunck 1 is 1-100, chunk 2 is 101-200 and so on.
-    chunk_size <- 100
+    # chunk_size <- 100
     # if(postn=="stack") {
-    if(!grouped) {
-        dp_chunk <- dp[!duplicated(dp[, xlab, drop=F]), xlab, drop=F]
-    } else {
-        dp_chunk <- dp[, xlab, drop=F]
-    }
+    # if(!grouped) {
+    #    dp_chunk <- dp[!duplicated(dp[, xlab, drop=F]), xlab, drop=F]
+    # } else {
+    #     dp_chunk <- dp[, xlab, drop=F]
+    # }
+
+    dp_chunk <- dp[!duplicated(dp[, xlab, drop=F]), xlab, drop=F]
 
     number_of_categories <- nrow(dp_chunk)
-    dp_chunk$chunk <- floor((1:number_of_categories)/chunk_size)+1
-    dp <- merge(dp, dp_chunk, all.x=TRUE)
-    too_many_categories <- number_of_categories>chunk_size
+    dp_chunk$chunk_n <- 1:number_of_categories
+    dp_chunk$chunk <- floor((0:(number_of_categories-1))/chunk_size)+1
+    chunk_ids <- sort(unique(dp_chunk$chunk))
+    multiple_chunks <- number_of_categories>chunk_size
     
-    # Restrict plotting to chunk 1.
-    # Future task may be to extend this to handle chunks 2 onwards
-    dp <- dp[dp$chunk==1, ]
-
     # Make xgroup variable a factor with levels limited to those still present in the data after filtering
     if(grouped) dp[, xgroup] <- factor(dp[, xgroup], levels=levs_present)
     
@@ -95,20 +90,20 @@ bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, filename,
     # Ensure the width of bars is consistent when plot type="side_by_side"
     if(!grouped) dp <- expand_dataframe(dp, measure)
 
+    dp <- merge(dp, dp_chunk, all.x=TRUE)
+
     # Configure x-axis label settings for different  x-axis variables 
     if(plotting_child_ids) {
         xaxis_text_angle = -90
         x_vjust = 0.5
         x_hjust = 0
         plot_height = 10
-        x_font_size=default_font_size-floor(((number_of_categories-1)/20))
         # dp[, xaxis] <- as.character(dp[, xaxis])
     } else if(plotting_org_ids) {
         xaxis_text_angle = -45
         x_vjust = 1
         x_hjust = 0
         plot_height = 12
-        x_font_size=default_font_size-floor(((number_of_categories-1)/20))
     } else {
         # Ensure the width of bars is consistent when plot type="side_by_side"
         dp <- expand_dataframe(dp, measure)
@@ -116,17 +111,14 @@ bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, filename,
         x_vjust = 0.5
         x_hjust = 0.5
         plot_height = 8
-        x_font_size=default_font_size-floor(((number_of_categories-1)/20))
     }
 
     # Aggregating converts character variables into factors - revert this for id variables
     if(plotting_ids_on_xaxis) dp[, xaxis] <- as.character(dp[, xaxis])
 
-    # If not all categories are being included say so in the x-axis lable
+    # Define x-axis labels
     xlab_text <- get_column_labels(chart_col_labels, xlab)
-    if(too_many_categories & !sample_size_too_small) xlab_text <- paste(xlab_text, " (showing ", chunk_size, " out of ", number_of_categories, " categories.)")
-    x_mid <- 0.5*length(unique(dp[, xaxis]))
-    
+
     # Set colour palette according to colour_by variable
     if(colour_by=="pupil_count_type") {
         colour_palette <- get_colour_palette(style_guide, "pupil_counts_colours")
@@ -134,44 +126,70 @@ bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, filename,
         colour_palette <- get_colour_palette(style_guide, "devstrand_colours")
     }
 
-    # Configure grob for plotting sample size text in top right hand corner.
-    # (This method enables you to specify the relative position of the text
-    # - no need to specify the coordinates which change from one chart to the next)
-    grob=grobTree(textGrob(sample_size_text, x=1, y=1, hjust=1, vjust=1, gp=gpar(col="black", fontsize=10)))
+    # Initialise lists to hold plots and filenames for each chunk
+    p <- list()
+    filenames_chunked <- list()
+    for(chunk in chunk_ids) {
+        # Select chunk of data to be plotted
+        plot_data = dp[dp$chunk %in% chunk, ]
 
-    # Plot and save
-    p = ggplot(data=dp, aes_string(x=xaxis, y=measure, fill=colour_by)) +
-        geom_bar(stat = "identity", position=postn, colour="black", size=0.2, width=ifelse(plotting_child_ids, 0.5, 0.9)) +
-        {if(plotting_sample_sizes) geom_text(aes(label=n_pupils, vjust=ifelse(score_change >= 0, -0.25, 1.25)), position=position_dodge(width=0.9), size=0.35*x_font_size)} +
-        {if(grouped & !plotting_ids) facet_grid(reformulate(xgroup), switch = "x", space = "free_x")} +
-        {if(grouped & plotting_ids) facet_grid(reformulate(xgroup), switch = "x", scales="free_x", space = "free_x")} +
-        {if(grouped) theme(panel.spacing = unit(0, "lines"), strip.background = element_blank(), strip.placement = "outside")} +
-        xlab(xlab_text) +
-        ylab(get_column_labels(chart_col_labels, measure)) +
-        ggtitle(auto_title) +
-        theme(plot.title = element_text(lineheight=.8, face="bold", size=default_font_size)) +
-        theme(panel.grid.major.y = element_line(colour = "grey", linetype = "solid", size=0.3), panel.grid.minor.x = element_blank(), panel.grid.major.x = element_line(colour = "grey", linetype = "dotted", size=0.3)) + 
-        scale_fill_manual(values=unlist(colour_palette)) + 
-        scale_colour_discrete(drop = FALSE) +
-        scale_x_discrete(drop = FALSE) +
-        {if(sample_size_too_small) coord_cartesian(ylim = c(0, 1))} +
-        {if(sample_size_too_small) annotate("text", x=x_mid, y=0.5, label= "No data in specified chart filter")} + 
-        {if(colour_by!="pupil_count_type" & !grouped) annotation_custom(grob)} +
-        {if(measure != "N") scale_y_continuous(labels=percent)} +
-        theme(panel.spacing = unit(1, "lines")) +
-        theme(panel.background = element_rect(fill = "white")) +
-        theme(axis.line.x = element_line(color = "black"), axis.line.y = element_line(color = "black")) +
-        guides(fill = guide_legend(title = get_column_labels(chart_col_labels, colour_by), title.position = "top")) +
-        theme(axis.title = element_text(size=default_font_size)) +
-        theme(axis.text.x = element_text(angle = xaxis_text_angle, vjust=x_vjust, hjust=x_hjust, size=x_font_size)) +
-        theme(axis.text.y = element_text(angle = 0, vjust=0.5, hjust=0.5, size=default_font_size)) +
-        theme(legend.title = element_text(colour="black", size=default_font_size, face="bold"), legend.position = "right", legend.text = element_text(colour="black", size=default_font_size))
+        # Capture sample size measurements
+        sample_sizes <- list("sum"=sum(plot_data$n_pupils, na.rm = TRUE))
+        sample_size_text <- paste(measure_units,": ", sample_sizes$sum, sep="")
 
-    ggsave(file.path(plots_dir, filename), plot = p, width = plot_size_scale*20, height = plot_size_scale*plot_height, units = "cm")
-    sprintf("Saving plot: %s", file.path(plots_dir, filename))
+        # Configure grob for plotting sample size text in top right hand corner.
+        # (This method enables you to specify the relative position of the text
+        # - no need to specify the coordinates which change from one chart to the next)
+        grob=grobTree(textGrob(sample_size_text, x=1, y=1, hjust=1, vjust=1, gp=gpar(col="black", fontsize=10)))
+
+        # Make xgroup variable a factor with levels limited to those still present in the data after filtering
+        if(grouped) plot_data[, xgroup] <- factor(plot_data[, xgroup], levels=levels_present(plot_data[, xgroup]))
+        if(!plotting_ids_on_xaxis) plot_data[, xaxis] <- factor(plot_data[, xaxis], levels=levels_present(plot_data[, xaxis]))
+
+        xlab_text_chunk <- xlab_text
+        if(multiple_chunks & !sample_size_too_small) xlab_text_chunk <- paste(xlab_text, " (categories ", min(plot_data$chunk_n), ":", max(plot_data$chunk_n), " of ", number_of_categories, ")", sep="")
+        x_mid <- 0.5*length(unique(plot_data[, xaxis]))
+        number_of_categories_chunk <- length(unique(dp_chunk$chunk))
+
+        x_font_size=default_font_size-floor(((number_of_categories_chunk-1)/20))
+
+        # Plot and save
+        p[[chunk]] = ggplot(data=plot_data, aes_string(x=xaxis, y=measure, fill=colour_by)) +
+            geom_bar(stat = "identity", position=postn, colour="black", size=0.2, width=ifelse(plotting_child_ids, 0.5, 0.9)) +
+            {if(plotting_sample_sizes) geom_text(aes(label=n_pupils, vjust=ifelse(score_change >= 0, -0.25, 1.25)), position=position_dodge(width=0.9), size=0.35*x_font_size)} +
+            {if(grouped & !plotting_ids) facet_grid(reformulate(xgroup), switch = "x", space = "free_x")} +
+            {if(grouped & plotting_ids) facet_grid(reformulate(xgroup), switch = "x", scales="free_x", space = "free_x")} +
+            {if(grouped) theme(panel.spacing = unit(0, "lines"), strip.background = element_blank(), strip.placement = "outside")} +
+            xlab(xlab_text_chunk) +
+            ylab(get_column_labels(chart_col_labels, measure)) +
+            ggtitle(auto_title) +
+            theme(plot.title = element_text(lineheight=.8, face="bold", size=default_font_size)) +
+            theme(panel.grid.major.y = element_line(colour = "grey", linetype = "solid", size=0.3), panel.grid.minor.x = element_blank(), panel.grid.major.x = element_line(colour = "grey", linetype = "dotted", size=0.3)) +
+            scale_fill_manual(values=unlist(colour_palette)) +
+            scale_colour_discrete(drop = FALSE) +
+            scale_x_discrete(drop = FALSE) +
+            {if(sample_size_too_small) coord_cartesian(ylim = c(0, 1))} +
+            {if(sample_size_too_small) annotate("text", x=x_mid, y=0.5, label= "No data in specified chart filter")} +
+            {if(colour_by!="pupil_count_type" & !grouped) annotation_custom(grob)} +
+            {if(measure != "N") scale_y_continuous(labels=percent)} +
+            theme(panel.spacing = unit(1, "lines")) +
+            theme(panel.background = element_rect(fill = "white")) +
+            theme(axis.line.x = element_line(color = "black"), axis.line.y = element_line(color = "black")) +
+            guides(fill = guide_legend(title = get_column_labels(chart_col_labels, colour_by), title.position = "top")) +
+            theme(axis.title = element_text(size=default_font_size)) +
+            theme(axis.text.x = element_text(angle = xaxis_text_angle, vjust=x_vjust, hjust=x_hjust, size=x_font_size)) +
+            theme(axis.text.y = element_text(angle = 0, vjust=0.5, hjust=0.5, size=default_font_size)) +
+            theme(legend.title = element_text(colour="black", size=default_font_size, face="bold"), legend.position = "right", legend.text = element_text(colour="black", size=default_font_size))
+
+        filenames_chunked[[chunk]] <- file.path(plots_dir, ifelse(max(chunk_ids)>=2, gsub(".", paste("_chunk", chunk, ".", sep=""), filename, fixed=TRUE), filename))
+    }
+    for(chunk in chunk_ids) {
+        ggsave(filename = filenames_chunked[[chunk]], plot = p[[chunk]], width = plot_size_scale*20, height = plot_size_scale*plot_height, units = "cm", device = "png")
+    }
+    sprintf("Saving plot: %s", file.path(plots_dir, filenames_chunked))
 }
 
-pie_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, filename, long_filename, dataset, auto_title, title_org) {
+pie_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, chunk_size, filename, long_filename, dataset, auto_title, title_org) {
     
     data_set <- get(dataset)
     

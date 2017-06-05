@@ -35,6 +35,13 @@ report1_levels_in <- list(chart1 = "Account",
                           chart5 = "Pupil")
 # Define the main heading for the report
 report1_heading <- "Headstart Schools"
+# For each chart, define chunk size - the maximum number of x-axis categories permitted per bar chart. A chart with 90 x-axis categories and 
+# a chunk_size = 30 would result in 3 separate bar charts named "..._chunk1.png", "..._chunk2.png" and "..._chunk3.png".
+report1_chunk_size_in <- list(chart1 = 60,
+                              chart2 = 60,
+                              chart3 = 60,
+                              chart4 = 60,
+                              chart5 = 60)
 
 # Report 2 arguments
 # Report 2 can be set up to have as many charts as the user wants, simply add or remove a chart from each argument below.
@@ -58,6 +65,9 @@ report3_ids_in <- list(chart1 = c(675,1077))
 report3_labels_in <- list(chart1 = "")
 # Define the main heading for the report
 report3_heading <- "Headstart Schools"
+# Define chunk size - the maximum number of x-axis categories permitted per bar chart. A chart with 90 x-axis categories and 
+# a chunk_size = 30 would result in 3 separate bar charts named "..._chunk1.png", "..._chunk2.png" and "..._chunk3.png".
+report3_chunk_size_in <- list(chart1 = 60)
 
 # Report 4 arguments
 # Report 4 filters by account only and is set up to produce one chart at a time.
@@ -67,6 +77,9 @@ report4_ids_in <- list(chart1 = 1483)
 report4_labels_in <- list(chart1 = "")
 # Define the main heading for the report
 report4_heading <- "Headstart Schools"
+# Define chunk size - the maximum number of x-axis categories permitted per bar chart. A chart with 90 x-axis categories and 
+# a chunk_size = 30 would result in 3 separate bar charts named "..._chunk1.png", "..._chunk2.png" and "..._chunk3.png".
+report4_chunk_size_in <- list(chart1 = 60)
 
 # Report 5 arguments
 # Report 5 can be set up to have as many charts as the user wants, simply add or remove a chart from each argument below.
@@ -76,6 +89,9 @@ report5_ids_in <- list(chart1 = 1483)
 report5_labels_in <- list(chart1 = "")
 # Define the main heading for the report
 report5_heading <- "Headstart Schools"
+# Define chunk size - the maximum number of x-axis categories permitted per bar chart. A chart with 90 x-axis categories and 
+# a chunk_size = 30 would result in 3 separate bar charts named "..._chunk1.png", "..._chunk2.png" and "..._chunk3.png".
+report5_chunk_size_in <- list(chart1 = 60)
 
 ######################################################################################################
 # Filters - recommended not to edit without support
@@ -102,7 +118,9 @@ academic_yr = paste(gsub("(.+)(-)(.+)(-)(.+)","\\1",yr_start),"/",gsub("(.+)(-)(
 #         chart for all schools, schools in locality 1 and 6  and 3 individual Headstart school. (Now all in side-by-side format)
 report1 = list()
 for(i in seq_along(report1_ids_in)){
-    if(length(report1_ids_in) != length(report1_levels_in) || length(report1_ids_in) != length(report1_labels_in))stop("Number of input ids, labels or levels in Report 1 are not the same length")
+    if(length(report1_ids_in) != length(report1_levels_in) ||
+       length(report1_ids_in) != length(report1_labels_in) ||
+       length(report1_ids_in) != length(report1_chunk_size_in))stop("Number of input ids, labels, levels or chunk_sizes in Report 1 are not the same length")
     if(report1_levels_in[[i]]=="Pupil") xtitle = "Child_ID" else xtitle = "School_Year"
     if(report1_levels_in[[i]] == "Account"){
         temp =  list("type"="bar_side_by_side",
@@ -113,6 +131,7 @@ for(i in seq_along(report1_ids_in)){
                      "xaxis"=xtitle,
                      "xgroup"="",
                      "colour_by"="Dev_Stage",
+                     "chunk_size"=report1_chunk_size_in[[i]],
                      "filter"=list("hs_locality"=list("column"="AccountID", "values"=list(report1_ids_in[[i]]), "filter_type"="in")))
     } else if(report1_levels_in[[i]] == "Organisation"){
         temp=list("type"="bar_side_by_side",
@@ -123,6 +142,7 @@ for(i in seq_along(report1_ids_in)){
                   "xaxis"=xtitle,
                   "xgroup"="",
                   "colour_by"="Dev_Stage",
+                  "chunk_size"=report1_chunk_size_in[[i]],
                   "filter" = list("org"=list("column"="Organisation_ID", "values"=list(report1_ids_in[[i]]), "filter_type"="in")))
     } else {
         temp=list("type"="bar_side_by_side",
@@ -133,6 +153,7 @@ for(i in seq_along(report1_ids_in)){
                   "xaxis"=xtitle,
                   "xgroup"="School_Year",
                   "colour_by"="Dev_Stage",
+                  "chunk_size"=report1_chunk_size_in[[i]],
                   "filter"=list("org" = list("column"="Organisation_ID", "values"=list(report1_ids_in[[i]]), "filter_type"="in")))
     }
     report1[[i]] = assign(paste("chart",i,sep=""),temp)
@@ -157,6 +178,7 @@ for(i in seq_along(report2_ids_in)){
                "xaxis"="",
                "xgroup"="",
                "colour_by"="Dev_Stage",
+               "chunk_size"=10,
                "filter"=list("org"=list("column"=col_level, "values"=list(report2_ids_in[[i]]), "filter_type"="in"),
                              "N_assessment_2+"=list("column"="N_assessments", "lower"=2, "upper"=10, "filter_type"="range"),
                              "Assessment_n_1"=list("column"="Assessment_n", "values"=list(1), "filter_type"="in")))
@@ -170,6 +192,7 @@ for(i in seq_along(report2_ids_in)){
                "xaxis"="",
                "xgroup"="",
                "colour_by"="Dev_Stage",
+               "chunk_size"=10,
                "filter"=list("org"=list("column"=col_level, "values"=list(report2_ids_in[[i]]), "filter_type"="in"),
                              "N_assessment_2+"=list("column"="N_assessments", "lower"=2, "upper"=10, "filter_type"="range"),
                              "Assessment_n_1"=list("column"="Assessment_n_rev", "values"=list(-1), "filter_type"="in")))
@@ -202,6 +225,7 @@ report3 = list(
                   "xaxis"="Child_ID_Completed_date",
                   "xgroup"="School_Year",
                   "colour_by"="Dev_Stage",
+                  "chunk_size"=report3_chunk_size_in[[1]],
                   "filter"=list("org_brunell"=list("column"="Organisation_ID", "values"=list(report3_ids_in[[1]]), "filter_type"="in")))
 )
 
@@ -219,6 +243,7 @@ report4 = list(
                   "xaxis"="Organisation",
                   "xgroup"="",
                   "colour_by"="pupil_count_type",
+                  "chunk_size"=report4_chunk_size_in[[1]],
                   "filter"=list("Org_seln"=list("column"="AccountID", "values"=list(report4_ids_in[[1]]), "filter_type"="in"))),
     "chart2"=list("type"="bar_side_by_side",
                   "dataset" = "pupil_counts",
@@ -228,6 +253,7 @@ report4 = list(
                   "xaxis"="Organisation",
                   "xgroup"="",
                   "colour_by"="pupil_count_type",
+                  "chunk_size"=report4_chunk_size_in[[1]],
                   "filter"=list("Org_seln"=list("column"="AccountID", "values"=list(report4_ids_in[[1]]), "filter_type"="in")))
 )
 
@@ -247,6 +273,7 @@ for(i in seq_along(report5_ids_in)){
               "xaxis"="Organisation",
               "xgroup"="",
               "colour_by"="Dev_Stage",
+              "chunk_size"=report5_chunk_size_in[[1]],
               "filter"=list("org"=list("column"="AccountID", "values"=list(report5_ids_in[[i]]), "filter_type"="in")))
     report5[[i]] = assign(paste("chart",i,sep=""),temp)
     
