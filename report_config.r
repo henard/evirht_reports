@@ -18,7 +18,8 @@ report1_ids_in <- list(chart1 = 1483,
                        chart3 = 1319,
                        chart4 = 676,
                        chart5 = 418)
-# Provide labels for each chart requested (these are used within the chart titles)
+# Specify alternative chart titles if you would like to overide the automated Chart titles.
+# Specify "" (e.g. chart1 = "") to use an automatically generated chart title.
 report1_labels_in <- list(chart1 = "",
                           chart2 = "",
                           chart3 = "",
@@ -48,7 +49,8 @@ report1_chunk_size_in <- list(chart1 = 60,
 # Report 2 is set to produce pie charts by organisation or account. Set the organisation or account IDs for each chart requested by editing the following.
 report2_ids_in <- list(chart1 = 1483,
                        chart2 = 418)
-# Provide labels for each chart requested (these are used within the chart titles)
+# Specify alternative chart titles if you would like to overide the automated Chart titles.
+# Specify "" (e.g. chart1 = "") to use an automatically generated chart title.
 report2_labels_in <- list(chart1 = "",
                           chart2 = "")
 # Define the levels for each chart requested (these can be either account or organisation).
@@ -61,7 +63,8 @@ report2_heading <- "Headstart Schools"
 # Report 3 filters by organisation only and is set up to produce one chart at a time.
 # Set the organisation ID below.
 report3_ids_in <- list(chart1 = c(675,1077)) 
-# Provide a label for the chart requested (these are used within the chart titles)
+# Specify an alternative chart title if you would like to overide the automated Chart title.
+# Specify "" (e.g. chart1 = "") to use an automatically generated chart title.
 report3_labels_in <- list(chart1 = "")
 # Define the main heading for the report
 report3_heading <- "Headstart Schools"
@@ -70,15 +73,20 @@ report3_heading <- "Headstart Schools"
 report3_chunk_size_in <- list(chart1 = 60)
 
 # Report 4 arguments
-# Report 4 filters by account only and is set up to produce one chart at a time.
-# Set the account ID below.
-report4_ids_in <- list(chart1 = 1483) 
-# Provide a label for the chart requested (these are used within the chart titles)
-report4_labels_in <- list(chart1 = "")
+# Report 4 filters by organisation or account and is set up to produce one chart at a time.
+# Set the list of one or more organisation/account IDs below.
+report4_ids_in <- list(chart1 = list(418, 419, 420))
+# Define the level for the chart.
+# If the IDs listed in report4_ids_in are account ids specify "Account"; if they are Organisation IDs specify "Organisation"
+# The chart is a bar for each organisation in the accounts or organisations listed in report4_ids_in
+report4_levels_in <- list(chart1 = "Organisation")
+# Specify alternative chart title if you would like to overide the automated Chart titles.
+# Specify "" (e.g. chart1 = "") to use an automatically generated chart title.
+report4_labels_in <- list(chart1 = "SELECTED SCHOOLS")
 # Define the main heading for the report
 report4_heading <- "Headstart Schools"
-# Define chunk size - the maximum number of x-axis categories permitted per bar chart. A chart with 90 x-axis categories and 
-# a chunk_size = 30 would result in 3 separate bar charts named "..._chunk1.png", "..._chunk2.png" and "..._chunk3.png".
+# # Define chunk size - the maximum number of x-axis categories permitted per bar chart. A chart with 90 x-axis categories and
+# # a chunk_size = 30 would result in 3 separate bar charts named "..._chunk1.png", "..._chunk2.png" and "..._chunk3.png".
 report4_chunk_size_in <- list(chart1 = 60)
 
 # Report 5 arguments
@@ -87,7 +95,8 @@ report4_chunk_size_in <- list(chart1 = 60)
 report5_ids_in <- list(chart1 = 1483)
 # Provide a label for the chart requested (these are used within the chart title
 report5_labels_in <- list(chart1 = "")
-# Define the main heading for the report
+# Specify alternative chart title if you would like to overide the automated Chart titles.
+# Specify "" (e.g. chart1 = "") to use an automatically generated chart title.
 report5_heading <- "Headstart Schools"
 # Define chunk size - the maximum number of x-axis categories permitted per bar chart. A chart with 90 x-axis categories and 
 # a chunk_size = 30 would result in 3 separate bar charts named "..._chunk1.png", "..._chunk2.png" and "..._chunk3.png".
@@ -234,6 +243,7 @@ save(report3_fullheading, file=file.path(data_dir, "report3_fullheading.RData"))
 
 # report4: This is the TOL activity given in the spreadsheet called ‘Headstart Data – 11 05 16 for RHead.xlsx’).
 #         (This plot should be prioritised over plot 3 if there are time constraints).
+if(report4_levels_in == "Account") coltype = "AccountID" else coltype = "Organisation_ID"
 report4 = list(
     "chart1"=list("type"="bar_stacked",
                   "dataset" = "pupil_counts",
@@ -244,7 +254,7 @@ report4 = list(
                   "xgroup"="",
                   "colour_by"="pupil_count_type",
                   "chunk_size"=report4_chunk_size_in[[1]],
-                  "filter"=list("Org_seln"=list("column"="AccountID", "values"=list(report4_ids_in[[1]]), "filter_type"="in"))),
+                  "filter"=list("Org_seln"=list("column"=coltype, "values"=report4_ids_in[[1]], "filter_type"="in"))),
     "chart2"=list("type"="bar_side_by_side",
                   "dataset" = "pupil_counts",
                   "title_org"=toupper(report4_labels_in[[1]]),
@@ -254,7 +264,7 @@ report4 = list(
                   "xgroup"="",
                   "colour_by"="pupil_count_type",
                   "chunk_size"=report4_chunk_size_in[[1]],
-                  "filter"=list("Org_seln"=list("column"="AccountID", "values"=list(report4_ids_in[[1]]), "filter_type"="in")))
+                  "filter"=list("Org_seln"=list("column"=coltype, "values"=report4_ids_in[[1]], "filter_type"="in")))
 )
 
 report4_fullheading <- paste(report4_heading," - Academic Year ",academic_yr,sep="")
