@@ -152,10 +152,16 @@ bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, chunk_siz
         number_of_categories_chunk <- length(unique(dp_chunk$chunk))
 
         x_font_size=default_font_size-floor(((number_of_categories_chunk-1)/20))
-
+        
         # Plot and save
         p[[chunk]] = ggplot(data=plot_data, aes_string(x=xaxis, y=measure, fill=colour_by)) +
             geom_bar(stat = "identity", position=postn, colour="black", size=0.2, width=ifelse(plotting_child_ids, 0.5, 0.9)) +
+            geom_point(stat = "identity", position=postn, colour="black", size=4, width=ifelse(plotting_child_ids, 0.5, 0.9)) +
+            # geom_point(aes(y=time2,group=method),
+            #            stat="identity",
+            #            position="dodge",
+            #            alpha=.8,
+            #            size=3) +
             {if(plotting_sample_sizes) geom_text(aes(label=n_pupils, vjust=ifelse(score_change >= 0, -0.25, 1.25)), position=position_dodge(width=0.9), size=0.35*x_font_size)} +
             {if(grouped & !plotting_ids) facet_grid(reformulate(xgroup), switch = "x", space = "free_x")} +
             {if(grouped & plotting_ids) facet_grid(reformulate(xgroup), switch = "x", scales="free_x", space = "free_x")} +
@@ -180,7 +186,6 @@ bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, chunk_siz
             theme(axis.text.x = element_text(angle = xaxis_text_angle, vjust=x_vjust, hjust=x_hjust, size=x_font_size)) +
             theme(axis.text.y = element_text(angle = 0, vjust=0.5, hjust=0.5, size=default_font_size)) +
             theme(legend.title = element_text(colour="black", size=default_font_size, face="bold"), legend.position = "right", legend.text = element_text(colour="black", size=default_font_size))
-
         filenames_chunked[[chunk]] <- file.path(plots_dir, ifelse(max(chunk_ids)>=2, gsub(".", paste("_chunk", chunk, ".", sep=""), filename, fixed=TRUE), filename))
     }
     for(chunk in chunk_ids) {

@@ -2,9 +2,9 @@
 
 # Clear all results in memory from last time.
 rm(list=ls())
-
+working_dir <- getwd()
 # Install required packages if necessary.
-source("install_rpackages.r")
+# source("install_rpackages.r")
 
 # Load global_config which creates the following objects:
 #   data_source
