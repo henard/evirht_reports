@@ -60,7 +60,7 @@ report2_levels_in <- list(chart1 = "Account",
 report2_heading <- "Headstart Schools"
 
 # Report 3 arguments
-# Report 3 filters by organisation only and is set up to produce one chart at a time.
+# Report 3 filters by organisation only and is set up to produce one or more charts at a time.
 # Set the organisation ID below.
 report3_ids_in <- list(chart1 = c(675,1077),
                        chart2 = c(675,1077)) 
@@ -246,7 +246,6 @@ for(i in seq_along(report3_ids_in)){
     temp$chunk_size <- report3_chunk_size_in[[i]]
     temp$filter$org$values <- list(report3_ids_in[[i]])
     if(!is.null(report3_additional_filter_in[[i]])) temp$filter$filter2 <- list("column"="School_Year", "values"=list(report3_additional_filter_in[[i]]), "filter_type"="in")
-    print(temp$filter)
     report3[[i]] = assign(paste("chart",i,sep=""),temp)
 }
 names(report3) = paste("chart",seq_along(report3_ids_in),sep="")

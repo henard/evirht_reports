@@ -156,6 +156,7 @@ bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, chunk_siz
         # Plot and save
         p[[chunk]] = ggplot(data=plot_data, aes_string(x=xaxis, y=measure, fill=colour_by)) +
             geom_bar(stat = "identity", position=postn, colour="black", size=0.2, width=ifelse(plotting_child_ids, 0.5, 0.9)) +
+            # geom_point(stat = "identity", position=postn, colour="black", size=4) +
             {if(plotting_sample_sizes) geom_text(aes(label=n_pupils, vjust=ifelse(score_change >= 0, -0.25, 1.25)), position=position_dodge(width=0.9), size=0.35*x_font_size)} +
             {if(grouped & !plotting_ids) facet_grid(reformulate(xgroup), switch = "x", space = "free_x")} +
             {if(grouped & plotting_ids) facet_grid(reformulate(xgroup), switch = "x", scales="free_x", space = "free_x")} +
