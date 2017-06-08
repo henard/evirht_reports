@@ -83,7 +83,10 @@ report3_chunk_size_in <- list(chart1 = 60,
 # Report 4 arguments
 # Report 4 filters by organisation or account and is set up to produce one chart at a time.
 # Set the list of one or more organisation/account IDs below.
-report4_ids_in <- list(chart1 = list(418, 419, 420))
+report4_ids_in <- list(chart1 = list(418, 419, 420, 421, 422, 423, 424, 425, 426, 427,
+                                     428, 429, 430, 431, 432, 433, 434, 435, 436, 437,
+                                     438, 439, 440, 441, 442, 443, 444, 445, 446, 447,
+                                     448, 449, 450, 451, 452, 453, 454, 455, 456, 457))
 # Define the level for the chart.
 # If the IDs listed in report4_ids_in are account ids specify "Account"; if they are Organisation IDs specify "Organisation"
 # The chart is a bar for each organisation in the accounts or organisations listed in report4_ids_in
@@ -95,7 +98,7 @@ report4_labels_in <- list(chart1 = "SELECTED SCHOOLS")
 report4_heading <- "Headstart Schools"
 # # Define chunk size - the maximum number of x-axis categories permitted per bar chart. A chart with 90 x-axis categories and
 # # a chunk_size = 30 would result in 3 separate bar charts named "..._chunk1.png", "..._chunk2.png" and "..._chunk3.png".
-report4_chunk_size_in <- list(chart1 = 60)
+report4_chunk_size_in <- list(chart1 = 30)
 
 # Report 5 arguments
 # Report 5 can be set up to have as many charts as the user wants, simply add or remove a chart from each argument below.
