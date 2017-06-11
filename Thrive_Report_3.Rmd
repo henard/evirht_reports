@@ -9,10 +9,13 @@ header-includes:
    \renewcommand{\headrulewidth}{0pt}
 output:
   pdf_document:
-    latex_engine: pdflatex
+    latex_engine: lualatex
 geometry: margin=1cm
 fontsize: 11pt
 classoption: landscape
+# latex_engine: lualatex
+mainfont: FranklinGothic-Demi
+sansfont: FranklinGothic-Demi
 ---
 ```{r heading, echo = FALSE}
 load(file.path("rdata", "report3_fullheading.Rdata"))
