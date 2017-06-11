@@ -7,10 +7,14 @@ header-includes:
    \setlength\headheight{24pt}
    \fancyhead[R]{\includegraphics[width=5cm]{Thrive_Logo_CMYK_square.png}}
    \renewcommand{\headrulewidth}{0pt}
-output: pdf_document
+output:
+  pdf_document:
+    latex_engine: lualatex
 geometry: margin=1cm
 fontsize: 11pt
 classoption: landscape
+mainfont: FranklinGothic-Demi
+sansfont: FranklinGothic-Demi
 ---
 
 
@@ -29,7 +33,7 @@ report5_pngs = dir("plots")[grep("report5",dir("plots"))]
 for(i in seq_along(report5_pngs)){
     cat('![]')
     cat(paste("(plots/",report5_pngs[i],")",sep=""))
-    cat('{width=95%}\n')
+    cat('{width=100%}\n')
 }
 ```
 
