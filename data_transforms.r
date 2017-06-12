@@ -43,14 +43,18 @@ format_pupil_counts_df <- function(df) {
     df[df$N_Allocated==0 & !is.na(df$N_Allocated), "pct_Active"] <- 0
     df$pct_Profiled <- df$N_Profiled / df$N_Allocated
     df[df$N_Allocated==0 & !is.na(df$N_Allocated), "pct_Profiled"] <- 0
-    dfl <- reshape(df, varying=c("N_Allocated", "N_Active", "N_Profiled", "pct_Allocated", "pct_Active", "pct_Profiled"),
+    df$pct_indProfiled <- df$N_indProfiled / df$N_Allocated
+    df[df$N_Allocated==0 & !is.na(df$N_Allocated), "pct_indProfiled"] <- 0
+    dfl <- reshape(df, varying=c("N_Allocated", "N_Active", "N_Profiled", "N_indProfiled", "pct_Allocated", "pct_Active", "pct_Profiled", "pct_indProfiled"),
                    direction="long", idvar="Organisation_ID", sep="_")
     names(dfl)[names(dfl) == 'time'] <- "pupil_count_type"
     # dfl <- dfl[dfl$pupil_count_type %in% c("Active", "Profiled"), ]
-    dfl[!dfl$pupil_count_type %in% c("Active", "Profiled"), "pct"] <- NA
-    dfl[!dfl$pupil_count_type %in% c("Active", "Profiled", "Allocated"), "N"] <- NA
+    dfl[!dfl$pupil_count_type %in% c("Active", "Profiled", "indProfiled"), "pct"] <- NA
+    dfl[!dfl$pupil_count_type %in% c("Active", "Profiled", "indProfiled", "Allocated"), "N"] <- NA
     dfl <- data.table(dfl)
     dfl$pupil_count_type <- factor(dfl$pupil_count_type, levels=unlist(pupil_count_categories))
+    dfl$pupil_count_type_notdot <- factor(dfl$pupil_count_type, levels=unlist(pupil_count_categories)[-4])
+    dfl$pupil_count_type_dot <- factor(dfl$pupil_count_type, levels=unlist(pupil_count_categories)[4])
     return(dfl)
 }
 

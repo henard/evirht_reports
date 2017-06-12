@@ -23,7 +23,7 @@ data_source = "thrive"
 # try_use_rdata_if_recent = TRUE; and
 # No. days since it was last updated is < if_recent_days
 # then rdata local copy will be used
-if_recent_days <- 10
+if_recent_days <- 100
 try_use_rdata_if_recent = TRUE
 
 # Define storage types of csv data
@@ -59,12 +59,14 @@ style_guide <- list(
     ),
     "pupil_pct_colours" = list(
         "Active"="active_green",
-        "Profiled"="profiled_green"
+        "Profiled"="profiled_green",
+        "indProfiled"="red"
     ),
     "pupil_counts_colours" = list(
         "Allocated"="allocated_green",
         "Active"="active_green",
-        "Profiled"="profiled_green"
+        "Profiled"="profiled_green",
+        "indProfiled"="red"
     )
 )
 

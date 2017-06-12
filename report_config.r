@@ -266,7 +266,7 @@ report4 = list(
                   "measure"="pct",
                   "xaxis"="Organisation",
                   "xgroup"="",
-                  "colour_by"="pupil_count_type",
+                  "colour_by"="pupil_count_type_dot",
                   "chunk_size"=report4_chunk_size_in[[1]],
                   "filter"=list("Org_seln"=list("column"=coltype, "values"=report4_ids_in[[1]], "filter_type"="in"))),
     "chart2"=list("type"="bar_side_by_side",
