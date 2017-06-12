@@ -15,9 +15,10 @@ read_locality_data <- function(data_src) {
 }
 
 # Import a table of pupil counts by organisation
-# No. Allocated (max(licenseOrganisation.paidForCapacity) over organisationId)
-# No. Active (count(DISTINCT(childOrganisation.childId)) over organisationId)
-# No. profiled (count(DISTINCT(profileChild.childId)) over organisationId)
+# No. Allocated (max(licenseOrganisation.allocatedCapacity) over organisationId)
+# No. Active (count(DISTINCT(childOrganisation.childId)) over organisationId where statusId=1 & deleted=0)
+# No. profiled (count(DISTINCT(profileChild.childId)) from individualProfile table over organisationId where statusId=1 & deleted=0)
+# No. groupProfiled (count(DISTINCT(profileChild.childId)) from groupProfile table over organisationId where statusId=1 & deleted=0)
 read_pupil_counts_data <- function(data_src) {
     if(data_src=="thrive") {
         lines <- readLines(file.path(sql_dir, "pupil_counts_by_type_and_organisation.sql"))

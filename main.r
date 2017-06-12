@@ -32,6 +32,7 @@ d <- read_data(data_source)
 # Read in pupil_counts data from source defined in data_source in global_config.r
 # apply formating to variables and calculate analysis variables.
 pupil_counts <- read_pupil_counts_data(data_source)
+# pupil_counts <- read_pupil_counts_data("thrive")
 
 # Add automatically generated chart tiles
 reports <- add_auto_chart_labels2(reports)
@@ -54,6 +55,7 @@ source("plot_functions.r")
 delete_existing_plots()
 
 # Create .png files of all charts and .RData results data files in report.
+options(warn=-1)
 for(i in reports) {
     for(j in i){
         if(grepl("bar", j[["type"]])) {
@@ -65,5 +67,6 @@ for(i in reports) {
         }
     }
 }
+options(warn=0)
 
 print("main.r completed running")

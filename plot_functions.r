@@ -3,11 +3,15 @@ library(scales)
 library(grid)
 library(extrafont)
 
-font_import(pattern='fra')
+# font_import(pattern='fra', prompt=FALSE)
+suppressMessages(font_import(pattern='fra', prompt=FALSE))
 
 bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, chunk_size, filename, long_filename, dataset, auto_title, title_org) {
     
     plot_size_scale = 1.5
+
+    plot_with_dot <- colour_by == "pupil_count_type_dot"
+        if(plot_with_dot) colour_by = "pupil_count_type"
     
     # Determine if plotting child_ids - handled differently
     plotting_child_ids <- any(grepl("Child_ID", c(xaxis, xgroup)))
@@ -123,7 +127,7 @@ bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, chunk_siz
     xlab_text <- get_column_labels(chart_col_labels, xlab)
 
     # Set colour palette according to colour_by variable
-    if(colour_by=="pupil_count_type") {
+    if(grepl("pupil_count_type", colour_by)) {
         colour_palette <- get_colour_palette(style_guide, "pupil_counts_colours")
     } else {
         colour_palette <- get_colour_palette(style_guide, "devstrand_colours")
@@ -156,10 +160,15 @@ bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, chunk_siz
 
         x_font_size=default_font_size-floor(((number_of_categories_chunk-1)/20))
 
+        if(plot_with_dot) {
+            plot_data_dot = plot_data[plot_data[, colour_by]=="indProfiled",]
+            plot_data = plot_data[plot_data[, colour_by]!="indProfiled",]
+        }
+
         # Plot and save
         p[[chunk]] = ggplot(data=plot_data, aes_string(x=xaxis, y=measure, fill=colour_by)) +
             geom_bar(stat = "identity", position=postn, colour="black", size=0.2, width=ifelse(plotting_child_ids, 0.5, 0.9)) +
-            # geom_point(stat = "identity", position=postn, colour="black", size=4) +
+            {if(plot_with_dot) geom_point(data=plot_data_dot, aes_string(x=xaxis, y=measure, fill=colour_by), stat = "identity", position=postn, size=4, colour=unlist(colour_palette)[4])} +
             {if(plotting_sample_sizes) geom_text(aes(label=n_pupils, vjust=ifelse(score_change >= 0, -0.25, 1.25)), position=position_dodge(width=0.9), size=0.35*x_font_size)} +
             {if(grouped & !plotting_ids) facet_grid(reformulate(xgroup), switch = "x", space = "free_x")} +
             {if(grouped & plotting_ids) facet_grid(reformulate(xgroup), switch = "x", scales="free_x", space = "free_x")} +
@@ -174,7 +183,7 @@ bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, chunk_siz
             scale_x_discrete(drop = FALSE) +
             {if(sample_size_too_small) coord_cartesian(ylim = c(0, 1))} +
             {if(sample_size_too_small) annotate("text", x=x_mid, y=0.5, label= "No data in specified chart filter")} +
-            {if(colour_by!="pupil_count_type" & !grouped) annotation_custom(grob)} +
+            {if(!grepl("pupil_count_type", colour_by) & !grouped) annotation_custom(grob)} +
             {if(measure != "N") scale_y_continuous(labels=percent)} +
             theme(panel.spacing = unit(1, "lines")) +
             theme(panel.background = element_rect(fill = "white")) +
