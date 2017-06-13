@@ -134,7 +134,7 @@ report_filters <- list(
 
 academic_yr = paste(gsub("(.+)(-)(.+)(-)(.+)","\\1",yr_start),"/",gsub("(.+)(-)(.+)(-)(.+)","\\1",yr_end),sep="")
 
-# report1: These are the bar charts in the pdf labelled ‘Sample 1’. For the Headstart set of schools these include a bar
+# report1: These are the bar charts in the pdf labelled 'Sample 1'. For the Headstart set of schools these include a bar
 #         chart for all schools, schools in locality 1 and 6  and 3 individual Headstart school. (Now all in side-by-side format)
 report1_template =  list(
     "type"="bar_side_by_side",
@@ -175,7 +175,7 @@ report1_fullheading <- paste(report1_heading," - Academic Year ",academic_yr,sep
 save(report1_fullheading, file=file.path(data_dir, "report1_fullheading.RData"))
 
 
-# report2: This is pie charts of share of pupils across development stages given in the pdf labelled ‘Sample 3’.
+# report2: This is pie charts of share of pupils across development stages given in the pdf labelled 'Sample 3'.
 report2 = list()
 index = 1
 for(i in seq_along(report2_ids_in)){
@@ -224,7 +224,7 @@ names(report2) = paste(rep(c("chart","chart","data"),length(report2_ids_in)),rep
 report2_fullheading <- paste(report2_heading," - Academic Year ",academic_yr,sep="")
 save(report2_fullheading, file=file.path(data_dir, "report2_fullheading.RData"))
 
-# report3: This is the bar chart/scatter plot given in the pdf labelled ‘Sample 2’. Henry will consider this plot and
+# report3: This is the bar chart/scatter plot given in the pdf labelled 'Sample 2'. Henry will consider this plot and
 #         provide alternative formats if there are any improved ways of visualising the data.
 
 report3_template = list(
@@ -255,7 +255,7 @@ names(report3) = paste("chart",seq_along(report3_ids_in),sep="")
 report3_fullheading <- paste(report3_heading," - Academic Year ",academic_yr,sep="")
 save(report3_fullheading, file=file.path(data_dir, "report3_fullheading.RData"))
 
-# report4: This is the TOL activity given in the spreadsheet called ‘Headstart Data – 11 05 16 for RHead.xlsx’).
+# report4: This is the TOL activity given in the spreadsheet called 'Headstart Data – 11 05 16 for RHead.xlsx').
 #         (This plot should be prioritised over plot 3 if there are time constraints).
 if(report4_levels_in == "Account") coltype = "AccountID" else coltype = "Organisation_ID"
 report4 = list(
@@ -284,7 +284,7 @@ report4 = list(
 report4_fullheading <- paste(report4_heading," - Academic Year ",academic_yr,sep="")
 save(report4_fullheading, file=file.path(data_dir, "report4_fullheading.RData"))
 
-# report5: This is the bar chart given in the pdf labelled ‘Sample 3’ and looks at individual pupil journeys by
+# report5: This is the bar chart given in the pdf labelled 'Sample 3' and looks at individual pupil journeys by
 #          development stage. The plots on individual progress are not required. (Now a in a new report of its own)
 report5 = list()
 for(i in seq_along(report5_ids_in)){
