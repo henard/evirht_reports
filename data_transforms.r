@@ -34,6 +34,7 @@ format_sql_df <- function(df) {
 
 # Apply changes to format of data specific to pupil_counts data imported (from SQL)
 format_pupil_counts_df <- function(df) {
+    df <- df[!duplicated(df[, "Organisation_ID"]), ]
     pupil_count_categories <- get_colourby_categories(style_guide, "pupil_counts_colours")
     df$Organisation <- as.character(df$Organisation)
     df$pct_Allocated <- df$N_Allocated / df$N_Allocated

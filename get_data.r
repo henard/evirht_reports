@@ -7,6 +7,7 @@ read_locality_data <- function(data_src) {
         query <- paste(lines, collapse=" ")
         conn <- odbcConnect(paste(data_sources[[data_src]], "_tabs", sep=""))
         d <- sqlQuery(conn, query)
+        odbcClose(conn)
         save(d, file=rdata_locality_folderfilename)
     } else {
         load(rdata_locality_folderfilename)
@@ -25,6 +26,7 @@ read_pupil_counts_data <- function(data_src) {
         query <- paste(lines, collapse=" ")
         conn <- odbcConnect(data_sources[[data_src]])
         d <- sqlQuery(conn, query)
+        odbcClose(conn)
         d <- format_pupil_counts_df(d)
         save(d, file=rdata_pupil_counts_folderfilename)
     } else {
@@ -50,6 +52,7 @@ read_data <- function(data_src) {
         query <- paste(add_where_clause(lines, filter_where_clause), collapse=" ")
         conn <- odbcConnect(data_sources[[data_src]])
         d <- sqlQuery(conn, query)
+        odbcClose(conn)
         d <- merge(d, locality_lookup, all.x=TRUE)
         d <- format_sql_df(d)
         d <- format_dataframe(d)
