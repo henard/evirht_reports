@@ -20,11 +20,20 @@ LEFT JOIN license ON licenseOrganisation.licenseId=license.licenseId
 INNER JOIN (
 SELECT
 licenseOrganisation.organisationId,
-max(license.licenseId) AS licenseId_latest
+license.licenseId as licenseId_maxdate
+FROM license
+LEFT JOIN thrive_online.licenseOrganisation ON license.licenseId=licenseOrganisation.licenseId
+INNER JOIN (
+SELECT
+licenseOrganisation.organisationId,
+max(license.endDate) AS endDate_furthest
 FROM thrive_online.licenseOrganisation
 LEFT JOIN thrive_online.license ON licenseOrganisation.licenseId=license.licenseId
-WHERE (DATE(NOW()) BETWEEN license.startDate AND license.endDate)
-GROUP BY organisationId) AS licenseId_latest ON licenseOrganisation.organisationId=licenseId_latest.organisationId AND license.licenseId=licenseId_latest.licenseId_latest
+WHERE (DATE(NOW()) BETWEEN license.startDate AND license.endDate) AND license.deleted=0 AND license.cancelled=0
+GROUP BY organisationId
+) AS endDate_furthest ON licenseOrganisation.organisationId=endDate_furthest.organisationId AND license.endDate=endDate_furthest.endDate_furthest
+WHERE (DATE(NOW()) BETWEEN license.startDate AND license.endDate) AND license.deleted=0 AND license.cancelled=0
+) AS licenseId_maxdate_table ON licenseOrganisation.organisationId=licenseId_maxdate_table.organisationId AND license.licenseId=licenseId_maxdate_table.licenseId_maxdate
 LEFT JOIN (
 SELECT
 childOrganisation.organisationId,

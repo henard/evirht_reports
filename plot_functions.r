@@ -169,7 +169,7 @@ bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, chunk_siz
         p[[chunk]] = ggplot(data=plot_data, aes_string(x=xaxis, y=measure, fill=colour_by)) +
             geom_bar(stat = "identity", position=postn, colour="black", size=0.2, width=ifelse(plotting_child_ids, 0.5, 0.9)) +
             {if(plot_with_dot) geom_point(data=plot_data_dot, aes_string(x=xaxis, y=measure, fill=colour_by), stat = "identity", position=postn, size=4, colour=unlist(colour_palette)[4])} +
-            {if(plotting_sample_sizes) geom_text(aes(label=n_pupils, vjust=ifelse(score_change >= 0, -0.25, 1.25)), position=position_dodge(width=0.9), size=0.35*x_font_size)} +
+            {if(plotting_sample_sizes & !sample_size_too_small) geom_text(aes(label=n_pupils, vjust=ifelse(score_change >= 0, -0.25, 1.25)), position=position_dodge(width=0.9), size=0.35*x_font_size)} +
             {if(grouped & !plotting_ids) facet_grid(reformulate(xgroup), switch = "x", space = "free_x")} +
             {if(grouped & plotting_ids) facet_grid(reformulate(xgroup), switch = "x", scales="free_x", space = "free_x")} +
             {if(grouped) theme(panel.spacing = unit(0, "lines"), strip.background = element_blank(), strip.placement = "outside")} +
