@@ -32,7 +32,6 @@ d <- read_data(data_source)
 # Read in pupil_counts data from source defined in data_source in global_config.r
 # apply formating to variables and calculate analysis variables.
 pupil_counts <- read_pupil_counts_data(data_source)
-# pupil_counts <- read_pupil_counts_data("thrive")
 
 # Add automatically generated chart tiles
 reports <- add_auto_chart_labels2(reports)

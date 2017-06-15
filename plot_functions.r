@@ -3,7 +3,6 @@ library(scales)
 library(grid)
 library(extrafont)
 
-# font_import(pattern='fra', prompt=FALSE)
 suppressMessages(font_import(pattern='fra', prompt=FALSE))
 
 bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, chunk_size, filename, long_filename, dataset, auto_title, title_org) {
@@ -39,7 +38,7 @@ bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, chunk_siz
     formula_str <- paste(measure, "~", paste(c(colour_by, xlab), collapse=" + "), sep=" ")
 
     # Create an 'empty' plot dataframe for when sample size <10 due to filtering applied
-    dp_empty <- aggregate(formula(formula_str), data_set, FUN = function(x) c(score_change = mean(x), n_pupils = length(x)))
+    dp_empty <- aggregate(formula(formula_str), data_set, FUN = function(x) c(score_change = 0, n_pupils = 0))
     dp_empty <- do.call(data.frame, dp_empty)
     names(dp_empty) <- sub(".*\\.", "", names(dp_empty))
     names(dp_empty)[names(dp_empty) == 'mean'] <- measure
@@ -70,18 +69,8 @@ bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, chunk_siz
     # Make colour_by variable a factor with levels limited to those still present
     if(measure=="pct") dp[, colour_by] <- factor(dp[, colour_by])
 
-    # Assign each bar/ category in plot data a chunk number 'chunk' depending upon chunk size
-    # For chunk_size = 100, chunck 1 is 1-100, chunk 2 is 101-200 and so on.
-    # chunk_size <- 100
-    # if(postn=="stack") {
-    # if(!grouped) {
-    #    dp_chunk <- dp[!duplicated(dp[, xlab, drop=F]), xlab, drop=F]
-    # } else {
-    #     dp_chunk <- dp[, xlab, drop=F]
-    # }
-
+    # Create a datframe containing variables neeeded to chunk the plotting dataframe
     dp_chunk <- dp[!duplicated(dp[, xlab, drop=F]), xlab, drop=F]
-
     number_of_categories <- nrow(dp_chunk)
     dp_chunk$chunk_n <- 1:number_of_categories
     dp_chunk$chunk <- floor((0:(number_of_categories-1))/chunk_size)+1
@@ -91,13 +80,14 @@ bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, chunk_siz
     # Make xgroup variable a factor with levels limited to those still present in the data after filtering
     if(grouped) dp[, xgroup] <- factor(dp[, xgroup], levels=levs_present)
     
-    # Plot setings
-    default_font_size = 10
-
     # Ensure the width of bars is consistent when plot type="side_by_side"
     if(!grouped) dp <- expand_dataframe(dp, measure)
 
+    # Add chunking info to plot dataframe
     dp <- merge(dp, dp_chunk, all.x=TRUE)
+
+    # Plot setings
+    default_font_size = 10
 
     # Configure x-axis label settings for different  x-axis variables 
     if(plotting_child_ids) {
