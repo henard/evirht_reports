@@ -3,7 +3,7 @@ library(scales)
 library(grid)
 library(extrafont)
 
-suppressMessages(font_import(pattern='fra', prompt=FALSE))
+suppressMessages(font_import(pattern='FRA', prompt=FALSE))
 
 bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, chunk_size, filename, long_filename, dataset, auto_title, title_org) {
     
@@ -183,7 +183,7 @@ bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, chunk_siz
             theme(axis.text.x = element_text(angle = xaxis_text_angle, vjust=x_vjust, hjust=x_hjust, size=x_font_size)) +
             theme(axis.text.y = element_text(angle = 0, vjust=0.5, hjust=0.5, size=default_font_size)) +
             theme(legend.title = element_text(colour="black", size=default_font_size, face="bold"), legend.position = "right", legend.text = element_text(colour="black", size=default_font_size)) +
-            theme(text=element_text(family="Franklin Gothic Medium"))
+            theme(text=element_text(family="Franklin Gothic Book"))
 
         filenames_chunked[[chunk]] <- file.path(plots_dir, ifelse(max(chunk_ids)>=2, gsub(".", paste("_chunk", chunk, ".", sep=""), filename, fixed=TRUE), filename))
     }
@@ -266,7 +266,7 @@ pie_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, chunk_siz
         blank_theme +
         guides(fill = guide_legend(title = get_column_labels(chart_col_labels, colour_by), title.position = "top")) +
         theme(legend.title = element_text(colour="black", size=default_font_size, face="bold"), legend.position = "right", legend.text = element_text(colour="black", size=default_font_size)) +
-        theme(text=element_text(family="Franklin Gothic Medium"))
+        theme(text=element_text(family="Franklin Gothic Book"))
          
     ggsave(file.path(plots_dir, filename), plot = p, width = 10, height = 8, units = "cm")
     sprintf("Saving plot: %s", file.path(plots_dir, filename))
