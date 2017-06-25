@@ -49,7 +49,8 @@ style_guide <- list(
         "red"="#C33415",
         "allocated_green"="#009900",
         "active_green"="#006600",
-        "profiled_green"="#003300"
+        "profiled_green"="#003300",
+        "white"="#FFFFFF"
     ),
     "devstrand_colours" = list(
         "Power & Identity"="green",
@@ -60,7 +61,7 @@ style_guide <- list(
     "pupil_pct_colours" = list(
         "Active"="active_green",
         "Profiled"="profiled_green",
-        "indProfiled"="red"
+        "indProfiled"="white"
     ),
     "pupil_counts_colours" = list(
         "Allocated"="allocated_green",

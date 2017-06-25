@@ -6,7 +6,7 @@ library(extrafont)
 suppressMessages(font_import(pattern='FRA', prompt=FALSE))
 
 bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, chunk_size, filename, long_filename, dataset, auto_title, title_org) {
-    
+
     plot_size_scale = 1.5
 
     plot_with_dot <- colour_by == "pupil_count_type_dot"
@@ -117,7 +117,10 @@ bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, chunk_siz
     xlab_text <- get_column_labels(chart_col_labels, xlab)
 
     # Set colour palette according to colour_by variable
-    if(grepl("pupil_count_type", colour_by)) {
+    if(measure=="pct") {
+        colour_palette <- get_colour_palette(style_guide, "pupil_pct_colours")
+        colour_palette_dot <- unlist(get_colour_palette(style_guide, "pupil_counts_colours"))[4]
+    } else if(measure=="N") {
         colour_palette <- get_colour_palette(style_guide, "pupil_counts_colours")
     } else {
         colour_palette <- get_colour_palette(style_guide, "devstrand_colours")
@@ -137,7 +140,7 @@ bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, chunk_siz
         # Configure grob for plotting sample size text in top right hand corner.
         # (This method enables you to specify the relative position of the text
         # - no need to specify the coordinates which change from one chart to the next)
-        grob=grobTree(textGrob(sample_size_text, x=1, y=1, hjust=1, vjust=1, gp=gpar(col="black", fontsize=10)))
+        tgrob <- grobTree(textGrob(sample_size_text, x=1, y=1, hjust=1, vjust=1, gp=gpar(col="black", fontsize=10)))
 
         # Make xgroup variable a factor with levels limited to those still present in the data after filtering
         if(grouped) plot_data[, xgroup] <- factor(plot_data[, xgroup], levels=levels_present(plot_data[, xgroup]))
@@ -151,14 +154,24 @@ bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, chunk_siz
         x_font_size=default_font_size-floor(((number_of_categories_chunk-1)/20))
 
         if(plot_with_dot) {
-            plot_data_dot = plot_data[plot_data[, colour_by]=="indProfiled",]
-            plot_data = plot_data[plot_data[, colour_by]!="indProfiled",]
+            plot_data_dot <- plot_data[plot_data[, colour_by]=="indProfiled",]
+            plot_data_dot[, colour_by] <- factor(plot_data_dot[, colour_by], levels=levels_present(plot_data_dot[, colour_by]))
+            plot_data <- plot_data[plot_data[, colour_by] %in% c("Active", "Profiled"),]
+            # Some organisations have more profiled pupils than active pupils. These organisations have negative pct for N_Active.
+            # To prevent these from being plotted as a negative bars plot the positive percentages, then overlay bar plot any negative percentages
+            # as a positive percentges.
+            # So split the plot data into categories with positive percentages and negative percentages.
+            plot_data_neg <- plot_data[plot_data[, measure] <0,]
+            plot_data_neg[, measure] <- -1*plot_data_neg[, measure]
+            plot_data <- plot_data[plot_data[, measure] >=0,]
         }
 
         # Plot and save
         p[[chunk]] = ggplot(data=plot_data, aes_string(x=xaxis, y=measure, fill=colour_by)) +
             geom_bar(stat = "identity", position=postn, colour="black", size=0.2, width=ifelse(plotting_child_ids, 0.5, 0.9)) +
-            {if(plot_with_dot) geom_point(data=plot_data_dot, aes_string(x=xaxis, y=measure, fill=colour_by), stat = "identity", position=postn, size=4, colour=unlist(colour_palette)[4])} +
+            # Overlay plot any negative percentages.
+            {if(plot_with_dot) geom_bar(data=plot_data_neg, stat = "identity", position=postn, colour="black", size=0.2, width=ifelse(plotting_child_ids, 0.5, 0.9))} +
+            {if(plot_with_dot) geom_point(data=plot_data_dot, aes_string(x=xaxis, y=measure, fill=colour_by), stat = "identity", position=postn, size=4, colour=colour_palette_dot)} +
             {if(plotting_sample_sizes & !sample_size_too_small) geom_text(aes(label=n_pupils, vjust=ifelse(score_change >= 0, -0.25, 1.25)), position=position_dodge(width=0.9), size=0.35*x_font_size)} +
             {if(grouped & !plotting_ids) facet_grid(reformulate(xgroup), switch = "x", space = "free_x")} +
             {if(grouped & plotting_ids) facet_grid(reformulate(xgroup), switch = "x", scales="free_x", space = "free_x")} +
@@ -173,12 +186,14 @@ bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, chunk_siz
             scale_x_discrete(drop = FALSE) +
             {if(sample_size_too_small) coord_cartesian(ylim = c(0, 1))} +
             {if(sample_size_too_small) annotate("text", x=x_mid, y=0.5, label= "No data in specified chart filter")} +
-            {if(!grepl("pupil_count_type", colour_by) & !grouped) annotation_custom(grob)} +
+            {if(!grepl("pupil_count_type", colour_by) & !grouped) annotation_custom(tgrob)} +
             {if(measure != "N") scale_y_continuous(labels=percent)} +
             theme(panel.spacing = unit(1, "lines")) +
             theme(panel.background = element_rect(fill = "white")) +
             theme(axis.line.x = element_line(color = "black"), axis.line.y = element_line(color = "black")) +
-            guides(fill = guide_legend(title = get_column_labels(chart_col_labels, colour_by), title.position = "top")) +
+            {if(plot_with_dot) guides(fill = guide_legend(override.aes = list(colour=c(NA, "red", NA)), title = get_column_labels(chart_col_labels, colour_by), title.position = "top"),
+                                      shape = guide_legend(override.aes = list(shape=c(NA, 20, NA))))} +
+            {if(!plot_with_dot) guides(fill = guide_legend(title = get_column_labels(chart_col_labels, colour_by), title.position = "top"))} +
             theme(axis.title = element_text(size=default_font_size)) +
             theme(axis.text.x = element_text(angle = xaxis_text_angle, vjust=x_vjust, hjust=x_hjust, size=x_font_size)) +
             theme(axis.text.y = element_text(angle = 0, vjust=0.5, hjust=0.5, size=default_font_size)) +

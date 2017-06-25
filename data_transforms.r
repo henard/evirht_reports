@@ -34,6 +34,8 @@ format_sql_df <- function(df) {
 
 # Apply changes to format of data specific to pupil_counts data imported (from SQL)
 format_pupil_counts_df <- function(df) {
+    # This ensures that even organisations without active or profiled pupils are plotted
+    df[(df$N==0 | is.na(df$N)), "N"] <- 0.00001
     df <- df[!duplicated(df[, "Organisation_ID"]), ]
     pupil_count_categories <- get_colourby_categories(style_guide, "pupil_counts_colours")
     df$Organisation <- as.character(df$Organisation)
@@ -49,7 +51,6 @@ format_pupil_counts_df <- function(df) {
     dfl <- reshape(df, varying=c("N_Allocated", "N_Active", "N_Profiled", "N_indProfiled", "pct_Allocated", "pct_Active", "pct_Profiled", "pct_indProfiled"),
                    direction="long", idvar="Organisation_ID", sep="_")
     names(dfl)[names(dfl) == 'time'] <- "pupil_count_type"
-    # dfl <- dfl[dfl$pupil_count_type %in% c("Active", "Profiled"), ]
     dfl[!dfl$pupil_count_type %in% c("Active", "Profiled", "indProfiled"), "pct"] <- NA
     dfl[!dfl$pupil_count_type %in% c("Active", "Profiled", "indProfiled", "Allocated"), "N"] <- NA
     dfl <- data.table(dfl)
