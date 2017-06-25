@@ -83,14 +83,11 @@ report3_chunk_size_in <- list(chart1 = 60,
 # Report 4 arguments
 # Report 4 filters by organisation or account and is set up to produce one chart at a time.
 # Set the list of one or more organisation/account IDs below.
-report4_ids_in <- list(chart1 = list(418, 419, 420, 421, 422, 423, 424, 425, 426, 427,
-                                     428, 429, 430, 431, 432, 433, 434, 435, 436, 437,
-                                     438, 439, 440, 441, 442, 443, 444, 445, 446, 447,
-                                     448, 449, 450, 451, 452, 453, 454, 455, 456, 457))
+report4_ids_in <- list(chart1 = list(1483))
 # Define the level for the chart.
 # If the IDs listed in report4_ids_in are account ids specify "Account"; if they are Organisation IDs specify "Organisation"
 # The chart is a bar for each organisation in the accounts or organisations listed in report4_ids_in
-report4_levels_in <- list(chart1 = "Organisation")
+report4_levels_in <- list(chart1 = "Account")
 # Specify alternative chart title if you would like to overide the automated Chart titles.
 # Specify "" (e.g. chart1 = "") to use an automatically generated chart title.
 report4_labels_in <- list(chart1 = "SELECTED SCHOOLS")

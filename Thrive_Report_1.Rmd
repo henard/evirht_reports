@@ -32,9 +32,7 @@ report1_pngs = dir("plots")[grep("report1",dir("plots"))]
 for(i in seq_along(report1_pngs)){
     cat('![]')
     cat(paste("(plots/",report1_pngs[i],")",sep=""))
-    cat('{ width=100%}\n')
+    cat('{width=100%}\\newline')
 }
 ```
-
-
 Note: This preliminary analysis of data is provided in good faith as a means of determining which graphs and charts are informative for organisations and clusters and which are not. The data for this exercise has been cleaned as follows: incomplete entries, entries labelled as 'test' or 'training', child ID profiles with spurious age data (>100years, <0 years) and replicated results (same child ID, result and exact time) have been removed. Where multiple entries existed for an individual child within the same Strand on the same day, only a single entry has been retained. This was the latest entry or, when the assessments had the same completion time, the lowest score was kept. If the number of assessment results given for a single child at the same time exceeded 5, all entries have been removed as the data set was deemed to be unreliable user test data. In cases where a child had been assessed only once within a Strand, the unique data entry has been discounted in all 'progress' charts where a minimum of two assessment results are needed. Fronting the Challenge Projects Ltd (Thrive) accept no liability arising from the use of these charts and graphs since it cannot take part in the decision as to when to profile individual children and at what developmental stage.
