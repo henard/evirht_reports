@@ -18,13 +18,13 @@ sansfont: FranklinGothic-Book
 ---
 
 ```{r heading, echo = FALSE}
-load(file.path("rdata", "report4_fullheading.Rdata"))
+load(file.path("rdata", "report4a_fullheading.Rdata"))
 ```
 
-# `r report4_fullheading[1]`\
+# `r report4a_fullheading[1]`\
 
 ```{r list of pngs, echo = FALSE}
-report4_pngs = dir("plots")[grep("report4",dir("plots"))]
+report4_pngs = dir("plots")[grep("report4_chart1",dir("plots"))]
 ```
 
 ```{r insert plots, echo = F, results = 'asis'}

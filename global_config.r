@@ -48,7 +48,7 @@ style_guide <- list(
         "orange"="#D57B16",
         "red"="#C33415",
         "allocated_green"="#009900",
-        "active_green"="#006600",
+        "active_green"="#00CC00",
         "profiled_green"="#003300",
         "white"="#FFFFFF"
     ),

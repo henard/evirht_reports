@@ -168,7 +168,7 @@ for(i in seq_along(report1_ids_in)){
 }
 names(report1) = paste("chart",seq_along(report1_ids_in),sep="")
 
-report1_fullheading <- paste(report1_heading," - Academic Year ",academic_yr,sep="")
+report1_fullheading <- paste("Report 1 - ", report1_heading, " - Academic Year ", academic_yr, "\nDate: ", Sys.Date(), sep="")
 save(report1_fullheading, file=file.path(data_dir, "report1_fullheading.RData"))
 
 
@@ -218,7 +218,7 @@ for(i in seq_along(report2_ids_in)){
 }
 names(report2) = paste(rep(c("chart","chart","data"),length(report2_ids_in)),rep(seq_along(report2_ids_in),each=3)*rep(c(2,2,1),length(report2_ids_in))-(rep(c(1,0,0),length(report2_ids_in))),sep="")
 
-report2_fullheading <- paste(report2_heading," - Academic Year ",academic_yr,sep="")
+report2_fullheading <- paste("Report 2 - ", report2_heading, " - Academic Year ", academic_yr, "\nDate: ", Sys.Date(), sep="")
 save(report2_fullheading, file=file.path(data_dir, "report2_fullheading.RData"))
 
 # report3: This is the bar chart/scatter plot given in the pdf labelled 'Sample 2'. Henry will consider this plot and
@@ -249,7 +249,7 @@ for(i in seq_along(report3_ids_in)){
     report3[[i]] = assign(paste("chart",i,sep=""),temp)
 }
 names(report3) = paste("chart",seq_along(report3_ids_in),sep="")
-report3_fullheading <- paste(report3_heading," - Academic Year ",academic_yr,sep="")
+report3_fullheading <- paste("Report 3 - ", report3_heading, " - Academic Year ", academic_yr, "\nDate: ", Sys.Date(), sep="")
 save(report3_fullheading, file=file.path(data_dir, "report3_fullheading.RData"))
 
 # report4: This is the TOL activity given in the spreadsheet called 'Headstart Data – 11 05 16 for RHead.xlsx').
@@ -278,8 +278,10 @@ report4 = list(
                   "filter"=list("Org_seln"=list("column"=coltype, "values"=report4_ids_in[[1]], "filter_type"="in")))
 )
 
-report4_fullheading <- paste(report4_heading," - Academic Year ",academic_yr,sep="")
-save(report4_fullheading, file=file.path(data_dir, "report4_fullheading.RData"))
+report4a_fullheading <- paste("Report 4a - ", report4_heading, " - Academic Year ", academic_yr, "\nDate: ", Sys.Date(), sep="")
+save(report4a_fullheading, file=file.path(data_dir, "report4a_fullheading.RData"))
+report4b_fullheading <- paste("Report 4b - ", report4_heading, " - Academic Year ", academic_yr, "\nDate: ", Sys.Date(), sep="")
+save(report4b_fullheading, file=file.path(data_dir, "report4b_fullheading.RData"))
 
 # report5: This is the bar chart given in the pdf labelled 'Sample 3' and looks at individual pupil journeys by
 #          development stage. The plots on individual progress are not required. (Now a in a new report of its own)
@@ -301,7 +303,7 @@ for(i in seq_along(report5_ids_in)){
 }
 names(report5) = paste("chart",seq_along(report5_ids_in),sep="")
 
-report5_fullheading <- paste(report5_heading," - Academic Year ",academic_yr,sep="")
+report5_fullheading <- paste("Report 5 - ", report4_heading, " - Academic Year ", academic_yr, "\nDate: ", Sys.Date(), sep="")
 save(report5_fullheading, file=file.path(data_dir, "report5_fullheading.RData"))
 
 reports = list("report1"=report1,
