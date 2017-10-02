@@ -69,7 +69,7 @@ bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, chunk_siz
     # Make colour_by variable a factor with levels limited to those still present
     if(measure=="pct") dp[, colour_by] <- factor(dp[, colour_by])
 
-    # Create a datframe containing variables neeeded to chunk the plotting dataframe
+    # Create a dataframe containing variables neeeded to chunk the plotting dataframe
     dp_chunk <- dp[!duplicated(dp[, xlab, drop=F]), xlab, drop=F]
     number_of_categories <- nrow(dp_chunk)
     dp_chunk$chunk_n <- 1:number_of_categories
@@ -129,9 +129,11 @@ bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, chunk_siz
     # Initialise lists to hold plots and filenames for each chunk
     p <- list()
     filenames_chunked <- list()
+    width_adj <- list()
     for(chunk in chunk_ids) {
         # Select chunk of data to be plotted
         plot_data = dp[dp$chunk %in% chunk, ]
+        width_adj[chunk] <- 1-(0.8*(max(plot_data$chunk) * chunk_size - max(plot_data$chunk_n))/chunk_size)
 
         # Capture sample size measurements
         sample_sizes <- list("sum"=sum(plot_data$n_pupils, na.rm = TRUE))
@@ -203,7 +205,7 @@ bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, chunk_siz
         filenames_chunked[[chunk]] <- file.path(plots_dir, ifelse(max(chunk_ids)>=2, gsub(".", paste("_chunk", chunk, ".", sep=""), filename, fixed=TRUE), filename))
     }
     for(chunk in chunk_ids) {
-        ggsave(filename = filenames_chunked[[chunk]], plot = p[[chunk]], width = plot_size_scale*20, height = plot_size_scale*plot_height, units = "cm", device = "png")
+        ggsave(filename = filenames_chunked[[chunk]], plot = p[[chunk]], width = width_adj[[chunk]]*plot_size_scale*20, height = plot_size_scale*plot_height, units = "cm", device = "png")
     }
     sprintf("Saving plot: %s", file.path(plots_dir, filenames_chunked))
 }
