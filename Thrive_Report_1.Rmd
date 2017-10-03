@@ -1,12 +1,15 @@
 ---
 header-includes: 
-   \AtBeginDocument{\let\maketitle\relax}
-   \usepackage{graphicx}
-   \usepackage{fancyhdr}
-   \pagestyle{fancy}
-   \setlength\headheight{24pt}
-   \fancyhead[R]{\includegraphics[width=5cm]{Thrive_Logo_CMYK_square.png}}
-   \renewcommand{\headrulewidth}{0pt}
+  \AtBeginDocument{\let\maketitle\relax}
+  \usepackage{graphicx}
+  \usepackage{fancyhdr}
+  \pagestyle{fancy}
+  \setlength\headheight{24pt}
+  \fancyhead[R]{\includegraphics[width=5cm]{Thrive_Logo_CMYK_square.png}}
+  \fancyfoot[LE,RO]{\thepage}
+  \renewcommand{\headrulewidth}{0pt}
+  \pagenumbering{arabic}
+  \fancypagestyle{plain}{\pagestyle{fancy}}
 output:
   pdf_document:
     latex_engine: lualatex

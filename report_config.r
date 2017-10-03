@@ -38,11 +38,11 @@ report1_levels_in <- list(chart1 = "Account",
 report1_heading <- "Headstart Schools"
 # For each chart, define chunk size - the maximum number of x-axis categories permitted per bar chart. A chart with 90 x-axis categories and 
 # a chunk_size = 30 would result in 3 separate bar charts named "..._chunk1.png", "..._chunk2.png" and "..._chunk3.png".
-report1_chunk_size_in <- list(chart1 = 60,
-                              chart2 = 60,
-                              chart3 = 60,
-                              chart4 = 60,
-                              chart5 = 60)
+report1_chunk_size_in <- list(chart1 = 20,
+                              chart2 = 20,
+                              chart3 = 20,
+                              chart4 = 20,
+                              chart5 = 20)
 
 # Report 2 arguments
 # Report 2 can be set up to have as many charts as the user wants, simply add or remove a chart from each argument below.
