@@ -10,39 +10,55 @@ yr_end = "2017-09-01"
 # Set the school years that are to be extracted by adding/removing from the following list.
 school_yrs = list("-1", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13")
 
-# Report 1 arguments
-# Report 1 can be set up to have as many charts as the user wants, simply add or remove a chart from each argument below.
+# Report 1a arguments
+# Report 1a can be set up to have as many charts as the user wants, simply add or remove a chart from each argument below.
 # Set the account or organisation IDs for each chart requested by editing the following.
-report1_ids_in <- list(chart1 = 1483,
-                       chart2 = 418,
-                       chart3 = 1319,
-                       chart4 = 676,
-                       chart5 = 418)
+# Report 1a is intended to produce plots by account level and will be plotted in landscape; 
+report1a_ids_in <- list(chart1 = 1483)
 # Specify alternative chart titles if you would like to overide the automated Chart titles.
 # Specify "" (e.g. chart1 = "") to use an automatically generated chart title.
-report1_labels_in <- list(chart1 = "",
-                          chart2 = "",
-                          chart3 = "",
-                          chart4 = "",
-                          chart5 = "")
+report1a_labels_in <- list(chart1 = "")
 # Define the levels for each chart requested.
 # Account or Organisation will produce a bar chart for percentage point change in assessments for the whole organisation or account
 # defined by its ID. Pupil will produce a bar chart for pupil ID by school year and must be at an Organisation level (i.e., an organisation 
-# ID is given in report1_ids_in for that chart).
-report1_levels_in <- list(chart1 = "Account",
-                          chart2 = "Organisation",
-                          chart3 = "Organisation",
-                          chart4 = "Organisation",
-                          chart5 = "Pupil")
+# ID is given in report1a_ids_in for that chart).
+report1a_levels_in <- list(chart1 = "Account")
 # Define the main heading for the report
-report1_heading <- "Headstart Schools"
+report1a_heading <- "Headstart Schools"
 # For each chart, define chunk size - the maximum number of x-axis categories permitted per bar chart. A chart with 90 x-axis categories and 
 # a chunk_size = 30 would result in 3 separate bar charts named "..._chunk1.png", "..._chunk2.png" and "..._chunk3.png".
-report1_chunk_size_in <- list(chart1 = 20,
-                              chart2 = 20,
-                              chart3 = 20,
-                              chart4 = 20,
-                              chart5 = 20)
+report1a_chunk_size_in <- list(chart1 = 20)
+
+# Report 1b arguments
+# Report 1b can be set up to have as many charts as the user wants, simply add or remove a chart from each argument below.
+# Set the account or organisation IDs for each chart requested by editing the following.
+# Report 1b is intended to produce plots at Organisation or Pupil level and will be plotted in portrait; 
+report1b_ids_in <- list(chart1 = 418,
+                        chart2 = 1319,
+                        chart3 = 676,
+                        chart4 = 418)
+# Specify alternative chart titles if you would like to overide the automated Chart titles.
+# Specify "" (e.g. chart1 = "") to use an automatically generated chart title.
+report1b_labels_in <- list(chart1 = "",
+                           chart2 = "",
+                           chart3 = "",
+                           chart4 = "")
+# Define the levels for each chart requested.
+# Account or Organisation will produce a bar chart for percentage point change in assessments for the whole organisation or account
+# defined by its ID. Pupil will produce a bar chart for pupil ID by school year and must be at an Organisation level (i.e., an organisation 
+# ID is given in report1b_ids_in for that chart).
+report1b_levels_in <- list(chart1 = "Organisation",
+                           chart2 = "Organisation",
+                           chart3 = "Organisation",
+                           chart4 = "Pupil")
+# Define the main heading for the report
+report1b_heading <- "Headstart Schools"
+# For each chart, define chunk size - the maximum number of x-axis categories permitted per bar chart. A chart with 90 x-axis categories and 
+# a chunk_size = 30 would result in 3 separate bar charts named "..._chunk1.png", "..._chunk2.png" and "..._chunk3.png".
+report1b_chunk_size_in <- list(chart1 = 20,
+                               chart2 = 20,
+                               chart3 = 20,
+                               chart4 = 20)
 
 # Report 2 arguments
 # Report 2 can be set up to have as many charts as the user wants, simply add or remove a chart from each argument below.
@@ -145,32 +161,59 @@ report1_template =  list(
     "chunk_size"=60,
     "filter"=list("filter1"=list("column"=NA, "values"=NA, "filter_type"="in")))
 
-report1 = list()
-for(i in seq_along(report1_ids_in)){
-    if(length(report1_ids_in) != length(report1_levels_in) ||
-       length(report1_ids_in) != length(report1_labels_in) ||
-       length(report1_ids_in) != length(report1_chunk_size_in))stop("Number of input ids, labels, levels or chunk_sizes in Report 1 are not the same length")
-    if(report1_levels_in[[i]]=="Pupil") xtitle = "Child_ID" else xtitle = "School_Year"
+# Report1a
+report1a = list()
+for(i in seq_along(report1a_ids_in)){
+    if(length(report1a_ids_in) != length(report1a_levels_in) ||
+       length(report1a_ids_in) != length(report1a_labels_in) ||
+       length(report1a_ids_in) != length(report1a_chunk_size_in))stop("Number of input ids, labels, levels or chunk_sizes in Report 1 are not the same length")
+    if(report1a_levels_in[[i]]=="Pupil") xtitle = "Child_ID" else xtitle = "School_Year"
     temp <- report1_template
-    temp$title_org <- toupper(report1_labels_in[[i]])
+    temp$title_org <- toupper(report1a_labels_in[[i]])
     temp$xaxis <- xtitle
-    temp$chunk_size <- report1_chunk_size_in[[i]]
-    temp$filter$filter1$values <- list(report1_ids_in[[i]])
-    if(report1_levels_in[[i]] == "Account"){
+    temp$chunk_size <- report1a_chunk_size_in[[i]]
+    temp$filter$filter1$values <- list(report1a_ids_in[[i]])
+    if(report1a_levels_in[[i]] == "Account"){
         temp$filter$filter1$column <- "AccountID"
-    } else if(report1_levels_in[[i]] == "Organisation"){
+    } else if(report1a_levels_in[[i]] == "Organisation"){
         temp$filter$filter1$column <- "Organisation_ID"
     } else {
         temp$xgroup <- "School_Year"
         temp$filter$filter1$column <- "Organisation_ID"
     }
-    report1[[i]] = assign(paste("chart",i,sep=""),temp)
+    report1a[[i]] = assign(paste("chart",i,sep=""),temp)
 }
-names(report1) = paste("chart",seq_along(report1_ids_in),sep="")
+names(report1a) = paste("chart",seq_along(report1a_ids_in),sep="")
 
-report1_fullheading <- paste("Report 1 - ", report1_heading, " - Academic Year ", academic_yr, "\nDate: ", Sys.Date(), sep="")
-save(report1_fullheading, file=file.path(data_dir, "report1_fullheading.RData"))
+report1a_fullheading <- paste("Report 1a - ", report1a_heading, " - Academic Year ", academic_yr, "\nDate: ", Sys.Date(), sep="")
+save(report1a_fullheading, file=file.path(data_dir, "report1a_fullheading.RData"))
 
+# Report1a
+report1b = list()
+for(i in seq_along(report1b_ids_in)){
+    if(length(report1b_ids_in) != length(report1b_levels_in) ||
+       length(report1b_ids_in) != length(report1b_labels_in) ||
+       length(report1b_ids_in) != length(report1b_chunk_size_in))stop("Number of input ids, labels, levels or chunk_sizes in Report 1 are not the same length")
+    if(report1b_levels_in[[i]]=="Pupil") xtitle = "Child_ID" else xtitle = "School_Year"
+    temp <- report1_template
+    temp$title_org <- toupper(report1b_labels_in[[i]])
+    temp$xaxis <- xtitle
+    temp$chunk_size <- report1b_chunk_size_in[[i]]
+    temp$filter$filter1$values <- list(report1b_ids_in[[i]])
+    if(report1b_levels_in[[i]] == "Account"){
+        temp$filter$filter1$column <- "AccountID"
+    } else if(report1b_levels_in[[i]] == "Organisation"){
+        temp$filter$filter1$column <- "Organisation_ID"
+    } else {
+        temp$xgroup <- "School_Year"
+        temp$filter$filter1$column <- "Organisation_ID"
+    }
+    report1b[[i]] = assign(paste("chart",i,sep=""),temp)
+}
+names(report1b) = paste("chart",seq_along(report1b_ids_in),sep="")
+
+report1b_fullheading <- paste("Report 1b - ", report1b_heading, " - Academic Year ", academic_yr, "\nDate: ", Sys.Date(), sep="")
+save(report1b_fullheading, file=file.path(data_dir, "report1b_fullheading.RData"))
 
 # report2: This is pie charts of share of pupils across development stages given in the pdf labelled 'Sample 3'.
 report2 = list()
@@ -306,7 +349,8 @@ names(report5) = paste("chart",seq_along(report5_ids_in),sep="")
 report5_fullheading <- paste("Report 5 - ", report4_heading, " - Academic Year ", academic_yr, "\nDate: ", Sys.Date(), sep="")
 save(report5_fullheading, file=file.path(data_dir, "report5_fullheading.RData"))
 
-reports = list("report1"=report1,
+reports = list("report1a"=report1a,
+               "report1b"=report1b,
                "report2"=report2,
                "report3"=report3,
                "report4"=report4,

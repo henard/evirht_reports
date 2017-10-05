@@ -2,24 +2,24 @@
 output:
   pdf_document:
     includes:
-      in_header: header_portrait.tex
+      in_header: header_landscape.tex
 ---
 
 ```{r heading, echo = FALSE}
-load(file.path("rdata", "report1_fullheading.Rdata"))
+load(file.path("rdata", "report1a_fullheading.Rdata"))
 ```
 
 
-# `r report1_fullheading[1]`\
+# `r report1a_fullheading[1]`\
 
 ```{r list of pngs, echo = FALSE}
-report1_pngs = dir("plots")[grep("report1",dir("plots"))]
+report1a_pngs = dir("plots")[grep("report1a",dir("plots"))]
 ```
 
 ```{r insert plots, echo = F, results = 'asis'}
-for(i in seq_along(report1_pngs)){
+for(i in seq_along(report1a_pngs)){
     cat('![]')
-    cat(paste("(plots/",report1_pngs[i],")",sep=""))
+    cat(paste("(plots/",report1a_pngs[i],")",sep=""))
     cat('{width=100%}\\newline')
 }
 ```
