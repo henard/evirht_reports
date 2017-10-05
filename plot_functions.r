@@ -136,7 +136,7 @@ bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, chunk_siz
 
         # Adjust width
         categories_shortfall_pct <- (max(plot_data$chunk) * chunk_size - max(plot_data$chunk_n))/chunk_size
-        if(categories_shortfall_pct<0.6) {
+        if(categories_shortfall_pct>=0.6) {
             width_adj[chunk] <- 1-(0.6*categories_shortfall_pct)
         } else {
             width_adj[chunk] <- 1

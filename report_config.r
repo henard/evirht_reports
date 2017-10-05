@@ -379,6 +379,7 @@ add_auto_chart_labels2 <- function(reports) {
             if(reports[[i]][[j]]$type!="text") {
                 if(reports[[i]][[j]]$title_org=="") {
                     reports[[i]][[j]]$auto_title <- paste(toupper(filter_values_texts(reports[[i]][[j]]$filter)), reports[[i]][[j]]$auto_title, sep="")
+                    reports[[i]][[j]]$title_org <- filter_values_texts(reports[[i]][[j]]$filter)
                 } else {
                     reports[[i]][[j]]$auto_title <- paste(reports[[i]][[j]]$title_org, reports[[i]][[j]]$auto_title, sep="")
                 }
@@ -386,6 +387,42 @@ add_auto_chart_labels2 <- function(reports) {
         }
     }
     return(reports)
+}
+
+# Create a report_config for a report with charts of individual organisations reordered by organisation name
+reorder_report_charts_by_org <- function(reports, report_n) {
+
+    # Create a named list ('chart_map') defining the mapping between old & new chart numbers
+    chart_map <- list()
+    for(chart_n in names(reports[[report_n]])) {
+        if(reports[[report_n]][[chart_n]]$filter$filter1$column=="Organisation_ID") {
+            chart_map[[chart_n]] <- reports[[report_n]][[chart_n]]$title_org
+        } else {
+            chart_map[[chart_n]] <- "aaa"
+        }
+    }
+
+    chart_map <- paste("chart", order(unlist(chart_map)), sep="")
+    chart_map <- setNames(chart_map, paste("chart", seq_len(length(chart_map)), sep=""))
+
+    # Create a copy of report_config for report_n with charts mapped into new order
+    reordered_charts <- list()
+    for(chart_n in names(chart_map)) {
+        reordered_charts[[report_n]][[chart_n]] <- reports[[report_n]][[chart_map[[chart_n]]]]
+    }
+
+    for(chart_n in names(reordered_charts[[report_n]])) {
+        reordered_charts[[report_n]][[chart_n]][["filename"]] <- paste(paste(report_n, chart_n, sep="_"), "png", sep=".")
+    }
+    return(reordered_charts)
+}
+
+reordered_report_config <- function(reports, report_list) {
+    reports_reordered <- reports
+    for(report_n in report_list) {
+        reports_reordered[[report_n]] <- reorder_report_charts_by_org(reports, report_n)[[report_n]]
+    }
+    return(reports_reordered)
 }
 
 # Function to extract info from report_filters to create a WHERE clause to use
