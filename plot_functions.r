@@ -100,7 +100,7 @@ bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, chunk_siz
         xaxis_text_angle = -45
         x_vjust = 1
         x_hjust = 0
-        plot_height = 12
+        plot_height = 10
     } else {
         # Ensure the width of bars is consistent when plot type="side_by_side"
         dp <- expand_dataframe(dp, measure)
@@ -133,7 +133,14 @@ bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, chunk_siz
     for(chunk in chunk_ids) {
         # Select chunk of data to be plotted
         plot_data = dp[dp$chunk %in% chunk, ]
-        width_adj[chunk] <- 1-(0.8*(max(plot_data$chunk) * chunk_size - max(plot_data$chunk_n))/chunk_size)
+
+        # Adjust width
+        categories_shortfall_pct <- (max(plot_data$chunk) * chunk_size - max(plot_data$chunk_n))/chunk_size
+        if(categories_shortfall_pct>=0.6) {
+            width_adj[chunk] <- 1-(0.6*categories_shortfall_pct)
+        } else {
+            width_adj[chunk] <- 1
+        }
 
         # Capture sample size measurements
         sample_sizes <- list("sum"=sum(plot_data$n_pupils, na.rm = TRUE))

@@ -36,6 +36,9 @@ pupil_counts <- read_pupil_counts_data(data_source)
 # Add automatically generated chart tiles
 reports <- add_auto_chart_labels2(reports)
 
+# Update report_config to reorder charts (in report 1)
+reports <- reordered_report_config(reports, list("report1b"))
+
 # Define groups within which percentage point change in assessment scores are to be calculated.
 score_change_groups <- list("Child_ID", "Dev_Stage")
 score_change_groups2 <- list("Child_ID")
