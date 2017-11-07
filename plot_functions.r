@@ -67,7 +67,7 @@ bar_chart <- function(type, measure, xaxis, xgroup, colour_by, filter, chunk_siz
     }
 
     # Make colour_by variable a factor with levels limited to those still present
-    if(measure=="pct") dp[, colour_by] <- factor(dp[, colour_by])
+    if(measure=="pct" & colour_by != "pupil_count_type") dp[, colour_by] <- factor(dp[, colour_by])
 
     # Create a dataframe containing variables neeeded to chunk the plotting dataframe
     dp_chunk <- dp[!duplicated(dp[, xlab, drop=F]), xlab, drop=F]
